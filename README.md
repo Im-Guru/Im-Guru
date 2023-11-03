@@ -6,6 +6,8 @@
 
 전문고객 측면: 저는 도사입니다. (전 도사)
 
+Notion - https://www.notion.so/ImGuru-9573d409c62b4ccf8dc123d0b742c89b
+
 - 개발 환경
     - Java 17
     - Springboot 3.1.5
