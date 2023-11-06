@@ -4,6 +4,8 @@ package kr.co.imguru.domain.member.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.member.dto.MemberUpdateDto;
+import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.global.common.BaseEntity;
 import kr.co.imguru.global.common.Gender;
 import kr.co.imguru.global.common.Role;
@@ -24,7 +26,7 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     @Email
     @NotBlank
     private String email;
@@ -37,11 +39,11 @@ public class Member extends BaseEntity {
     @NotBlank
     private String name;
 
-    @Column(name = "nickname", unique = true)
+    @Column(name = "nickname")
     @NotBlank
     private String nickname;
 
-    @Column(name = "telephone", unique = true)
+    @Column(name = "telephone")
     @NotBlank
     private String telephone;
 
@@ -55,7 +57,6 @@ public class Member extends BaseEntity {
     private String address;
 
     @Column(name = "birth_date")
-    @NotBlank
     private LocalDate birthDate;
 
     @Column(name = "member_gender")
@@ -65,6 +66,10 @@ public class Member extends BaseEntity {
     @Column(name = "member_role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_id")
+    private Skill skill;
 
     @Builder
     public Member(String email,
@@ -76,7 +81,8 @@ public class Member extends BaseEntity {
                   String address,
                   LocalDate birthDate,
                   Gender gender,
-                  Role role) {
+                  Role role,
+                  Skill skill) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -87,7 +93,16 @@ public class Member extends BaseEntity {
         this.birthDate = birthDate;
         this.gender = gender;
         this.role = role;
+        this.skill = skill;
     }
 
+    public void changeMember(MemberUpdateDto updateDto, Skill updateSkill) {
+        this.password = updateDto.getPassword();
+        this.name = updateDto.getName();
+        this.job = updateDto.getJob();
+        this.address = updateDto.getAddress();
+        this.birthDate = updateDto.getBirthDate();
+        this.skill = updateSkill;
+    }
 
 }
