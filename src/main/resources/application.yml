@@ -1,0 +1,33 @@
+
+#spring:
+#  data:
+#    redis:
+#      port: 6379
+#      host: localhost
+
+#jwt:
+#  secret:
+#    key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/imguru?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
