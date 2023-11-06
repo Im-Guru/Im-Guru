@@ -2,6 +2,7 @@ package kr.co.imguru.domain.skill.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.skill.dto.SkillUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,13 +19,17 @@ public class Skill extends BaseEntity {
     @Column(name = "skill_id")
     private Long id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     @NotBlank
     private String name;
 
     @Builder
     public Skill(String name) {
         this.name = name;
+    }
+
+    public void changeSkill(SkillUpdateDto updateDto) {
+        this.name = updateDto.getName();
     }
 
 }
