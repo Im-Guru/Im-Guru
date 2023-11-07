@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface SkillService {
 
-    Long createSkill(SkillCreateDto createDto);
+    void createSkill(SkillCreateDto createDto);
 
     SkillReadDto getSkill(String skillName);
 
     List<SkillReadDto> getAllSkills();
 
-    Long updateSkill(String skillName, SkillUpdateDto updateDto);
+    SkillReadDto updateSkill(String skillName, SkillUpdateDto updateDto);
 
     void deleteSkill(String skillName);
 }

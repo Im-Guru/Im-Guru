@@ -5,6 +5,9 @@ import kr.co.imguru.domain.skill.dto.SkillReadDto;
 import kr.co.imguru.domain.skill.dto.SkillUpdateDto;
 import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
+import kr.co.imguru.global.exception.DuplicatedException;
+import kr.co.imguru.global.exception.NotFoundException;
+import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +21,10 @@ public class SkillServiceImpl implements SkillService {
     private final SkillRepository skillRepository;
 
     @Override
-    public Long createSkill(SkillCreateDto createDto) {
+    public void createSkill(SkillCreateDto createDto) {
         isSkillName(createDto.getName());
 
-        Skill skill = toEntity(createDto);
-
-        skillRepository.save(skill);
-
-        return skill.getId();
+        skillRepository.save(toEntity(createDto));
     }
 
     @Override
@@ -45,7 +44,7 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public Long updateSkill(String skillName, SkillUpdateDto updateDto) {
+    public SkillReadDto updateSkill(String skillName, SkillUpdateDto updateDto) {
         Optional<Skill> skill = skillRepository.findByNameAndIsDeleteFalse(skillName);
 
         isSkill(skill);
@@ -54,7 +53,7 @@ public class SkillServiceImpl implements SkillService {
 
         skillRepository.save(skill.get());
 
-        return skill.get().getId();
+        return toReadDto(skill.get());
     }
 
     @Override
@@ -70,13 +69,13 @@ public class SkillServiceImpl implements SkillService {
 
     private void isSkill(Optional<Skill> skill) {
         if (skill.isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException(ResponseStatus.FAIL_SKILL_NOT_FOUND);
         }
     }
 
     private void isSkillName(String skillName) {
         if (skillRepository.existsByNameAndIsDeleteFalse(skillName)) {
-            throw new RuntimeException();
+            throw new DuplicatedException(ResponseStatus.FAIL_SKILL_NAME_DUPLICATED);
         }
     }
 
