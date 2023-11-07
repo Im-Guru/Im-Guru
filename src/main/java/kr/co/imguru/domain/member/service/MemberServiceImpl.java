@@ -8,6 +8,10 @@ import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
 import kr.co.imguru.global.common.Gender;
 import kr.co.imguru.global.common.Role;
+import kr.co.imguru.global.exception.DuplicatedException;
+import kr.co.imguru.global.exception.IllegalArgumentException;
+import kr.co.imguru.global.exception.NotFoundException;
+import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,30 +27,23 @@ public class MemberServiceImpl implements MemberService {
     private final SkillRepository skillRepository;
 
     @Override
-    public Long createMember(MemberCreateDto createDto) {
+    public void createMember(MemberCreateDto createDto) {
 
         isEmail(createDto.getEmail());
         isTelephone(createDto.getTelephone());
         isNickname(createDto.getNickname());
 
-        Member member = toEntity(createDto);
-
-        memberRepository.save(member);
-
-        return member.getId();
+        memberRepository.save(toEntity(createDto));
     }
 
     @Override
-    public Long createGuruMember(MemberCreateDto createDto) {
+    public void createGuruMember(MemberCreateDto createDto) {
+
         isEmail(createDto.getEmail());
         isTelephone(createDto.getTelephone());
         isNickname(createDto.getNickname());
 
-        Member member = toGuru(createDto);
-
-        memberRepository.save(member);
-
-        return member.getId();
+        memberRepository.save(toGuru(createDto));
     }
 
     @Override
@@ -60,13 +57,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberReadDto> getAllMembers() {
-        List<Member> memberList = memberRepository.findAllByIsDeleteFalse();
-
-        return memberList.stream().map(this::toReadDto).toList();
+        return memberRepository.findAllByIsDeleteFalse().stream()
+                .map(this::toReadDto)
+                .toList();
     }
 
     @Override
-    public Long updateMember(String memberNickname, MemberUpdateDto updateDto) {
+    public MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
 
         isMember(member);
@@ -75,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member.get());
 
-        return member.get().getId();
+        return toReadDto(member.get());
     }
 
     @Override
@@ -89,36 +86,35 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member.get());
     }
 
-
-
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {
-//            throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
-            throw new RuntimeException();
+            throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
         }
     }
 
     private void isTelephone(String telephone) {
         if (memberRepository.existsByTelephoneAndIsDeleteFalse(telephone)) {
-//            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_TELEPHONE_DUPLICATED);
-            throw new RuntimeException();
-
+            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
         }
     }
 
     private void isNickname(String nickname) {
         if (memberRepository.existsByNicknameAndIsDeleteFalse(nickname)) {
-//            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_NICKNAME_DUPLICATED);
-            throw new RuntimeException();
-
+            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_NICKNAME_DUPLICATED);
         }
     }
 
     private void isEmail(String email) {
         if (memberRepository.existsByEmailAndIsDeleteFalse(email)) {
-//            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_EMAIL_DUPLICATED);
-            throw new RuntimeException();
+            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_EMAIL_DUPLICATED);
+        }
+    }
 
+    private Gender isGender(String genderName) {
+        try {
+            return Gender.valueOf(genderName);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(ResponseStatus.FAIL_ILLEGAL_ACCESS);
         }
     }
 
@@ -131,6 +127,8 @@ public class MemberServiceImpl implements MemberService {
 //    }
 
     private Member toEntity(MemberCreateDto dto) {
+        Gender gender = isGender(dto.getGender());
+
         return Member.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
@@ -140,13 +138,15 @@ public class MemberServiceImpl implements MemberService {
                 .address(dto.getAddress())
                 .job(dto.getJob())
                 .birthDate(dto.getBirthDate())
-                .gender(Gender.valueOf(dto.getGender()))
+                .gender(gender)
                 .role(Role.ROLE_USER)
                 .skill(skillRepository.findByNameAndIsDeleteFalse("이용자").get())
                 .build();
     }
 
     private Member toGuru(MemberCreateDto dto) {
+        Gender gender = isGender(dto.getGender());
+
         return Member.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
@@ -156,7 +156,7 @@ public class MemberServiceImpl implements MemberService {
                 .address(dto.getAddress())
                 .job(dto.getJob())
                 .birthDate(dto.getBirthDate())
-                .gender(Gender.valueOf(dto.getGender()))
+                .gender(gender)
                 .role(Role.ROLE_GURU)
                 .skill(skillRepository.findByNameAndIsDeleteFalse(dto.getSkillName()).get())
                 .build();

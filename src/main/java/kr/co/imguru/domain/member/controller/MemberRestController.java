@@ -5,6 +5,8 @@ import kr.co.imguru.domain.member.dto.MemberCreateDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.service.MemberService;
+import kr.co.imguru.global.model.ResponseFormat;
+import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,38 +21,44 @@ public class MemberRestController {
 
     // Create
     @PostMapping("/member")
-    public Long createMember(@RequestBody @Valid MemberCreateDto createDto) {
-        return memberService.createMember(createDto);
+    public ResponseFormat<Void> createMember(@RequestBody @Valid MemberCreateDto createDto) {
+        memberService.createMember(createDto);
+
+        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
     @PostMapping("/member/guru")
-    public Long createGuruMember(@RequestBody @Valid MemberCreateDto createDto) {
-        return memberService.createGuruMember(createDto);
+    public ResponseFormat<Void> createGuruMember(@RequestBody @Valid MemberCreateDto createDto) {
+        memberService.createGuruMember(createDto);
+
+        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
     // Read One
     @GetMapping("/member/{memberNickname}")
-    public MemberReadDto readMember(@PathVariable String memberNickname) {
-        return memberService.getMember(memberNickname);
+    public ResponseFormat<MemberReadDto> readMember(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getMember(memberNickname));
     }
 
     // Read All
     @GetMapping("/member/all")
-    public List<MemberReadDto> readAllMembers() {
-        return memberService.getAllMembers();
+    public ResponseFormat<List<MemberReadDto>> readAllMembers() {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getAllMembers());
     }
 
     // Update
     @PutMapping("/member/{memberNickname}")
-    public Long updateMember(@PathVariable String memberNickname,
+    public ResponseFormat<MemberReadDto> updateMember(@PathVariable String memberNickname,
                              @RequestBody @Valid MemberUpdateDto updateDto) {
-        return memberService.updateMember(memberNickname, updateDto);
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.updateMember(memberNickname, updateDto));
     }
 
     // Delete
     @DeleteMapping("/member/{memberNickname}")
-    public void deleteMember(@PathVariable String memberNickname) {
+    public ResponseFormat<Void> deleteMember(@PathVariable String memberNickname) {
         memberService.deleteMember(memberNickname);
+
+        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
 }
