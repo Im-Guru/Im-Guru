@@ -3,9 +3,11 @@ package kr.co.imguru.domain.guru.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.guru.dto.GuruInfoUpdateDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,6 +53,7 @@ public class GuruInfo extends BaseEntity {
     @NotBlank
     private String description;     // 업무 설명
 
+    @Builder
     public GuruInfo(Member member,
                     String intro,
                     String companyName,
@@ -67,5 +70,15 @@ public class GuruInfo extends BaseEntity {
         this.contactTime = contactTime;
         this.workArea = workArea;
         this.description = description;
+    }
+
+    public void changeGuruInfo(GuruInfoUpdateDto updateDto) {
+        this.intro = updateDto.getIntro();
+        this.companyName = updateDto.getCompanyName();
+        this.position = updateDto.getPosition();
+        this.careerAt = updateDto.getCareerAt();
+        this.contactTime = updateDto.getContactTime();
+        this.workArea = updateDto.getWorkArea();
+        this.description = updateDto.getDescription();
     }
 }
