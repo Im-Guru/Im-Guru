@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface MemberService {
 
-    Long createMember(MemberCreateDto createDto);
+    void createMember(MemberCreateDto createDto);
 
-    Long createGuruMember(MemberCreateDto createDto);
+    void createGuruMember(MemberCreateDto createDto);
 
     MemberReadDto getMember(String memberNickname);
 
     List<MemberReadDto> getAllMembers();
 
-    Long updateMember(String memberNickname, MemberUpdateDto updateDto);
+    MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto);
 
     void deleteMember(String memberNickname);
 
