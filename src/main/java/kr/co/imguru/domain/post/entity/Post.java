@@ -3,6 +3,7 @@ package kr.co.imguru.domain.post.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import kr.co.imguru.domain.member.entity.Member;
+import kr.co.imguru.domain.post.dto.PostUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
 import kr.co.imguru.global.common.PostCategory;
 import lombok.AccessLevel;
@@ -65,6 +66,13 @@ public class Post extends BaseEntity {
         this.price = price;
         this.likeCnt = likeCnt;
         this.viewCnt = viewCnt;
+    }
+
+    public void changePost(PostUpdateDto updateDto) {
+        this.postCategory = PostCategory.valueOf(updateDto.getCategoryName());
+        this.title = updateDto.getTitle();
+        this.content = updateDto.getContent();
+        this.price = updateDto.getPrice();
     }
 
 

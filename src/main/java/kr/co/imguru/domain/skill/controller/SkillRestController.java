@@ -26,9 +26,9 @@ public class SkillRestController {
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
-    @GetMapping("/skill/{skillName}")
-    public ResponseFormat<SkillReadDto> readSkill(@PathVariable String skillName) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, skillService.getSkill(skillName));
+    @GetMapping("/skill/{skillId}")
+    public ResponseFormat<SkillReadDto> readSkill(@PathVariable Long skillId) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, skillService.getSkill(skillId));
     }
 
     @GetMapping("/skill/all")
@@ -36,15 +36,15 @@ public class SkillRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, skillService.getAllSkills());
     }
 
-    @PutMapping("/skill/{skillName}")
-    public ResponseFormat<SkillReadDto> updateSkill(@PathVariable String skillName,
-                            @RequestBody @Valid SkillUpdateDto updateDto) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, skillService.updateSkill(skillName, updateDto));
+    @PutMapping("/skill/{skillId}")
+    public ResponseFormat<SkillReadDto> updateSkill(@PathVariable Long skillId,
+                                                    @RequestBody @Valid SkillUpdateDto updateDto) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, skillService.updateSkill(skillId, updateDto));
     }
 
-    @DeleteMapping("/skill/{skillName}")
-    public ResponseFormat<Void> deleteSkill(@PathVariable String skillName) {
-        skillService.deleteSkill(skillName);
+    @DeleteMapping("/skill/{skillId}")
+    public ResponseFormat<Void> deleteSkill(@PathVariable Long skillId) {
+        skillService.deleteSkill(skillId);
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }

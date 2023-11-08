@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.skill.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.imguru.domain.skill.dto.SkillCreateDto;
 import kr.co.imguru.domain.skill.dto.SkillReadDto;
 import kr.co.imguru.domain.skill.dto.SkillUpdateDto;
@@ -21,6 +22,7 @@ public class SkillServiceImpl implements SkillService {
     private final SkillRepository skillRepository;
 
     @Override
+    @Transactional
     public void createSkill(SkillCreateDto createDto) {
         isSkillName(createDto.getName());
 
@@ -28,8 +30,8 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public SkillReadDto getSkill(String skillName) {
-        Optional<Skill> skill = skillRepository.findByNameAndIsDeleteFalse(skillName);
+    public SkillReadDto getSkill(Long skillId) {
+        Optional<Skill> skill = skillRepository.findByIdAndIsDeleteFalse(skillId);
 
         isSkill(skill);
 
@@ -44,8 +46,9 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public SkillReadDto updateSkill(String skillName, SkillUpdateDto updateDto) {
-        Optional<Skill> skill = skillRepository.findByNameAndIsDeleteFalse(skillName);
+    @Transactional
+    public SkillReadDto updateSkill(Long skillId, SkillUpdateDto updateDto) {
+        Optional<Skill> skill = skillRepository.findByIdAndIsDeleteFalse(skillId);
 
         isSkill(skill);
 
@@ -57,8 +60,9 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public void deleteSkill(String skillName) {
-        Optional<Skill> skill = skillRepository.findByNameAndIsDeleteFalse(skillName);
+    @Transactional
+    public void deleteSkill(Long skillId) {
+        Optional<Skill> skill = skillRepository.findByIdAndIsDeleteFalse(skillId);
 
         isSkill(skill);
 

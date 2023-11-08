@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.member.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.imguru.domain.member.dto.MemberCreateDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
@@ -27,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
     private final SkillRepository skillRepository;
 
     @Override
+    @Transactional
     public void createMember(MemberCreateDto createDto) {
 
         isEmail(createDto.getEmail());
@@ -37,6 +39,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void createGuruMember(MemberCreateDto createDto) {
 
         isEmail(createDto.getEmail());
@@ -63,6 +66,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
 
@@ -76,6 +80,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void deleteMember(String memberNickname) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
 
@@ -114,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
         try {
             return Gender.valueOf(genderName);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(ResponseStatus.FAIL_ILLEGAL_ACCESS);
+            throw new IllegalArgumentException(ResponseStatus.FAIL_MEMBER_GENDER_NOT_FOUND);
         }
     }
 

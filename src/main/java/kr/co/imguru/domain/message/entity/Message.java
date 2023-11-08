@@ -21,17 +21,17 @@ public class Message extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender", referencedColumnName = "member_id")
-    private Member sender;
+    private Member sender;                      //보낸 사람
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver", referencedColumnName = "member_id")
-    private Member receiver;
+    private Member receiver;                    //받는 사람
 
     @Column(nullable = false, name="del_by_sender")
-    private boolean delBySender = false;
+    private boolean delBySender = false;        //보낸 사람이 삭제
 
     @Column(nullable = false, name="del_by_receiver")
-    private boolean delByReceiver = false;
+    private boolean delByReceiver = false;      //받는 사람이 삭제
 
     @Column(name = "content")
     @NotBlank
