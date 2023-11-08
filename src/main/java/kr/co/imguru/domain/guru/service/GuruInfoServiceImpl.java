@@ -9,6 +9,9 @@ import kr.co.imguru.domain.guru.repository.GuruInfoRepository;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.global.common.Role;
+import kr.co.imguru.global.exception.DuplicatedException;
+import kr.co.imguru.global.exception.NotFoundException;
+import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +28,18 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     @Override
     @Transactional
-    public Long createGuruInfo(String memberNickname, GuruInfoCreateDto createDto) {
+    public void createGuruInfo(String memberNickname, GuruInfoCreateDto createDto) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
 
         isGuruMember(member);
 
+        Optional<GuruInfo> guruInfo = guruRepository.findGuruInfoByMember_NicknameAndIsDeleteFalse(memberNickname);
+
+        isGuruInfoDuplicated(guruInfo);
+
         GuruInfo guruinfo = toEntity(createDto);
 
         guruRepository.save(guruinfo);
-
-        return guruinfo.getId();
     }
 
     @Override
@@ -58,7 +63,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     @Override
     @Transactional
-    public Long updateGuruInfo(String memberNickname, GuruInfoUpdateDto updateDto) {
+    public GuruInfoReadDto updateGuruInfo(String memberNickname, GuruInfoUpdateDto updateDto) {
         // 해당 회원이 존재하는지 + 전문가인지 확인
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
         isGuruMember(member);
@@ -71,7 +76,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
         guruRepository.save(guruInfo.get());
 
-        return guruInfo.get().getId();
+        return toReadDto(guruInfo.get());
     }
 
     @Override
@@ -92,17 +97,23 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     private void isGuruMember(Optional<Member> member) {
         if (member.isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
         } else {
             if (member.get().getRole() != Role.ROLE_GURU) {
-                throw new RuntimeException();
+                throw new NotFoundException(ResponseStatus.FAIL_MEMBER_ROLE_NOT_FOUND);
             }
         }
     }
 
     private void isGuruInfo(Optional<GuruInfo> guruInfo) {
         if (guruInfo.isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException(ResponseStatus.FAIL_GURU_INFO_NOT_FOUND);
+        }
+    }
+
+    private void isGuruInfoDuplicated(Optional<GuruInfo> guruInfo) {
+        if (guruInfo.isPresent()) {
+            throw new DuplicatedException(ResponseStatus.FAIL_GURU_INFO_DUPLICATED);
         }
     }
 

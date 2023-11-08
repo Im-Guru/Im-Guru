@@ -5,6 +5,8 @@ import kr.co.imguru.domain.guru.dto.GuruInfoCreateDto;
 import kr.co.imguru.domain.guru.dto.GuruInfoReadDto;
 import kr.co.imguru.domain.guru.dto.GuruInfoUpdateDto;
 import kr.co.imguru.domain.guru.service.GuruInfoService;
+import kr.co.imguru.global.model.ResponseFormat;
+import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,36 +20,40 @@ public class GuruInfoRestController {
 
     private final GuruInfoService guruInfoService;
 
-    //create
+    //Create
     @PostMapping("/guru/{memberNickname}")
-    public Long createGuruInfo(@PathVariable String memberNickname,
-                               @RequestBody @Valid GuruInfoCreateDto createDto) {
-        return guruInfoService.createGuruInfo(memberNickname, createDto);
+    public ResponseFormat<Void> createGuruInfo(@PathVariable String memberNickname,
+                                               @RequestBody @Valid GuruInfoCreateDto createDto) {
+        guruInfoService.createGuruInfo(memberNickname, createDto);
+
+        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
-    //read one
+    //Read One
     @GetMapping("/guru/{memberNickname}")
-    public GuruInfoReadDto readGuruInfo(@PathVariable String memberNickname) {
-        return guruInfoService.getGuruInfo(memberNickname);
+    public ResponseFormat<GuruInfoReadDto> readGuruInfo(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.getGuruInfo(memberNickname));
     }
 
-    //read all
+    //Read All
     @GetMapping("/guru/all")
-    public List<GuruInfoReadDto> readAllGuruInfos() {
-        return guruInfoService.getAllGuruInfos();
+    public ResponseFormat<List<GuruInfoReadDto>> readAllGuruInfos() {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.getAllGuruInfos());
     }
 
-    //update
+    //Update
     @PutMapping("/guru/{memberNickname}")
-    public Long updateGuruInfo(@PathVariable String memberNickname,
+    public ResponseFormat<GuruInfoReadDto> updateGuruInfo (@PathVariable String memberNickname,
                                @RequestBody @Valid GuruInfoUpdateDto updateDto) {
-        return guruInfoService.updateGuruInfo(memberNickname, updateDto);
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.updateGuruInfo(memberNickname, updateDto));
     }
 
-    //delete
+    //Delete
     @DeleteMapping("/guru/{memberNickname}")
-    void deleteGuruInfo(@PathVariable String memberNickname) {
+    public ResponseFormat<Void> deleteGuruInfo(@PathVariable String memberNickname) {
         guruInfoService.deleteGuruInfo(memberNickname);
+
+        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
 
