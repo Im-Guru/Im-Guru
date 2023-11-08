@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.post.entity.Post;
+import kr.co.imguru.domain.reply.dto.ReplyUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +36,7 @@ public class Reply extends BaseEntity {
     @Column(name = "like_cnt")
     private Long likeCnt;
 
+    @Builder
     public Reply(Member member,
                  Post post,
                  String content,
@@ -42,5 +45,9 @@ public class Reply extends BaseEntity {
         this.post = post;
         this.content = content;
         this.likeCnt = likeCnt;
+    }
+
+    public void changeReply(ReplyUpdateDto updateDto) {
+        this.content = updateDto.getContent();
     }
 }
