@@ -34,6 +34,10 @@ public enum ResponseStatus {
     FAIL_MEMBER_NICKNAME_DUPLICATED("클라이언트가 요청한 닉네임이 중복되었습니다.", HttpStatus.BAD_REQUEST),
     FAIL_MEMBER_PASSWORD_NOT_MATCHED("클라이언트가 입력한 비밀번호가 소유자의 비밀번호와 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
 
+    // GuruInfo
+    FAIL_GURU_INFO_DUPLICATED("클라이언트가 요청한 고수 정보 작성이 이미 존재합니다.", HttpStatus.BAD_REQUEST),
+    FAIL_GURU_INFO_NOT_FOUND("클라이언트가 요청한 고수 정보를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+
     // Post
     FAIL_POST_NOT_FOUND("클라이언트가 요청한 게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     FAIL_POST_CATEGORY_NOT_FOUND("클라이언트가 요청한 게시글의 카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

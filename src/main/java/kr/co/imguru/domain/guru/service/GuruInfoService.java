@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface GuruInfoService {
 
-    Long createGuruInfo(String memberNickname, GuruInfoCreateDto createDto);
+    void createGuruInfo(String memberNickname, GuruInfoCreateDto createDto);
 
     GuruInfoReadDto getGuruInfo(String memberNickname);
 
     List<GuruInfoReadDto> getAllGuruInfos();
 
-    Long updateGuruInfo(String memberNickname, GuruInfoUpdateDto updateDto);
+    GuruInfoReadDto updateGuruInfo(String memberNickname, GuruInfoUpdateDto updateDto);
 
     void deleteGuruInfo(String memberNickname);
 }

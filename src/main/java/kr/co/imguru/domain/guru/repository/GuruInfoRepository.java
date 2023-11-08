@@ -20,4 +20,5 @@ public interface GuruInfoRepository extends JpaRepository<GuruInfo, Long> {
     Optional<GuruInfo> findGuruInfoByMember_NicknameAndIsDeleteFalse(String memberNickname);
 
     List<GuruInfo> findAllByIsDeleteFalse();
+
 }
