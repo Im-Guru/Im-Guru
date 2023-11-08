@@ -118,7 +118,7 @@ public class PostServiceImpl implements PostService {
         try {
             PostCategory.valueOf(categoryName);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(ResponseStatus.FAIL_ILLEGAL_ACCESS);
+            throw new IllegalArgumentException(ResponseStatus.FAIL_POST_CATEGORY_NOT_FOUND);
         }
     }
 
