@@ -10,11 +10,11 @@ public interface SkillService {
 
     void createSkill(SkillCreateDto createDto);
 
-    SkillReadDto getSkill(String skillName);
+    SkillReadDto getSkill(Long skillId);
 
     List<SkillReadDto> getAllSkills();
 
-    SkillReadDto updateSkill(String skillName, SkillUpdateDto updateDto);
+    SkillReadDto updateSkill(Long skillId, SkillUpdateDto updateDto);
 
-    void deleteSkill(String skillName);
+    void deleteSkill(Long skillId);
 }

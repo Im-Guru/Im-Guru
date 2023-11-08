@@ -12,6 +12,8 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
 
     Optional<Skill> findByNameAndIsDeleteFalse(String skillName);
 
+    Optional<Skill> findByIdAndIsDeleteFalse(Long id);
+
     List<Skill> findAllByIsDeleteFalse();
 
     boolean existsByNameAndIsDeleteFalse(String skillName);
