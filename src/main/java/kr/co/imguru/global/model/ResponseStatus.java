@@ -38,6 +38,7 @@ public enum ResponseStatus {
     FAIL_POST_NOT_FOUND("클라이언트가 요청한 게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     FAIL_POST_CATEGORY_NOT_FOUND("클라이언트가 요청한 게시글의 카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     FAIL_POST_LIKE_MEMBER_DUPLICATED("이미 좋아요를 누른 게시물입니다.", HttpStatus.BAD_REQUEST),
+    FAIL_POST_WRITER_NOT_MATCH("해당 게시글의 작성자만이 수정할 수 있습니다.", HttpStatus.BAD_REQUEST),
 
     // Reply
     FAIL_REPLY_NOT_FOUND("클라이언트가 요청한 댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
