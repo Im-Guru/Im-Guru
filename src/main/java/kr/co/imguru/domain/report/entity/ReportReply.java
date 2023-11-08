@@ -8,6 +8,7 @@ import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.global.common.BaseEntity;
 import kr.co.imguru.global.common.ReportCategory;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +41,7 @@ public class ReportReply extends BaseEntity {
     @Column(nullable = false, name="is_accept")
     private boolean isAccept = false;
 
+    @Builder
     public ReportReply(Member member,
                        Reply reply,
                        ReportCategory reportCategory,
