@@ -8,6 +8,8 @@
 
 Notion - https://www.notion.so/ImGuru-9573d409c62b4ccf8dc123d0b742c89b
 
+Jira - https://sku2023-fw.atlassian.net/jira/software/c/projects/IG/boards/6
+
 - 개발 환경
     - Java 17
     - Springboot 3.1.5
