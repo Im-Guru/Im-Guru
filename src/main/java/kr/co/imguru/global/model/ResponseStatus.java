@@ -48,6 +48,12 @@ public enum ResponseStatus {
     FAIL_REPLY_NOT_FOUND("클라이언트가 요청한 댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     FAIL_REPLY_LIKE_MEMBER_DUPLICATED("이미 좋아요를 누른 댓글입니다.", HttpStatus.BAD_REQUEST),
 
+    // Review
+    FAIL_REVIEW_NOT_FOUND("클라이언트가 요청한 후기를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    FAIL_REVIEW_WRITE_ONLY_USER("후기는 사용자만이 작성할 수 있습니다.", HttpStatus.BAD_REQUEST),
+    FAIL_REVIEW_RATE_ONLY_GURU("후기는 도사에게만 작성할 수 있습니다.", HttpStatus.BAD_REQUEST),
+    FAIL_REVIEW_WRITER_NOT_MATCH("해당 후기의 작성자만이 수정할 수 있습니다.", HttpStatus.BAD_REQUEST),
+
     // Report
     FAIL_REPORT_NOT_FOUND("클라이언트가 요청한 신고를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     FAIL_REPORT_DUPLICATED("클라이언트가 요청한 신고는 이미 접수되었습니다. 중복 신고는 불가능합나디.", HttpStatus.BAD_REQUEST),

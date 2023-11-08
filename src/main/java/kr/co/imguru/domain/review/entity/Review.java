@@ -2,9 +2,12 @@ package kr.co.imguru.domain.review.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import kr.co.imguru.domain.member.entity.Member;
+import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,12 +34,13 @@ public class Review extends BaseEntity {
     private String content;
 
     @Column(name = "rate")
-    @NotBlank
+    @NotNull
     private int rate;
 
     @Column(name = "like_cnt")
     private Long likeCnt;
 
+    @Builder
     public Review(Member user,
                   Member guru,
                   String content,
@@ -47,5 +51,10 @@ public class Review extends BaseEntity {
         this.content = content;
         this.rate = rate;
         this.likeCnt = likeCnt;
+    }
+
+    public void changeReview(ReviewUpdateDto updateDto) {
+        this.content = updateDto.getContent();
+        this.rate = updateDto.getRate();
     }
 }
