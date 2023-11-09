@@ -16,6 +16,8 @@ public interface PostService {
 
     List<PostReadDto> getAllPosts();
 
+    List<PostReadDto> getPostsByMember(String memberNickname);
+
     PostReadDto updatePost(Long postId, PostUpdateDto updateDto);
 
     void deletePost(Long postId);

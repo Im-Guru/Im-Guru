@@ -8,6 +8,7 @@ import kr.co.imguru.domain.post.dto.PostReadDto;
 import kr.co.imguru.domain.post.dto.PostUpdateDto;
 import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.repository.PostRepository;
+import kr.co.imguru.domain.post.repository.PostSearchRepository;
 import kr.co.imguru.global.common.PostCategory;
 import kr.co.imguru.global.common.Role;
 import kr.co.imguru.global.exception.ForbiddenException;
@@ -27,6 +28,8 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     private final MemberRepository memberRepository;
+
+    private final PostSearchRepository postSearchRepository;
 
     @Override
     @Transactional
@@ -60,6 +63,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostReadDto> getAllPosts() {
         return postRepository.findAllByIsDeleteFalse()
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    public List<PostReadDto> getPostsByMember(String memberNickname) {
+        return postSearchRepository.findPostsByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();

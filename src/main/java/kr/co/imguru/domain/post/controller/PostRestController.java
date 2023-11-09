@@ -41,6 +41,11 @@ public class PostRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getAllPosts());
     }
 
+    @GetMapping("/post/wrtier/{memberNickname}")
+    public ResponseFormat<List<PostReadDto>> readPostsByMember(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getPostsByMember(memberNickname));
+    }
+
     @PutMapping("/post/{postId}")
     public ResponseFormat<PostReadDto> updatePost(@PathVariable Long postId,
                                                   @RequestBody @Valid PostUpdateDto updateDto) {
