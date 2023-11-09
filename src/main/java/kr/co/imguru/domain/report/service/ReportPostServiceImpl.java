@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.report.service;
 
+import kr.co.imguru.domain.guru.entity.GuruInfo;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.post.entity.Post;
@@ -8,6 +9,7 @@ import kr.co.imguru.domain.report.dto.ReportPostCreateDto;
 import kr.co.imguru.domain.report.dto.ReportPostReadDto;
 import kr.co.imguru.domain.report.entity.ReportPost;
 import kr.co.imguru.domain.report.repository.ReportPostRepository;
+import kr.co.imguru.domain.report.repository.ReportPostSearchRepository;
 import kr.co.imguru.global.common.ReportCategory;
 import kr.co.imguru.global.exception.DuplicatedException;
 import kr.co.imguru.global.exception.IllegalArgumentException;
@@ -28,6 +30,8 @@ public class ReportPostServiceImpl implements ReportPostService {
     private final MemberRepository memberRepository;
 
     private final PostRepository postRepository;
+
+    private final ReportPostSearchRepository reportPostSearchRepository;
 
     @Override
     public void createReportPost(ReportPostCreateDto createDto) {
@@ -55,7 +59,7 @@ public class ReportPostServiceImpl implements ReportPostService {
 
     @Override
     public List<ReportPostReadDto> getReportPostByPost(Long postId) {
-        return reportPostRepository.findAllByPost_Id(postId)
+        return reportPostSearchRepository.findReportPostsByPostId(postId)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -63,7 +67,7 @@ public class ReportPostServiceImpl implements ReportPostService {
 
     @Override
     public List<ReportPostReadDto> getReportPostByMember(String memberNickname) {
-        return reportPostRepository.findAllByMember_Nickname(memberNickname)
+        return reportPostSearchRepository.findReportPostsByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -104,7 +108,9 @@ public class ReportPostServiceImpl implements ReportPostService {
     }
 
     private void isReportPostDuplicated(Long postId, String memberNickname) {
-        if (reportPostRepository.existsByPost_IdAndMember_NicknameAndIsDeleteFalse(postId, memberNickname)) {
+        Optional<ReportPost> reportPost = Optional.ofNullable(reportPostSearchRepository.existsByPostIdAndMemberNickname(postId, memberNickname));
+
+        if (reportPost.isPresent()) {
             throw new DuplicatedException(ResponseStatus.FAIL_REPORT_DUPLICATED);
         }
     }

@@ -6,6 +6,7 @@ import kr.co.imguru.domain.guru.dto.GuruInfoReadDto;
 import kr.co.imguru.domain.guru.dto.GuruInfoUpdateDto;
 import kr.co.imguru.domain.guru.entity.GuruInfo;
 import kr.co.imguru.domain.guru.repository.GuruInfoRepository;
+import kr.co.imguru.domain.guru.repository.GuruInfoSearchRepository;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.global.common.Role;
@@ -26,6 +27,8 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     private final MemberRepository memberRepository;
 
+    private final GuruInfoSearchRepository guruInfoSearchRepository;
+
     @Override
     @Transactional
     public void createGuruInfo(String memberNickname, GuruInfoCreateDto createDto) {
@@ -33,7 +36,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
         isGuruMember(member);
 
-        Optional<GuruInfo> guruInfo = guruRepository.findGuruInfoByMember_NicknameAndIsDeleteFalse(memberNickname);
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
 
         isGuruInfoDuplicated(guruInfo);
 
@@ -45,7 +48,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
     @Override
     @Transactional
     public GuruInfoReadDto getGuruInfo(String memberNickname) {
-        final Optional<GuruInfo> guruInfo = guruRepository.findGuruInfoByMember_NicknameAndIsDeleteFalse(memberNickname);
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
 
         isGuruInfo(guruInfo);
 
@@ -69,7 +72,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
         isGuruMember(member);
 
         // 해당 회원이 작성한 전문가 정보가 있는지 확인
-        Optional <GuruInfo> guruInfo = guruRepository.findGuruInfoByMember_NicknameAndIsDeleteFalse(memberNickname);
+        Optional <GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
         isGuruInfo(guruInfo);
 
         guruInfo.get().changeGuruInfo(updateDto);
@@ -87,7 +90,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
         isGuruMember(member);
 
         // 해당 회원이 작성한 전문가 정보가 있는지 확인
-        Optional <GuruInfo> guruInfo = guruRepository.findGuruInfoByMember_NicknameAndIsDeleteFalse(memberNickname);
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
         isGuruInfo(guruInfo);
 
         guruInfo.get().changeDeleteAt();

@@ -10,6 +10,7 @@ import kr.co.imguru.domain.reply.dto.ReplyReadDto;
 import kr.co.imguru.domain.reply.dto.ReplyUpdateDto;
 import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.domain.reply.repository.ReplyRepository;
+import kr.co.imguru.domain.reply.repository.ReplySearchRepository;
 import kr.co.imguru.global.exception.ForbiddenException;
 import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
@@ -28,6 +29,8 @@ public class ReplyServiceImpl implements ReplyService {
     private final MemberRepository memberRepository;
 
     private final PostRepository postRepository;
+
+    private final ReplySearchRepository replySearchRepository;
 
     //Create
     @Override
@@ -57,7 +60,7 @@ public class ReplyServiceImpl implements ReplyService {
         Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
         isPost(post);
 
-        return replyRepository.findAllByPost_IdAndIsDeleteFalse(postId)
+        return replySearchRepository.findRepliesByPostId(postId)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -68,7 +71,7 @@ public class ReplyServiceImpl implements ReplyService {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
         isMember(member);
 
-        return replyRepository.findAllByMember_NicknameAndIsDeleteFalse(memberNickname)
+        return replySearchRepository.findRepliesByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
