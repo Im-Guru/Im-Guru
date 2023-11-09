@@ -4,10 +4,13 @@ import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.domain.reply.repository.ReplyRepository;
+import kr.co.imguru.domain.reply.repository.ReplySearchRepository;
 import kr.co.imguru.domain.report.dto.ReportReplyCreateDto;
 import kr.co.imguru.domain.report.dto.ReportReplyReadDto;
+import kr.co.imguru.domain.report.entity.ReportPost;
 import kr.co.imguru.domain.report.entity.ReportReply;
 import kr.co.imguru.domain.report.repository.ReportReplyRepository;
+import kr.co.imguru.domain.report.repository.ReportReplySearchRepository;
 import kr.co.imguru.global.common.ReportCategory;
 import kr.co.imguru.global.exception.DuplicatedException;
 import kr.co.imguru.global.exception.IllegalArgumentException;
@@ -28,6 +31,8 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     private final MemberRepository memberRepository;
 
     private final ReplyRepository replyRepository;
+
+    private final ReportReplySearchRepository reportReplySearchRepository;
 
     @Override
     public void createReportReply(ReportReplyCreateDto createDto) {
@@ -55,7 +60,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
 
     @Override
     public List<ReportReplyReadDto> getReportRepliesByReply(Long replyId) {
-        return reportReplyRepository.findAllByReply_Id(replyId)
+        return reportReplySearchRepository.findReportRepliesByReplyId(replyId)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -63,7 +68,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
 
     @Override
     public List<ReportReplyReadDto> getReportRepliesByMember(String memberNickname) {
-        return reportReplyRepository.findAllByMember_Nickname(memberNickname)
+        return reportReplySearchRepository.findReportRepliesByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -104,7 +109,9 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     }
 
     private void isReportReplyDuplicated(Long replyId, String memberNickname) {
-        if (reportReplyRepository.existsByReply_IdAndMember_NicknameAndIsDeleteFalse(replyId, memberNickname)) {
+        Optional<ReportReply> reportReply = Optional.ofNullable(reportReplySearchRepository.existsByReplyIdAndMemberNickname(replyId, memberNickname));
+
+        if (reportReply.isPresent()) {
             throw new DuplicatedException(ResponseStatus.FAIL_REPORT_DUPLICATED);
         }
     }
