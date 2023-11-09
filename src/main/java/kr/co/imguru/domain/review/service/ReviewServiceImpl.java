@@ -8,6 +8,7 @@ import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
 import kr.co.imguru.domain.review.entity.Review;
 import kr.co.imguru.domain.review.repository.ReviewRepository;
+import kr.co.imguru.domain.review.repository.ReviewSearchRepository;
 import kr.co.imguru.global.exception.ForbiddenException;
 import kr.co.imguru.global.exception.InvalidRequestException;
 import kr.co.imguru.global.exception.NotFoundException;
@@ -25,6 +26,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
 
     private final MemberRepository memberRepository;
+
+    private final ReviewSearchRepository reviewSearchRepository;
 
     @Override
     @Transactional
@@ -51,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewReadDto> getReviewsByGuru(String guruNickname) {
-        return reviewRepository.findAllByGuru_NicknameAndIsDeleteFalse(guruNickname)
+        return reviewSearchRepository.findReviewsByGuruNickname(guruNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -59,7 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewReadDto> getReviewsByUser(String userNickname) {
-        return reviewRepository.findAllByUser_NicknameAndIsDeleteFalse(userNickname)
+        return reviewSearchRepository.findReviewsByUserNickname(userNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
