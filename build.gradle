@@ -36,6 +36,8 @@ dependencies {
     // DB - Mysql
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
+
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 //
