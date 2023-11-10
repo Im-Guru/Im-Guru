@@ -3,6 +3,7 @@ package kr.co.imguru.domain.reply.service;
 import kr.co.imguru.domain.reply.dto.ReplyCreateDto;
 import kr.co.imguru.domain.reply.dto.ReplyReadDto;
 import kr.co.imguru.domain.reply.dto.ReplyUpdateDto;
+
 import java.util.List;
 
 public interface ReplyService {
@@ -16,6 +17,10 @@ public interface ReplyService {
     List<ReplyReadDto> getRepliesByMember(String memberNickname);
 
     List<ReplyReadDto> getAllReplies();
+
+    ReplyReadDto addLikeReplyByMemberNickname(Long replyId, String memberNickname);
+
+    List<ReplyReadDto> getLikeRepliesByMember(String memberNickname);
 
     ReplyReadDto updateReply(Long replyId, ReplyUpdateDto updateDto);
 
