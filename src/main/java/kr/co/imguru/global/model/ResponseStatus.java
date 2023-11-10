@@ -41,16 +41,17 @@ public enum ResponseStatus {
     // Post
     FAIL_POST_NOT_FOUND("클라이언트가 요청한 게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     FAIL_POST_CATEGORY_NOT_FOUND("클라이언트가 요청한 게시글의 카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    FAIL_POST_LIKE_MEMBER_DUPLICATED("이미 좋아요를 누른 게시물입니다.", HttpStatus.BAD_REQUEST),
+    FAIL_POST_LIKE_DUPLICATED("이미 좋아요를 누른 게시물입니다.", HttpStatus.BAD_REQUEST),
     FAIL_POST_WRITER_NOT_MATCH("해당 게시글의 작성자만이 수정할 수 있습니다.", HttpStatus.BAD_REQUEST),
 
     // Reply
     FAIL_REPLY_NOT_FOUND("클라이언트가 요청한 댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    FAIL_REPLY_LIKE_MEMBER_DUPLICATED("이미 좋아요를 누른 댓글입니다.", HttpStatus.BAD_REQUEST),
+    FAIL_REPLY_LIKE_DUPLICATED("이미 좋아요를 누른 댓글입니다.", HttpStatus.BAD_REQUEST),
     FAIL_REPLY_WRITER_NOT_MATCH("해당 댓글의 작성자만이 수정할 수 있습니다.", HttpStatus.BAD_REQUEST),
 
     // Review
     FAIL_REVIEW_NOT_FOUND("클라이언트가 요청한 후기를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    FAIL_REVIEW_LIKE_DUPLICATED("이미 좋아요를 누른 후기입니다.", HttpStatus.BAD_REQUEST),
     FAIL_REVIEW_WRITE_ONLY_USER("후기는 사용자만이 작성할 수 있습니다.", HttpStatus.BAD_REQUEST),
     FAIL_REVIEW_RATE_ONLY_GURU("후기는 도사에게만 작성할 수 있습니다.", HttpStatus.BAD_REQUEST),
     FAIL_REVIEW_WRITER_NOT_MATCH("해당 후기의 작성자만이 수정할 수 있습니다.", HttpStatus.BAD_REQUEST),
