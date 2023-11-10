@@ -25,8 +25,7 @@ public class ReportPostSearchRepository {
     public List<ReportPost> findReportPostsByMemberNickname(String memberNickname) {
         return queryFactory
                 .selectFrom(reportPost)
-                .join(member)
-                .on(reportPost.member.id.eq(member.id))
+                .join(member).on(reportPost.member.id.eq(member.id))
                 .fetchJoin()
                 .where(
                         reportPost.isDelete.eq(Boolean.FALSE),
@@ -38,8 +37,7 @@ public class ReportPostSearchRepository {
     public List<ReportPost> findReportPostsByPostId(Long postId) {
         return queryFactory
                 .selectFrom(reportPost)
-                .join(post)
-                .on(reportPost.post.id.eq(post.id))
+                .join(post).on(reportPost.post.id.eq(post.id))
                 .fetchJoin()
                 .where(
                         reportPost.isDelete.eq(Boolean.FALSE),
@@ -51,11 +49,9 @@ public class ReportPostSearchRepository {
     public ReportPost existsByPostIdAndMemberNickname(Long postId, String memberNickname) {
         return queryFactory
                 .selectFrom(reportPost)
-                .join(member)
-                .on(reportPost.member.id.eq(member.id))
+                .join(member).on(reportPost.member.id.eq(member.id))
                 .fetchJoin()
-                .join(post)
-                .on(reportPost.post.id.eq(post.id))
+                .join(post).on(reportPost.post.id.eq(post.id))
                 .fetchJoin()
                 .where(
                         reportPost.isDelete.eq(Boolean.FALSE),
