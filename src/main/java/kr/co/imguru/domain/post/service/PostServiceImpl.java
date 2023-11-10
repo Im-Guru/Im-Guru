@@ -1,6 +1,9 @@
 package kr.co.imguru.domain.post.service;
 
 import jakarta.transaction.Transactional;
+import kr.co.imguru.domain.like.LikePost;
+import kr.co.imguru.domain.like.repository.LikePostRepository;
+import kr.co.imguru.domain.like.repository.LikePostSearchRepository;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.post.dto.PostCreateDto;
@@ -11,6 +14,7 @@ import kr.co.imguru.domain.post.repository.PostRepository;
 import kr.co.imguru.domain.post.repository.PostSearchRepository;
 import kr.co.imguru.global.common.PostCategory;
 import kr.co.imguru.global.common.Role;
+import kr.co.imguru.global.exception.DuplicatedException;
 import kr.co.imguru.global.exception.ForbiddenException;
 import kr.co.imguru.global.exception.IllegalArgumentException;
 import kr.co.imguru.global.exception.NotFoundException;
@@ -29,7 +33,11 @@ public class PostServiceImpl implements PostService {
 
     private final MemberRepository memberRepository;
 
+    private final LikePostRepository likePostRepository;
+
     private final PostSearchRepository postSearchRepository;
+
+    private final LikePostSearchRepository likePostSearchRepository;
 
     @Override
     @Transactional
@@ -44,6 +52,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public PostReadDto getPost(Long postId) {
         Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
 
@@ -53,6 +62,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public List<PostReadDto> getAllGuruPosts() {
         return postRepository.findAllByIsGuruAndIsDeleteFalse(true)
                 .stream()
@@ -61,6 +71,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public List<PostReadDto> getAllPosts() {
         return postRepository.findAllByIsDeleteFalse()
                 .stream()
@@ -69,8 +80,43 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public List<PostReadDto> getPostsByMember(String memberNickname) {
         return postSearchRepository.findPostsByMemberNickname(memberNickname)
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public PostReadDto addLikePostByMemberNickname(Long postId, String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+        isMember(member);
+
+        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
+        isPost(post);
+
+        isLikePostDuplicated(postId, member.get().getId());
+
+        LikePost create = LikePost.builder()
+                .member(member.get())
+                .post(post.get())
+                .build();
+
+        likePostRepository.save(create);
+
+        post.get().addLikeCnt();
+
+        postRepository.save(post.get());
+
+        return toReadDto(post.get());
+    }
+
+    @Override
+    @Transactional
+    public List<PostReadDto> getLikePostsByMember(String memberNickname) {
+        return postSearchRepository.findLikePostsByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -130,6 +176,14 @@ public class PostServiceImpl implements PostService {
             PostCategory.valueOf(categoryName);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(ResponseStatus.FAIL_POST_CATEGORY_NOT_FOUND);
+        }
+    }
+
+    private void isLikePostDuplicated(Long postId, Long memberId) {
+        Optional<LikePost> likePost = Optional.ofNullable(likePostSearchRepository.existsByPostIdAndMemberId(postId, memberId));
+
+        if (likePost.isPresent()) {
+            throw new DuplicatedException(ResponseStatus.FAIL_POST_LIKE_DUPLICATED);
         }
     }
 

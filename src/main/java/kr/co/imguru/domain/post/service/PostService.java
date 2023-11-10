@@ -18,6 +18,10 @@ public interface PostService {
 
     List<PostReadDto> getPostsByMember(String memberNickname);
 
+    PostReadDto addLikePostByMemberNickname(Long postId, String memberNickname);
+
+    List<PostReadDto> getLikePostsByMember(String memberNickname);
+
     PostReadDto updatePost(Long postId, PostUpdateDto updateDto);
 
     void deletePost(Long postId);
