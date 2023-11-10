@@ -1,6 +1,7 @@
 package kr.co.imguru.domain.review.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.imguru.domain.like.QLikeReview;
 import kr.co.imguru.domain.member.entity.QMember;
 import kr.co.imguru.domain.review.entity.QReview;
 import kr.co.imguru.domain.review.entity.Review;
@@ -19,11 +20,12 @@ public class ReviewSearchRepository {
 
     private QMember member = QMember.member;
 
+    private QLikeReview likeReview = QLikeReview.likeReview;
+
     public List<Review> findReviewsByUserNickname(String userNickname) {
         return queryFactory
                 .selectFrom(review)
-                .join(member)
-                .on(review.user.id.eq(member.id))
+                .join(member).on(review.user.id.eq(member.id))
                 .fetchJoin()
                 .where(
                         review.isDelete.eq(Boolean.FALSE),
@@ -35,8 +37,7 @@ public class ReviewSearchRepository {
     public List<Review> findReviewsByGuruNickname(String guruNickname) {
         return queryFactory
                 .selectFrom(review)
-                .join(member)
-                .on(review.guru.id.eq(member.id))
+                .join(member).on(review.guru.id.eq(member.id))
                 .fetchJoin()
                 .where(
                         review.isDelete.eq(Boolean.FALSE),
@@ -45,5 +46,20 @@ public class ReviewSearchRepository {
                 .fetch();
     }
 
+    public List<Review> findLikeReviewsByMemberNickname(String memberNickname) {
+        return queryFactory
+                .selectFrom(review)
+                .join(member).on(review.user.id.eq(member.id))
+                .fetchJoin()
+                .join(member).on(review.guru.id.eq(member.id))
+                .fetchJoin()
+                .join(likeReview).on(likeReview.review.id.eq(review.id))
+                .fetchJoin()
+                .where(
+                        review.isDelete.eq(Boolean.FALSE),
+                        likeReview.member.nickname.eq(memberNickname)
+                )
+                .fetch();
+    }
 
 }

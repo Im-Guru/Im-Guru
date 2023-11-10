@@ -46,6 +46,17 @@ public class ReviewRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getAllReviews());
     }
 
+    @PostMapping("/review/like/{reviewId}/{memberNickname}")
+    public ResponseFormat<ReviewReadDto> addLikeReview(@PathVariable Long reviewId,
+                                                     @PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.addLikeReviewByMemberNickname(reviewId, memberNickname));
+    }
+
+    @GetMapping("/review/like/{memberNickname}")
+    public ResponseFormat<List<ReviewReadDto>> readLikeReviewsByMember(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getLikeReviewsByMember(memberNickname));
+    }
+
     @PutMapping("/review/{reviewId}")
     public ResponseFormat<ReviewReadDto> updateReview(@PathVariable Long reviewId,
                                                       @RequestBody @Valid ReviewUpdateDto updateDto) {
