@@ -26,20 +26,38 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // DB - Mysql
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
-
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // DB - Mysql, MariaDB, Redis
+    runtimeOnly 'com.mysql:mysql-connector-j' // Mysql
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
+
+    // QueryDsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+//    //Security
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.0.7'
+    implementation group: 'org.springframework.security', name: 'spring-security-config', version: '6.0.5'
+
+//
+//    //jwt
+//    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 //
 //    // AOP
 //    implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -47,22 +65,7 @@ dependencies {
 //    // JSON
 //    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 //
-    // QueryDsl
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-//
-//    //Security
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-//
-//    //jwt
-//    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
-//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
-//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
-//
-//    //redis
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 //
 //    /*file io*/
 //    implementation 'commons-io:commons-io:2.7'
