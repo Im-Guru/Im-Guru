@@ -1,15 +1,5 @@
 
 #spring:
-#  data:
-#    redis:
-#      port: 6379
-#      host: localhost
-
-#jwt:
-#  secret:
-#    key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
-
-#spring:
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://localhost:3306/imguru?serverTimezone=Asia/Seoul
@@ -26,22 +16,34 @@
 #        format_sql: true
 #        show_sql: true
 
+
 spring:
   datasource:
     url: jdbc:mariadb://121.134.218.34:13306/imguru
     driver-class-name: org.mariadb.jdbc.Driver
     username: imguru
     password: imguru1!
+  data:
+    redis:
+      port: 6379
+      host: localhost
 
   jpa:
     open-in-view: false
     generate-ddl: true
-    show-sql: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
 server:
   servlet:
     encoding:
       charset: UTF-8
       force: true
+
+#jwt:
+#  secret:
+#    key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
