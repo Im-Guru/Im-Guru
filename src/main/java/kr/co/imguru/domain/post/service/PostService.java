@@ -26,4 +26,6 @@ public interface PostService {
 
     void deletePost(Long postId);
 
+    void updateCntToRedis(final Long postId, String hashKey);
+
 }
