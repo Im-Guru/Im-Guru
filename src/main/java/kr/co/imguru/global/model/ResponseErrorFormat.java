@@ -16,7 +16,7 @@ public class ResponseErrorFormat {
 
     private final String message;
 
-    private final String statusName;
+//    private final String statusName;
 
     private final HttpStatus statusCode;
 
