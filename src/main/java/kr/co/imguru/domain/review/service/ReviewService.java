@@ -18,6 +18,10 @@ public interface ReviewService {
 
     List<ReviewReadDto> getAllReviews();
 
+    ReviewReadDto addLikeReviewByMemberNickname(Long reviewId, String memberNickname);
+
+    List<ReviewReadDto> getLikeReviewsByMember(String memberNickname);
+
     ReviewReadDto updateReview(Long reviewId, ReviewUpdateDto updateDto);
 
     void deleteReview(Long reviewId);

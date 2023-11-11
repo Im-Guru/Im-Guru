@@ -2,6 +2,7 @@ package kr.co.imguru.domain.post.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.imguru.domain.like.QLikePost;
 import kr.co.imguru.domain.member.entity.QMember;
 import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.entity.QPost;
@@ -21,15 +22,30 @@ public class PostSearchRepository {
 
     private final QMember member = QMember.member;
 
+    private final QLikePost likePost = QLikePost.likePost;
+
     public List<Post> findPostsByMemberNickname(String memberNickname) {
         return queryFactory
                 .selectFrom(post)
-                .join(member)
-                .on(post.member.id.eq(member.id))
+                .join(member).on(post.member.id.eq(member.id))
                 .fetchJoin()
                 .where(
                         post.isDelete.eq(Boolean.FALSE),
                         post.member.nickname.eq(memberNickname)
+                )
+                .fetch();
+    }
+
+    public List<Post> findLikePostsByMemberNickname(String memberNickname) {
+        return queryFactory
+                .selectFrom(post)
+                .join(member).on(post.member.id.eq(member.id))
+                .fetchJoin()
+                .join(likePost).on(likePost.post.id.eq(post.id))
+                .fetchJoin()
+                .where(
+                        post.isDelete.eq(Boolean.FALSE),
+                        likePost.member.nickname.eq(memberNickname)
                 )
                 .fetch();
     }

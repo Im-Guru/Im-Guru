@@ -57,4 +57,8 @@ public class Review extends BaseEntity {
         this.content = updateDto.getContent();
         this.rate = updateDto.getRate();
     }
+
+    public void addLikeCnt() {
+        this.likeCnt += 1;
+    }
 }

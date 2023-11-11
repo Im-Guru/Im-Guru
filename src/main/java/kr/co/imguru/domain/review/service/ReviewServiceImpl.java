@@ -1,6 +1,9 @@
 package kr.co.imguru.domain.review.service;
 
 import jakarta.transaction.Transactional;
+import kr.co.imguru.domain.like.LikeReview;
+import kr.co.imguru.domain.like.repository.LikeReviewRepository;
+import kr.co.imguru.domain.like.repository.LikeReviewSearchRepository;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.review.dto.ReviewCreateDto;
@@ -9,6 +12,7 @@ import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
 import kr.co.imguru.domain.review.entity.Review;
 import kr.co.imguru.domain.review.repository.ReviewRepository;
 import kr.co.imguru.domain.review.repository.ReviewSearchRepository;
+import kr.co.imguru.global.exception.DuplicatedException;
 import kr.co.imguru.global.exception.ForbiddenException;
 import kr.co.imguru.global.exception.InvalidRequestException;
 import kr.co.imguru.global.exception.NotFoundException;
@@ -27,7 +31,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final MemberRepository memberRepository;
 
+    private final LikeReviewRepository likeReviewRepository;
+
     private final ReviewSearchRepository reviewSearchRepository;
+
+    private final LikeReviewSearchRepository likeReviewSearchRepository;
 
     @Override
     @Transactional
@@ -44,6 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewReadDto getReview(Long reviewId) {
         Optional<Review> review = reviewRepository.findByIdAndIsDeleteFalse(reviewId);
 
@@ -53,6 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public List<ReviewReadDto> getReviewsByGuru(String guruNickname) {
         return reviewSearchRepository.findReviewsByGuruNickname(guruNickname)
                 .stream()
@@ -61,6 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public List<ReviewReadDto> getReviewsByUser(String userNickname) {
         return reviewSearchRepository.findReviewsByUserNickname(userNickname)
                 .stream()
@@ -69,8 +80,43 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public List<ReviewReadDto> getAllReviews() {
         return reviewRepository.findAllByIsDeleteFalse()
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public ReviewReadDto addLikeReviewByMemberNickname(Long reviewId, String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+        isMember(member);
+
+        Optional<Review> review = reviewRepository.findByIdAndIsDeleteFalse(reviewId);
+        isReview(review);
+
+        isLikeReviewDuplicated(reviewId, member.get().getId());
+
+        LikeReview create = LikeReview.builder()
+                .member(member.get())
+                .review(review.get())
+                .build();
+
+        likeReviewRepository.save(create);
+
+        review.get().addLikeCnt();
+
+        reviewRepository.save(review.get());
+
+        return toReadDto(review.get());
+    }
+
+    @Override
+    @Transactional
+    public List<ReviewReadDto> getLikeReviewsByMember(String memberNickname) {
+        return reviewSearchRepository.findLikeReviewsByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -134,6 +180,14 @@ public class ReviewServiceImpl implements ReviewService {
     private void isWriter(Optional<Member> member, Optional<Review> review) {
         if (!member.get().getNickname().equals(review.get().getUser().getNickname())) {
             throw new ForbiddenException(ResponseStatus.FAIL_REVIEW_WRITER_NOT_MATCH);
+        }
+    }
+
+    private void isLikeReviewDuplicated(Long reviewId, Long memberId) {
+        Optional<LikeReview> likeReview = Optional.ofNullable(likeReviewSearchRepository.existsByReviewIdAndMemberId(reviewId, memberId));
+
+        if (likeReview.isPresent()) {
+            throw new DuplicatedException(ResponseStatus.FAIL_REVIEW_LIKE_DUPLICATED);
         }
     }
 

@@ -1,7 +1,9 @@
 package kr.co.imguru.domain.reply.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.imguru.domain.like.QLikeReply;
 import kr.co.imguru.domain.member.entity.QMember;
+import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.entity.QPost;
 import kr.co.imguru.domain.reply.entity.QReply;
 import kr.co.imguru.domain.reply.entity.Reply;
@@ -22,11 +24,12 @@ public class ReplySearchRepository {
 
     private QPost post = QPost.post;
 
+    private QLikeReply likeReply = QLikeReply.likeReply;
+
     public List<Reply> findRepliesByMemberNickname(String memberNickname) {
         return queryFactory
                 .selectFrom(reply)
-                .join(member)
-                .on(reply.member.id.eq(member.id))
+                .join(member).on(reply.member.id.eq(member.id))
                 .fetchJoin()
                 .where(
                         reply.isDelete.eq(Boolean.FALSE),
@@ -38,12 +41,25 @@ public class ReplySearchRepository {
     public List<Reply> findRepliesByPostId(Long postId) {
         return queryFactory
                 .selectFrom(reply)
-                .join(post)
-                .on(reply.post.id.eq(post.id))
+                .join(post).on(reply.post.id.eq(post.id))
                 .fetchJoin()
                 .where(
                         reply.isDelete.eq(Boolean.FALSE),
                         reply.post.id.eq(postId)
+                )
+                .fetch();
+    }
+
+    public List<Reply> findLikeRepliesByMemberNickname(String memberNickname) {
+        return queryFactory
+                .selectFrom(reply)
+                .join(member).on(reply.member.id.eq(member.id))
+                .fetchJoin()
+                .join(likeReply).on(likeReply.reply.id.eq(reply.id))
+                .fetchJoin()
+                .where(
+                        reply.isDelete.eq(Boolean.FALSE),
+                        likeReply.member.nickname.eq(memberNickname)
                 )
                 .fetch();
     }

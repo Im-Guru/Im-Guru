@@ -50,4 +50,8 @@ public class Reply extends BaseEntity {
     public void changeReply(ReplyUpdateDto updateDto) {
         this.content = updateDto.getContent();
     }
+
+    public void addLikeCnt() {
+        this.likeCnt += 1;
+    }
 }

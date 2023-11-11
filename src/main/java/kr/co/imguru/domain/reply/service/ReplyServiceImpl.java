@@ -1,6 +1,10 @@
 package kr.co.imguru.domain.reply.service;
 
 import jakarta.transaction.Transactional;
+import kr.co.imguru.domain.like.LikePost;
+import kr.co.imguru.domain.like.LikeReply;
+import kr.co.imguru.domain.like.repository.LikeReplyRepository;
+import kr.co.imguru.domain.like.repository.LikeReplySearchRepository;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.post.entity.Post;
@@ -11,6 +15,7 @@ import kr.co.imguru.domain.reply.dto.ReplyUpdateDto;
 import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.domain.reply.repository.ReplyRepository;
 import kr.co.imguru.domain.reply.repository.ReplySearchRepository;
+import kr.co.imguru.global.exception.DuplicatedException;
 import kr.co.imguru.global.exception.ForbiddenException;
 import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
@@ -30,7 +35,11 @@ public class ReplyServiceImpl implements ReplyService {
 
     private final PostRepository postRepository;
 
+    private final LikeReplyRepository likeReplyRepository;
+
     private final ReplySearchRepository replySearchRepository;
+
+    private final LikeReplySearchRepository likeReplySearchRepository;
 
     //Create
     @Override
@@ -47,6 +56,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     //Read One
     @Override
+    @Transactional
     public ReplyReadDto getReply(Long replyId) {
         Optional<Reply> reply = replyRepository.findByIdAndIsDeleteFalse(replyId);
 
@@ -56,6 +66,7 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    @Transactional
     public List<ReplyReadDto> getRepliesByPost(Long postId) {
         Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
         isPost(post);
@@ -67,6 +78,7 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    @Transactional
     public List<ReplyReadDto> getRepliesByMember(String memberNickname) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
         isMember(member);
@@ -79,8 +91,43 @@ public class ReplyServiceImpl implements ReplyService {
 
     //Read All
     @Override
+    @Transactional
     public List<ReplyReadDto> getAllReplies() {
         return replyRepository.findAllByIsDeleteFalse()
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public ReplyReadDto addLikeReplyByMemberNickname(Long replyId, String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+        isMember(member);
+
+        Optional<Reply> reply = replyRepository.findByIdAndIsDeleteFalse(replyId);
+        isReply(reply);
+
+        isLikeReplyDuplicated(replyId, member.get().getId());
+
+        LikeReply create = LikeReply.builder()
+                .member(member.get())
+                .reply(reply.get())
+                .build();
+
+        likeReplyRepository.save(create);
+
+        reply.get().addLikeCnt();
+
+        replyRepository.save(reply.get());
+
+        return toReadDto(reply.get());
+    }
+
+    @Override
+    @Transactional
+    public List<ReplyReadDto> getLikeRepliesByMember(String memberNickname) {
+        return replySearchRepository.findLikeRepliesByMemberNickname(memberNickname)
                 .stream()
                 .map(this::toReadDto)
                 .toList();
@@ -139,6 +186,14 @@ public class ReplyServiceImpl implements ReplyService {
     private void isWriter(Optional<Member> member, Optional<Reply> reply) {
         if(!member.get().getNickname().equals(reply.get().getMember().getNickname())) {
             throw new ForbiddenException(ResponseStatus.FAIL_REPLY_WRITER_NOT_MATCH);
+        }
+    }
+
+    private void isLikeReplyDuplicated(Long replyId, Long memberId) {
+        Optional<LikeReply> likeReply = Optional.ofNullable(likeReplySearchRepository.existsByReplyIdAndMemberId(replyId, memberId));
+
+        if (likeReply.isPresent()) {
+            throw new DuplicatedException(ResponseStatus.FAIL_REPLY_LIKE_DUPLICATED);
         }
     }
 

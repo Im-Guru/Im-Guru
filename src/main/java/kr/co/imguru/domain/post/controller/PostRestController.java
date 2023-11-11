@@ -41,9 +41,20 @@ public class PostRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getAllPosts());
     }
 
-    @GetMapping("/post/wrtier/{memberNickname}")
+    @GetMapping("/post/writer/{memberNickname}")
     public ResponseFormat<List<PostReadDto>> readPostsByMember(@PathVariable String memberNickname) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getPostsByMember(memberNickname));
+    }
+
+    @PostMapping("/post/like/{postId}/{memberNickname}")
+    public ResponseFormat<PostReadDto> addLikePost(@PathVariable Long postId,
+                                                   @PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.addLikePostByMemberNickname(postId, memberNickname));
+    }
+
+    @GetMapping("/post/like/{memberNickname}")
+    public ResponseFormat<List<PostReadDto>> readLikePostsByMember(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByMember(memberNickname));
     }
 
     @PutMapping("/post/{postId}")

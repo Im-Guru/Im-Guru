@@ -25,8 +25,7 @@ public class ReportReplySearchRepository {
     public List<ReportReply> findReportRepliesByMemberNickname(String memberNickname) {
         return queryFactory
                 .selectFrom(reportReply)
-                .join(member)
-                .on(reportReply.member.id.eq(member.id))
+                .join(member).on(reportReply.member.id.eq(member.id))
                 .fetchJoin()
                 .where(
                         reportReply.isDelete.eq(Boolean.FALSE),
@@ -38,8 +37,7 @@ public class ReportReplySearchRepository {
     public List<ReportReply> findReportRepliesByReplyId(Long replyId) {
         return queryFactory
                 .selectFrom(reportReply)
-                .join(reply)
-                .on(reportReply.reply.id.eq(reply.id))
+                .join(reply).on(reportReply.reply.id.eq(reply.id))
                 .fetchJoin()
                 .where(
                         reportReply.isDelete.eq(Boolean.FALSE),
@@ -51,11 +49,9 @@ public class ReportReplySearchRepository {
     public ReportReply existsByReplyIdAndMemberNickname(Long replyId, String memberNickname) {
         return queryFactory
                 .selectFrom(reportReply)
-                .join(member)
-                .on(reportReply.member.id.eq(member.id))
+                .join(member).on(reportReply.member.id.eq(member.id))
                 .fetchJoin()
-                .join(reply)
-                .on(reportReply.reply.id.eq(reply.id))
+                .join(reply).on(reportReply.reply.id.eq(reply.id))
                 .fetchJoin()
                 .where(
                         reportReply.isDelete.eq(Boolean.FALSE),

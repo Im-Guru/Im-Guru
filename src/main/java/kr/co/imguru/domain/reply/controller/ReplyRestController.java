@@ -49,6 +49,17 @@ public class ReplyRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.getRepliesByMember(memberNickname));
     }
 
+    @PostMapping("/reply/like/{replyId}/{memberNickname}")
+    public ResponseFormat<ReplyReadDto> addLikeReply(@PathVariable Long replyId,
+                                                   @PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.addLikeReplyByMemberNickname(replyId, memberNickname));
+    }
+
+    @GetMapping("/reply/like/{memberNickname}")
+    public ResponseFormat<List<ReplyReadDto>> readLikeRepliesByMember(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.getLikeRepliesByMember(memberNickname));
+    }
+
     //Update
     @PutMapping("/reply/{replyId}")
     public ResponseFormat<ReplyReadDto> updateReply(@PathVariable Long replyId,

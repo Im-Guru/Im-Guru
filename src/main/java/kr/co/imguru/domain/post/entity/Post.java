@@ -75,5 +75,12 @@ public class Post extends BaseEntity {
         this.price = updateDto.getPrice();
     }
 
+    public void addViewCnt(Long viewCnt) {
+        this.viewCnt = viewCnt;
+    }
+
+    public void addLikeCnt() {
+        this.likeCnt += 1;
+    }
 
 }
