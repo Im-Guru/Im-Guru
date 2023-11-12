@@ -1,6 +1,6 @@
 package kr.co.imguru.domain.like.repository;
 
-import kr.co.imguru.domain.like.LikePost;
+import kr.co.imguru.domain.like.entity.LikePost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

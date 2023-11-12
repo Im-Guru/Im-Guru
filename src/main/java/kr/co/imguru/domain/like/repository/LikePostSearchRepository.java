@@ -1,8 +1,8 @@
 package kr.co.imguru.domain.like.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.imguru.domain.like.LikePost;
-import kr.co.imguru.domain.like.QLikePost;
+import kr.co.imguru.domain.like.entity.LikePost;
+import kr.co.imguru.domain.like.entity.QLikePost;
 import kr.co.imguru.domain.member.entity.QMember;
 import kr.co.imguru.domain.post.entity.QPost;
 import lombok.RequiredArgsConstructor;
