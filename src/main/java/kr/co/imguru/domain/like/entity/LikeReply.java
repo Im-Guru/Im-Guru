@@ -1,8 +1,9 @@
-package kr.co.imguru.domain.like;
+package kr.co.imguru.domain.like.entity;
 
 import jakarta.persistence.*;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.post.entity.Post;
+import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LikePost extends BaseEntity {
+public class LikeReply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_post_id")
+    @Column(name = "like_reply_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,13 +25,13 @@ public class LikePost extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "reply_id")
+    private Reply reply;
 
     @Builder
-    public LikePost(Member member,
-                    Post post) {
+    public LikeReply(Member member,
+                     Reply reply) {
         this.member = member;
-        this.post = post;
+        this.reply = reply;
     }
 }
