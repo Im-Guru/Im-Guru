@@ -44,8 +44,11 @@ dependencies {
     // JSON
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-    // File io
+    // File
     implementation 'commons-io:commons-io:2.7'
+
+    // AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
     // QueryDsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -57,16 +60,13 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.0.7'
     implementation group: 'org.springframework.security', name: 'spring-security-config', version: '6.0.5'
 
-
-
 //
 //    //jwt
 //    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 //    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 //    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 //
-//    // AOP
-//    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 //
 
 
