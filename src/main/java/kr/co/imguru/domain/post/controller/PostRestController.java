@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.post.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.co.imguru.domain.post.dto.PostCreateDto;
 import kr.co.imguru.domain.post.dto.PostReadDto;
@@ -8,8 +9,16 @@ import kr.co.imguru.domain.post.service.PostService;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -19,11 +28,42 @@ public class PostRestController {
 
     private final PostService postService;
 
-    @PostMapping("/post")
-    public ResponseFormat<Void> createPost(@RequestBody @Valid PostCreateDto createDto) {
-        postService.createPost(createDto);
+//    @PostMapping(value = "/post")
+//    public ResponseFormat<Void> createPost(@RequestBody @Valid PostCreateDto createDto) {
+//        postService.createPost(createDto);
+//
+//        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+//    }
+
+    @PostMapping(value = "/post", consumes = {"multipart/form-data"})
+    public ResponseFormat<Void> createPost(@RequestPart("createDto") @Valid PostCreateDto createDto,
+                                           @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
+        postService.createPost(createDto, files);
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+    }
+
+    /*파일 링크 클릭 시 파일 저장*/
+    @GetMapping("/post/files/{fileName}")
+    public ResponseEntity<?> downloadFile(@PathVariable("fileName") String fileName,
+                                          HttpServletRequest request) throws IOException {
+        /*프로젝트 루트 경로*/
+        String rootDir = System.getProperty("user.dir");
+
+        /*file의 path를 저장 -> 클릭 시 파일로 이동*/
+        Path filePath = Path.of(rootDir + "/media/post/" + fileName);
+
+        /*파일의 패스를 uri로 변경하고 resource로 저장.*/
+        Resource resource = new UrlResource(filePath.toUri());
+
+        /*컨텐츠 타입을 가지고 온다.*/
+        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+
     }
 
     @GetMapping("/post/{postId}")

@@ -1,7 +1,10 @@
 package kr.co.imguru.domain.post.service;
 
 import jakarta.transaction.Transactional;
-import kr.co.imguru.domain.like.LikePost;
+import kr.co.imguru.domain.file.entity.File;
+import kr.co.imguru.domain.file.entity.FileFormat;
+import kr.co.imguru.domain.file.repository.FileRepository;
+import kr.co.imguru.domain.like.entity.LikePost;
 import kr.co.imguru.domain.like.repository.LikePostRepository;
 import kr.co.imguru.domain.like.repository.LikePostSearchRepository;
 import kr.co.imguru.domain.member.entity.Member;
@@ -20,17 +23,18 @@ import kr.co.imguru.global.exception.IllegalArgumentException;
 import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
@@ -40,22 +44,56 @@ public class PostServiceImpl implements PostService {
 
     private final LikePostRepository likePostRepository;
 
+    private final FileRepository fileRepository;
+
     private final PostSearchRepository postSearchRepository;
 
     private final LikePostSearchRepository likePostSearchRepository;
 
     private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 
+//    @Override
+//    @Transactional
+//    public void createPost(PostCreateDto createDto) {
+//        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
+//
+//        isMember(member);
+//
+//        isPostCategory(createDto.getCategoryName());
+//
+//        postRepository.save(toEntity(member.get().getRole(), createDto));
+//    }
+
     @Override
     @Transactional
-    public void createPost(PostCreateDto createDto) {
+    public void createPost(PostCreateDto createDto, List<MultipartFile> files) throws IOException {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
 
         isMember(member);
 
         isPostCategory(createDto.getCategoryName());
 
-        postRepository.save(toEntity(member.get().getRole(), createDto));
+        Post post = toEntity(member.get().getRole(), createDto);
+
+        postRepository.save(post);
+
+        // 파일 저장
+        if (files != null && !files.isEmpty()) {
+            /* 지원하지 않는 확장자 파일 제거 */
+            List<MultipartFile> validatedFiles = filesValidation(files);
+
+            /* 걸러진 파일들 업로드 */
+            filesUpload(validatedFiles, post.getId());
+
+            /* 유효성 검증을 끝낸 파일들을 하나씩 꺼냄. */
+            for (MultipartFile validatedFile : validatedFiles) {
+                /* File Entity 생성 후 저장 */
+                File file = new File(validatedFile, post);
+
+                fileRepository.save(file);
+            }
+        }
+
     }
 
     @Override
@@ -65,9 +103,21 @@ public class PostServiceImpl implements PostService {
 
         isPost(post);
 
+        /*File*/
+        List<File> fileList = fileRepository.findFileByFileKey("post", postId);
+        List<FileFormat> fileFormatList = new ArrayList<>();
+
+        /*파일이 존재한다면*/
+        if (fileList != null) {
+            for (File file : fileList) {
+                FileFormat fileFormat = new FileFormat(file);
+                fileFormatList.add(fileFormat);
+            }
+        }
+
         updateCntToRedis(postId, "views");
 
-        return toReadDto(post.get());
+        return toReadDetailDto(post.get(), fileFormatList);
     }
 
     @Override
@@ -157,6 +207,9 @@ public class PostServiceImpl implements PostService {
 
         isPost(post);
 
+        /*해당 boardId를 가지고 있는 file 먼저 삭제*/
+        fileRepository.deleteFileByFileKey("post", postId);
+
         post.get().changeDeleteAt();
 
         postRepository.save(post.get());
@@ -221,6 +274,56 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /*파일의 유효성 검증*/
+    private List<MultipartFile> filesValidation(List<MultipartFile> files) throws IOException {
+        /*접근 거부 파일 확장자명*/
+        String[] accessDeniedFileExtension = {"exe", "zip"};
+        /*접근 거부 파일 컨텐츠 타입*/
+        String[] accessDeniedFileContentType = {"application/x-msdos-program", "application/zip"};
+
+        ArrayList<MultipartFile> validatedFiles = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            /*원본 파일 이름*/
+            String originalFileName = file.getOriginalFilename();
+            /*파일의 확장자명*/
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+            /*파일의 컨텐츠타입*/
+            String fileContentType = file.getContentType();
+
+            /*accessDeniedFileExtension, accessDeniedFileContentType -> 업로드 불가*/
+            if (Arrays.asList(accessDeniedFileExtension).contains(fileExtension) ||
+                    Arrays.asList(accessDeniedFileContentType).contains(fileContentType)) {
+                log.warn(fileExtension + "(" + fileContentType + ") 파일은 지원하지 않는 확장자입니다.");
+            } else {/*업로드 가능*/
+                validatedFiles.add(file);
+            }
+        }
+        return validatedFiles;
+    }
+
+    /*파일 업로드 메소드*/
+    private void filesUpload(List<MultipartFile> files, Long postId) throws IOException {
+        /*프로젝트 루트 경로*/
+        String rootDir = System.getProperty("user.dir");
+
+        for (MultipartFile file : files) {
+            /* 파일 이름 생성 및 수정 */
+            String fileName = postId + "_" + file.getOriginalFilename();
+            fileName = fileName.replaceAll("\\s", "_"); // 공백을 언더스코어로 대체
+            fileName = fileName.replaceAll("[^a-zA-Z0-9_.]", ""); // 영문자, 숫자, 언더스코어, 마침표 이외의 문자 제거
+
+            /* 업로드 경로 */
+            java.io.File uploadPath = new java.io.File(rootDir + "/media/post/");
+            uploadPath.mkdirs(); // 디렉토리가 존재하지 않으면 생성
+
+            uploadPath = new java.io.File(uploadPath, fileName); // 파일 이름을 포함한 전체 경로
+
+            /* 업로드 */
+            file.transferTo(uploadPath);
+        }
+    }
+
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {
             throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
@@ -279,6 +382,21 @@ public class PostServiceImpl implements PostService {
                     .viewCnt(0L)
                     .build();
         }
+    }
+
+    private PostReadDto toReadDetailDto(Post post, List<FileFormat> fileFormatList) {
+        return PostReadDto.builder()
+                .postId(post.getId())
+                .memberNickname(post.getMember().getNickname())
+                .postCategory(String.valueOf(post.getPostCategory()))
+                .title(post.getTitle())
+                .content(post.getContent())
+                .fileFormat(fileFormatList)
+                .price(post.getPrice())
+                .isGuru(post.isGuru())
+                .viewCnt(post.getViewCnt())
+                .likeCnt(post.getLikeCnt())
+                .build();
     }
 
     private PostReadDto toReadDto(Post post) {
