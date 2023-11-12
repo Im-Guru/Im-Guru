@@ -1,9 +1,12 @@
 package kr.co.imguru.domain.review.dto;
 
+import kr.co.imguru.domain.file.entity.FileFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -18,6 +21,8 @@ public class ReviewReadDto {
     private String guruSkill;
 
     private String content;
+
+    private List<FileFormat> fileFormat;
 
     private int rate;
 
