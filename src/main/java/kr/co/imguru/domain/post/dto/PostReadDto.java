@@ -1,9 +1,12 @@
 package kr.co.imguru.domain.post.dto;
 
+import kr.co.imguru.domain.file.entity.FileFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -20,6 +23,8 @@ public class PostReadDto {
     private String title;
 
     private String content;
+
+    private List<FileFormat> fileFormat;
 
     private boolean isGuru;
 

@@ -30,6 +30,7 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
+    @Transactional
     public SkillReadDto getSkill(Long skillId) {
         Optional<Skill> skill = skillRepository.findByIdAndIsDeleteFalse(skillId);
 
@@ -39,6 +40,7 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
+    @Transactional
     public List<SkillReadDto> getAllSkills() {
         List<Skill> skillList = skillRepository.findAllByIsDeleteFalse();
 

@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.report.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.reply.entity.Reply;
@@ -35,6 +36,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     private final ReportReplySearchRepository reportReplySearchRepository;
 
     @Override
+    @Transactional
     public void createReportReply(ReportReplyCreateDto createDto) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
         isMember(member);
@@ -50,6 +52,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     }
 
     @Override
+    @Transactional
     public ReportReplyReadDto getReportReply(Long reportReplyId) {
         Optional<ReportReply> reportReply = reportReplyRepository.findById(reportReplyId);
 
@@ -59,6 +62,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     }
 
     @Override
+    @Transactional
     public List<ReportReplyReadDto> getReportRepliesByReply(Long replyId) {
         return reportReplySearchRepository.findReportRepliesByReplyId(replyId)
                 .stream()
@@ -67,6 +71,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     }
 
     @Override
+    @Transactional
     public List<ReportReplyReadDto> getReportRepliesByMember(String memberNickname) {
         return reportReplySearchRepository.findReportRepliesByMemberNickname(memberNickname)
                 .stream()
@@ -75,6 +80,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
     }
 
     @Override
+    @Transactional
     public List<ReportReplyReadDto> getAllReportReplies() {
         return reportReplyRepository.findAll()
                 .stream()

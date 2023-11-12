@@ -39,6 +39,7 @@ public class MessageServiceImpl implements MessageService {
 
     //해당 회원과 메세지 받거나 보낸 회원 리스트
     @Override
+    @Transactional
     public List<MessageMemberDto> getMessageByMember(String memberNickname) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
         isMember(member);
@@ -56,6 +57,7 @@ public class MessageServiceImpl implements MessageService {
 
     //리스트에서 클릭 한 해당 회원과 주고 받은 메세지 리스트 조회
     @Override
+    @Transactional
     public List<MessageReadDto> getDetailMessageByMember(String sender, String receiver) {
         Optional<Member> senderMember = memberRepository.findByNicknameAndIsDeleteFalse(sender);
         isMember(senderMember);

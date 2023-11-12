@@ -50,6 +50,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberReadDto getMember(String memberNickname) {
         final Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
 
@@ -59,6 +60,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public List<MemberReadDto> getAllMembers() {
         return memberRepository.findAllByIsDeleteFalse().stream()
                 .map(this::toReadDto)

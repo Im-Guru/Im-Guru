@@ -2,7 +2,7 @@ package kr.co.imguru.domain.post.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.imguru.domain.like.QLikePost;
+import kr.co.imguru.domain.like.entity.QLikePost;
 import kr.co.imguru.domain.member.entity.QMember;
 import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.entity.QPost;

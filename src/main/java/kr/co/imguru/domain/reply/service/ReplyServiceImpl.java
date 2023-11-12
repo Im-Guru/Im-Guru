@@ -1,8 +1,7 @@
 package kr.co.imguru.domain.reply.service;
 
 import jakarta.transaction.Transactional;
-import kr.co.imguru.domain.like.LikePost;
-import kr.co.imguru.domain.like.LikeReply;
+import kr.co.imguru.domain.like.entity.LikeReply;
 import kr.co.imguru.domain.like.repository.LikeReplyRepository;
 import kr.co.imguru.domain.like.repository.LikeReplySearchRepository;
 import kr.co.imguru.domain.member.entity.Member;

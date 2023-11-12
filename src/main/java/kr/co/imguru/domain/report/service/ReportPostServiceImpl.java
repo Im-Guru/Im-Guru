@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.report.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.imguru.domain.guru.entity.GuruInfo;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
@@ -34,6 +35,7 @@ public class ReportPostServiceImpl implements ReportPostService {
     private final ReportPostSearchRepository reportPostSearchRepository;
 
     @Override
+    @Transactional
     public void createReportPost(ReportPostCreateDto createDto) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
         isMember(member);
@@ -49,6 +51,7 @@ public class ReportPostServiceImpl implements ReportPostService {
     }
 
     @Override
+    @Transactional
     public ReportPostReadDto getReportPost(Long reportPostId) {
         Optional<ReportPost> reportPost = reportPostRepository.findById(reportPostId);
 
@@ -58,6 +61,7 @@ public class ReportPostServiceImpl implements ReportPostService {
     }
 
     @Override
+    @Transactional
     public List<ReportPostReadDto> getReportPostByPost(Long postId) {
         return reportPostSearchRepository.findReportPostsByPostId(postId)
                 .stream()
@@ -66,6 +70,7 @@ public class ReportPostServiceImpl implements ReportPostService {
     }
 
     @Override
+    @Transactional
     public List<ReportPostReadDto> getReportPostByMember(String memberNickname) {
         return reportPostSearchRepository.findReportPostsByMemberNickname(memberNickname)
                 .stream()
@@ -74,6 +79,7 @@ public class ReportPostServiceImpl implements ReportPostService {
     }
 
     @Override
+    @Transactional
     public List<ReportPostReadDto> getAllReportPosts() {
         return reportPostRepository.findAll()
                 .stream()
