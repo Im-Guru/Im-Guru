@@ -16,6 +16,10 @@ public interface MemberService {
 
     List<MemberReadDto> getAllMembers();
 
+    List<MemberReadDto> getAllUserMembers();
+
+    List<MemberReadDto> getAllGuruMembers();
+
     MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto);
 
     void deleteMember(String memberNickname);
