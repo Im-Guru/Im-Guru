@@ -50,7 +50,7 @@ public class ReplyServiceImpl implements ReplyService {
         Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(createDto.getPostId());
         isPost(post);
 
-        replyRepository.save(toEntity(createDto));
+        replyRepository.save(toEntity(createDto, member.get(), post.get()));
     }
 
     //Read One
@@ -196,10 +196,10 @@ public class ReplyServiceImpl implements ReplyService {
         }
     }
 
-    private Reply toEntity(ReplyCreateDto dto) {
+    private Reply toEntity(ReplyCreateDto dto, Member member, Post post) {
         return Reply.builder()
-                .member(memberRepository.findByNicknameAndIsDeleteFalse(dto.getMemberNickname()).get())
-                .post(postRepository.findByIdAndIsDeleteFalse(dto.getPostId()).get())
+                .member(member)
+                .post(post)
                 .content(dto.getContent())
                 .likeCnt(0L)
                 .build();

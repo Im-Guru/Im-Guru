@@ -48,7 +48,7 @@ public class ReportReplyServiceImpl implements ReportReplyService {
 
         isReportReplyDuplicated(createDto.getReplyId(), createDto.getMemberNickname());
 
-        reportReplyRepository.save(toEntity(createDto));
+        reportReplyRepository.save(toEntity(createDto, member.get(), reply.get()));
     }
 
     @Override
@@ -122,10 +122,10 @@ public class ReportReplyServiceImpl implements ReportReplyService {
         }
     }
 
-    private ReportReply toEntity(ReportReplyCreateDto dto) {
+    private ReportReply toEntity(ReportReplyCreateDto dto, Member member, Reply reply) {
         return ReportReply.builder()
-                .member(memberRepository.findByNicknameAndIsDeleteFalse(dto.getMemberNickname()).get())
-                .reply(replyRepository.findByIdAndIsDeleteFalse(dto.getReplyId()).get())
+                .member(member)
+                .reply(reply)
                 .reportCategory(ReportCategory.valueOf(dto.getCategoryName()))
                 .description(dto.getDescription())
                 .isAccept(false)

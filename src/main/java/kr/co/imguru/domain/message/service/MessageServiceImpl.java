@@ -34,7 +34,7 @@ public class MessageServiceImpl implements MessageService {
         Optional<Member> receiver = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getReceiverNickname());
         isMember(receiver);
 
-        messageRepository.save(toEntity(createDto));
+        messageRepository.save(toEntity(createDto, sender.get(), receiver.get()));
     }
 
     //해당 회원과 메세지 받거나 보낸 회원 리스트
@@ -65,15 +65,6 @@ public class MessageServiceImpl implements MessageService {
         Optional<Member> receiverMember = memberRepository.findByNicknameAndIsDeleteFalse(receiver);
         isMember(receiverMember);
 
-//        List<Message> tempList = messageRepository.findMessagesBetweenMembers(senderMember.get().getId(), receiverMember.get().getId());
-//        List<MessageReadDto> messageList = new ArrayList<>();
-//
-//        for (int i = 0; i < tempList.size(); i++) {
-//            messageList.add(toReadDto(tempList.get(i)));
-//        }
-//
-//        return messageList;
-
         return messageRepository.findMessagesBetweenMembers(senderMember.get().getId(), receiverMember.get().getId())
                 .stream()
                 .map(this::toReadDto)
@@ -86,10 +77,10 @@ public class MessageServiceImpl implements MessageService {
         }
     }
 
-    private Message toEntity(MessageCreateDto createDto) {
+    private Message toEntity(MessageCreateDto createDto, Member sender, Member receiver) {
         return Message.builder()
-                .sender(memberRepository.findByNicknameAndIsDeleteFalse(createDto.getSenderNickname()).get())
-                .receiver(memberRepository.findByNicknameAndIsDeleteFalse(createDto.getReceiverNickname()).get())
+                .sender(sender)
+                .receiver(receiver)
                 .content(createDto.getContent())
                 .build();
     }
