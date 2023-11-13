@@ -36,4 +36,6 @@ public class MemberReadDto {
 
     private String skillName;
 
+    private String token;
+
 }
