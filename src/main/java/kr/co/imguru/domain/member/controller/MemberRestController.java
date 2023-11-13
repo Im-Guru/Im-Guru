@@ -46,6 +46,19 @@ public class MemberRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getAllMembers());
     }
 
+    // Read All User
+    @GetMapping("/member/user")
+    public ResponseFormat<List<MemberReadDto>> readAllUserMembers() {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getAllUserMembers());
+    }
+
+    // Read All Guru
+    @GetMapping("/member/guru")
+    public ResponseFormat<List<MemberReadDto>> readAllGuruMembers() {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getAllGuruMembers());
+    }
+
+
     // Update
     @PutMapping("/member/{memberNickname}")
     public ResponseFormat<MemberReadDto> updateMember(@PathVariable String memberNickname,

@@ -32,6 +32,7 @@ public enum ResponseStatus {
     FAIL_MEMBER_EMAIL_DUPLICATED("클라이언트가 요청한 이메일이 중복되었습니다.", HttpStatus.BAD_REQUEST),
     FAIL_MEMBER_TELEPHONE_DUPLICATED("클라이언트가 요청한 전화번호가 중복되었습니다.", HttpStatus.BAD_REQUEST),
     FAIL_MEMBER_NICKNAME_DUPLICATED("클라이언트가 요청한 닉네임이 중복되었습니다.", HttpStatus.BAD_REQUEST),
+    FAIL_MEMBER_CONFIRM_PASSWORD("클라이언트가 입력한 비밀번호와 비밀번호 확인이 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     FAIL_MEMBER_PASSWORD_NOT_MATCHED("클라이언트가 입력한 비밀번호가 소유자의 비밀번호와 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
 
     // GuruInfo

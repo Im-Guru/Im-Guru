@@ -52,18 +52,6 @@ public class PostServiceImpl implements PostService {
 
     private final RedisTemplate<String, Object> redisTemplate; // RedisTemplate 주입
 
-//    @Override
-//    @Transactional
-//    public void createPost(PostCreateDto createDto) {
-//        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
-//
-//        isMember(member);
-//
-//        isPostCategory(createDto.getCategoryName());
-//
-//        postRepository.save(toEntity(member.get().getRole(), createDto));
-//    }
-
     @Override
     @Transactional
     public void createPost(PostCreateDto createDto, List<MultipartFile> files) throws IOException {
@@ -73,7 +61,7 @@ public class PostServiceImpl implements PostService {
 
         isPostCategory(createDto.getCategoryName());
 
-        Post post = toEntity(member.get().getRole(), createDto);
+        Post post = toEntity(member.get().getRole(), createDto, member.get());
 
         postRepository.save(post);
 
@@ -358,10 +346,10 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    private Post toEntity(Role role, PostCreateDto dto) {
+    private Post toEntity(Role role, PostCreateDto dto, Member member) {
         if (role.getUserRole().equals("도사")) {
             return Post.builder()
-                    .member(memberRepository.findByNicknameAndIsDeleteFalse(dto.getMemberNickname()).get())
+                    .member(member)
                     .postCategory(PostCategory.valueOf(dto.getCategoryName()))
                     .title(dto.getTitle())
                     .content(dto.getContent())
@@ -372,7 +360,7 @@ public class PostServiceImpl implements PostService {
                     .build();
         } else {
             return Post.builder()
-                    .member(memberRepository.findByNicknameAndIsDeleteFalse(dto.getMemberNickname()).get())
+                    .member(member)
                     .postCategory(PostCategory.valueOf(dto.getCategoryName()))
                     .title(dto.getTitle())
                     .content(dto.getContent())

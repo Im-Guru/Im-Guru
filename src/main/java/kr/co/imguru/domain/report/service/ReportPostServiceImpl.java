@@ -47,7 +47,7 @@ public class ReportPostServiceImpl implements ReportPostService {
 
         isReportPostDuplicated(createDto.getPostId(), createDto.getMemberNickname());
 
-        reportPostRepository.save(toEntity(createDto));
+        reportPostRepository.save(toEntity(createDto, member.get(), post.get()));
     }
 
     @Override
@@ -121,10 +121,10 @@ public class ReportPostServiceImpl implements ReportPostService {
         }
     }
 
-    private ReportPost toEntity(ReportPostCreateDto dto) {
+    private ReportPost toEntity(ReportPostCreateDto dto, Member member, Post post) {
         return ReportPost.builder()
-                .member(memberRepository.findByNicknameAndIsDeleteFalse(dto.getMemberNickname()).get())
-                .post(postRepository.findByIdAndIsDeleteFalse(dto.getPostId()).get())
+                .member(member)
+                .post(post)
                 .reportCategory(ReportCategory.valueOf(dto.getCategoryName()))
                 .description(dto.getDescription())
                 .isAccept(false)

@@ -73,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
         isMember(guru);
         isGuru(guru);
 
-        Review review = toEntity(createDto);
+        Review review = toEntity(createDto, user.get(), guru.get());
 
         reviewRepository.save(review);
 
@@ -297,10 +297,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private Review toEntity(ReviewCreateDto dto) {
+    private Review toEntity(ReviewCreateDto dto, Member user, Member guru) {
         return Review.builder()
-                .user(memberRepository.findByNicknameAndIsDeleteFalse(dto.getUserNickname()).get())
-                .guru(memberRepository.findByNicknameAndIsDeleteFalse(dto.getGuruNickname()).get())
+                .user(user)
+                .guru(guru)
                 .content(dto.getContent())
                 .rate(dto.getRate())
                 .likeCnt(0L)

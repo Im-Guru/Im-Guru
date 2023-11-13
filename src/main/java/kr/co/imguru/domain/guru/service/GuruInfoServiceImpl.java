@@ -40,7 +40,7 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
         isGuruInfoDuplicated(guruInfo);
 
-        GuruInfo guruinfo = toEntity(createDto);
+        GuruInfo guruinfo = toEntity(createDto, member.get());
 
         guruRepository.save(guruinfo);
     }
@@ -93,7 +93,8 @@ public class GuruInfoServiceImpl implements GuruInfoService {
         Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
         isGuruInfo(guruInfo);
 
-        guruInfo.get().changeDeleteAt();
+//        guruInfo.get().changeDeleteAt();
+        guruRepository.delete(guruInfo.get());
 
         guruRepository.save(guruInfo.get());
     }
@@ -120,9 +121,9 @@ public class GuruInfoServiceImpl implements GuruInfoService {
         }
     }
 
-    private GuruInfo toEntity(GuruInfoCreateDto dto) {
+    private GuruInfo toEntity(GuruInfoCreateDto dto, Member member) {
         return GuruInfo.builder()
-                .member(memberRepository.findByNicknameAndIsDeleteFalse(dto.getMemberNickname()).get())
+                .member(member)
                 .intro(dto.getIntro())
                 .companyName(dto.getCompanyName())
                 .position(dto.getPosition())

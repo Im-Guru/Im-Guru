@@ -1,6 +1,7 @@
 package kr.co.imguru.domain.member.repository;
 
 import kr.co.imguru.domain.member.entity.Member;
+import kr.co.imguru.global.common.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByNicknameAndIsDeleteFalse(String nickname);
 
     List<Member> findAllByIsDeleteFalse();
+
+    List<Member> findAllByRoleAndIsDeleteFalse(Role role);
 
     Optional<Member> findByIdAndIsDeleteFalse(Long id);
 }

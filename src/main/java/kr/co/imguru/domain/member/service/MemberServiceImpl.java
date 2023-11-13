@@ -6,6 +6,7 @@ import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
+import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
 import kr.co.imguru.global.common.Gender;
 import kr.co.imguru.global.common.Role;
@@ -14,6 +15,7 @@ import kr.co.imguru.global.exception.IllegalArgumentException;
 import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +29,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final SkillRepository skillRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
     public void createMember(MemberCreateDto createDto) {
@@ -34,6 +38,7 @@ public class MemberServiceImpl implements MemberService {
         isEmail(createDto.getEmail());
         isTelephone(createDto.getTelephone());
         isNickname(createDto.getNickname());
+        isConfirmPassword(createDto.getPassword(), createDto.getConfirmPassword());
 
         memberRepository.save(toEntity(createDto));
     }
@@ -45,8 +50,13 @@ public class MemberServiceImpl implements MemberService {
         isEmail(createDto.getEmail());
         isTelephone(createDto.getTelephone());
         isNickname(createDto.getNickname());
+        isConfirmPassword(createDto.getPassword(), createDto.getConfirmPassword());
 
-        memberRepository.save(toGuru(createDto));
+
+        Optional<Skill> skill = skillRepository.findByNameAndIsDeleteFalse(createDto.getSkillName());
+        isSkill(skill);
+
+        memberRepository.save(toGuru(createDto, skill.get()));
     }
 
     @Override
@@ -69,10 +79,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
+    public List<MemberReadDto> getAllUserMembers() {
+        return memberRepository.findAllByRoleAndIsDeleteFalse(Role.valueOf("ROLE_USER")).stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<MemberReadDto> getAllGuruMembers() {
+        return memberRepository.findAllByRoleAndIsDeleteFalse(Role.valueOf("ROLE_GURU")).stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
     public MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
-
         isMember(member);
+        isConfirmPassword(updateDto.getPassword(), updateDto.getConfirmPassword());
+        isPassword(member.get().getPassword(), updateDto.getPassword());
 
         member.get().changeMember(updateDto, skillRepository.findByNameAndIsDeleteFalse(updateDto.getSkillName()).get());
 
@@ -125,20 +152,31 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-//    private void isPassword(String requestPassword, String getPassword) {
-//        if (!passwordEncoder.matches(requestPassword, getPassword)) {
-////            throw new WrongPasswordException(ResponseStatus.FAIL_MEMBER_PASSWORD_NOT_MATCHED);
-//            throw new RuntimeException();
-//
-//        }
-//    }
+    private void isSkill(Optional<Skill> skill) {
+        if (skill.isEmpty()) {
+            throw new NotFoundException(ResponseStatus.FAIL_SKILL_NOT_FOUND);
+        }
+    }
+
+    private void isConfirmPassword(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new IllegalArgumentException(ResponseStatus.FAIL_MEMBER_CONFIRM_PASSWORD);
+        }
+    }
+
+    private void isPassword(String requestPassword, String getPassword) {
+        if (!passwordEncoder.matches(requestPassword, getPassword)) {
+            throw new IllegalArgumentException(ResponseStatus.FAIL_MEMBER_PASSWORD_NOT_MATCHED);
+        }
+    }
 
     private Member toEntity(MemberCreateDto dto) {
         Gender gender = isGender(dto.getGender());
 
         return Member.builder()
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+//                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
                 .nickname(dto.getNickname())
                 .telephone(dto.getTelephone())
@@ -151,12 +189,13 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
-    private Member toGuru(MemberCreateDto dto) {
+    private Member toGuru(MemberCreateDto dto, Skill skill) {
         Gender gender = isGender(dto.getGender());
 
         return Member.builder()
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+//                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
                 .nickname(dto.getNickname())
                 .telephone(dto.getTelephone())
@@ -165,7 +204,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(dto.getBirthDate())
                 .gender(gender)
                 .role(Role.ROLE_GURU)
-                .skill(skillRepository.findByNameAndIsDeleteFalse(dto.getSkillName()).get())
+                .skill(skill)
                 .build();
     }
 
