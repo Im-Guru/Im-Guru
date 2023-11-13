@@ -44,6 +44,6 @@ server:
       charset: UTF-8
       force: true
 
-#jwt:
-#  secret:
-#    key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
+jwt:
+  secret:
+    key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
