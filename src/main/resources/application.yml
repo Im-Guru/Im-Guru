@@ -1,22 +1,4 @@
 
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/imguru?serverTimezone=Asia/Seoul
-#    username: root
-#    password: 1234
-#
-#  jpa:
-#    database: mysql
-#    database-platform: org.hibernate.dialect.MySQLDialect
-#    hibernate:
-#      ddl-auto: update
-#    properties:
-#      hibernate:
-#        format_sql: true
-#        show_sql: true
-
-
 spring:
   datasource:
     url: jdbc:mariadb://121.134.218.34:13306/imguru
