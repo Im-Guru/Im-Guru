@@ -2,12 +2,14 @@ package kr.co.imguru.domain.member.service;
 
 import jakarta.transaction.Transactional;
 import kr.co.imguru.domain.member.dto.MemberCreateDto;
+import kr.co.imguru.domain.member.dto.MemberLoginDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
+import kr.co.imguru.global.auth.JwtProvider;
 import kr.co.imguru.global.common.Gender;
 import kr.co.imguru.global.common.Role;
 import kr.co.imguru.global.exception.DuplicatedException;
@@ -30,6 +32,8 @@ public class MemberServiceImpl implements MemberService {
     private final SkillRepository skillRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtProvider jwtProvider;
 
     @Override
     @Transactional
@@ -57,6 +61,18 @@ public class MemberServiceImpl implements MemberService {
         isSkill(skill);
 
         memberRepository.save(toGuru(createDto, skill.get()));
+    }
+
+    @Override
+    @Transactional
+    public MemberReadDto loginMember(MemberLoginDto loginDto) {
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(loginDto.getEmail());
+
+        isMember(member);
+
+        isPassword(loginDto.getPassword(), member.get().getPassword());
+
+        return toReadDtoWithToken(member.get());
     }
 
     @Override
@@ -221,6 +237,23 @@ public class MemberServiceImpl implements MemberService {
                 .gender(String.valueOf(member.getGender()))
                 .role(String.valueOf(member.getRole()))
                 .skillName(member.getSkill().getName())
+                .build();
+    }
+
+    private MemberReadDto toReadDtoWithToken(Member member) {
+        return MemberReadDto.builder()
+                .memberId(member.getId())
+                .email(member.getEmail())
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .telephone(member.getTelephone())
+                .address(member.getAddress())
+                .job(member.getJob())
+                .birthDate(member.getBirthDate())
+                .gender(String.valueOf(member.getGender()))
+                .role(String.valueOf(member.getRole()))
+                .skillName(member.getSkill().getName())
+                .token(jwtProvider.createToken(member.getEmail(), String.valueOf(member.getRole())))
                 .build();
     }
 
