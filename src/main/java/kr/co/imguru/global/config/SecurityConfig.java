@@ -3,6 +3,9 @@ package kr.co.imguru.global.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.co.imguru.global.auth.JwtAuthenticationFilter;
+import kr.co.imguru.global.auth.JwtProvider;
+import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +30,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtProvider jwtProvider;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -38,41 +43,45 @@ public class SecurityConfig {
         //authorization
         http
                 .authorizeHttpRequests()
-//                .requestMatchers("/api/v1/login", "api/v1/refresh").permitAll()
-//                .requestMatchers("/api/v1/member").permitAll()
-//                .requestMatchers("/api/v1/skill/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-//                .requestMatchers("/api/v1/post/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-//                .requestMatchers("/api/v1/reply/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-//                .requestMatchers("/api/v1/message/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-//                .requestMatchers("/api/v1/review/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-//                .requestMatchers("/api/v1/report/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-//                .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN")
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("/api/v1/login", "api/v1/join/**").permitAll()
+
+                .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/skill/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/post/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/reply/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/message/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/review/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/report/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+                .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN")
+
+//                .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated();
 
-//        //authentication
-//        http
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling()
-//                // 권한 없을 때 오류 발생 - 요청한 경로의 USER_ROLE이 적합하지 않을 때
-//                .accessDeniedHandler(new AccessDeniedHandler() {
-//                    @Override
-//                    public void handle(HttpServletRequest request, HttpServletResponse response,
-//                                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
-//                        response.setStatus(ResponseStatus.FAIL_FORBIDDEN.getStatusCode().value());
-//                        response.getWriter().write(ResponseStatus.FAIL_FORBIDDEN.getMessage());
-//                    }
-//                })
-//                // 인증이 올바르지 않을 때 오류 발생 - token 오류
-//                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-//                    @Override
-//                    public void commence(HttpServletRequest request, HttpServletResponse response,
-//                                         AuthenticationException authException) throws IOException, ServletException {
-//                        response.setStatus(ResponseStatus.FAIL_UNAUTHORIZED.getStatusCode().value());
-//                        response.getWriter().write(ResponseStatus.FAIL_UNAUTHORIZED.getMessage());
-//                    }
-//                });
-//
+        //authentication
+        http
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+
+                // 권한 없을 때 오류 발생 - 요청한 경로의 USER_ROLE이 적합하지 않을 때
+                .accessDeniedHandler(new AccessDeniedHandler() {
+                    @Override
+                    public void handle(HttpServletRequest request, HttpServletResponse response,
+                                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                        response.setStatus(ResponseStatus.FAIL_FORBIDDEN.getStatusCode().value());
+                        response.getWriter().write(ResponseStatus.FAIL_FORBIDDEN.getMessage());
+                    }
+                })
+
+                // 인증이 올바르지 않을 때 오류 발생 - token 오류
+                .authenticationEntryPoint(new AuthenticationEntryPoint() {
+                    @Override
+                    public void commence(HttpServletRequest request, HttpServletResponse response,
+                                         AuthenticationException authException) throws IOException, ServletException {
+                        response.setStatus(ResponseStatus.FAIL_UNAUTHORIZED.getStatusCode().value());
+                        response.getWriter().write(ResponseStatus.FAIL_UNAUTHORIZED.getMessage());
+                    }
+                });
+
         return http.build();
     }
 
