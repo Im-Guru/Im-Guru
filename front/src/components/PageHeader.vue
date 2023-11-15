@@ -2,18 +2,9 @@
   <header class="header">
     <div id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <router-link to="/" class="navbar-brand">Im Guru</router-link>
-        <!--        <button-->
-        <!--            class="navbar-toggler"-->
-        <!--            type="button"-->
-        <!--            data-toggle="collapse"-->
-        <!--            data-target="#navbarNav"-->
-        <!--            aria-controls="navbarNav"-->
-        <!--            aria-expanded="false"-->
-        <!--            aria-label="Toggle navigation"-->
-        <!--        >-->
-        <!--          <span class="navbar-toggler-icon"></span>-->
-        <!--        </button>-->
+        <router-link to="/" class="navbar-brand">
+          <img :src="require('@/assets/image/imguru_logo.png')" alt="Im Guru 로고" width="100" height="100">
+        </router-link>
 
         <!--        <div class="collapse navbar-collapse" id="navbarNav">-->
         <!--          <ul class="navbar-nav">-->
@@ -31,9 +22,6 @@
 
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav">
-            <li class="nav-item">
-              <router-link to="/about" class="nav-link">About</router-link>
-            </li>
             <li class="nav-item">
               <router-link to="/post/list" class="nav-link">게시판</router-link>
             </li>

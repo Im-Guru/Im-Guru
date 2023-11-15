@@ -5,6 +5,7 @@
       <div class="row">
         <div class="col-md text-center">
           <p>&copy; 2023 Your Company. All rights reserved.</p>
+          <p><a href="https://www.flaticon.com/kr/free-icons/-">Icon Copyright: Freepik - Flaticon</a></p>
         </div>
         <div class="col-md text-center">
           <a href="https://github.com/Im-Guru/Im-Guru">Organization Github</a> |
@@ -26,7 +27,7 @@ export default {}
 
 <style scoped>
 .footer {
-  background-color: lightgray; /* 배경색 설정 */
+  background-color: #CDF5FD; /* 배경색 설정 */
   color: black; /* 글자색 설정 */
   padding: 20px 0; /* 상하 여백 설정 */
 }

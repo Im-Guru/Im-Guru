@@ -1,43 +1,35 @@
 <template>
-  <div>
-    <div class="container my-5">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h2 class="card-title text-center"><strong>로그인</strong></h2>
-              <hr>
-
-              <form @submit.prevent="fnLogin">
-                <div class="form-group row mb-3">
-                  <label for="uid" class="col-md-4 col-form-label text-md-right"><strong>아이디</strong></label>
-                  <div class="col-md-8">
-                    <input id="uid" class="form-control" name="uid" placeholder="아이디를 입력해주세요."
-                           ref="idInput" v-model="user_id">
-                  </div>
-                </div>
-                <div class="form-group row mb-3">
-                  <label for="password" class="col-md-4 col-form-label text-md-right"><strong>비밀번호</strong></label>
-                  <div class="col-md-8">
-                    <input id="password" name="password" class="form-control"
-                           placeholder="비밀번호를 입력해주세요."
-                           ref="passwordInput" v-model="user_pw" type="password">
-                  </div>
-                </div>
-                <hr>
-
-                <div class="form-group text-center mt-3">
-                  <button type="submit" class="btn btn-primary btn-block">로그인</button>
-                </div>
-
-                <div class="form-group text-center mt-3">
-                  <router-link to="/signup">아직 회원이 아니신가요?</router-link>
-                </div>
-
-              </form>
+  <div class="container mt-5 mb-5">
+    <h2><strong>로그인</strong></h2><br><br>
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <b-card class="mb-5">
+          <b-form @submit.prevent="fnLogin" class="form-width mt-3" style="margin: auto;">
+            <div class="mb-4">
+              <label for="uid" class="form-label"><strong>아이디</strong></label>
+              <b-form-input class="form-height" id="uid" name="uid" v-model="user_id"
+                            ref="idInput"
+                            placeholder="이메일을 입력해주세요" required>
+              </b-form-input>
             </div>
-          </div>
-        </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label"><strong>비밀번호</strong></label>
+              <b-form-input class="form-height" id="password" name="password" v-model="user_pw"
+                            placeholder="비밀번호를 입력해주세요."
+                            ref="passwordInput" type="password" required>
+              </b-form-input>
+            </div>
+
+            <br>
+            <b-button @click="fnLogin" class="button-width form-height">로그인</b-button>
+            <br><br>
+            <router-link to="/join/member" class="no-underline">아직 회원이 아니신가요?</router-link>
+            &nbsp; &nbsp;
+            <router-link to="/find-password" class="no-underline">비밀번호 찾기</router-link>
+
+          </b-form>
+        </b-card>
       </div>
     </div>
   </div>
@@ -45,20 +37,29 @@
 
 
 <style scoped>
-.card {
-  border: none;
+.mb-4 label {
+  text-align: left;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
-.card-title {
-  font-size: 24px;
+.mb-4 b-input-group {
+  display: flex;
+  align-items: center;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  border: none;
+.form-height {
+  height: 50px;
+}
+
+.form-width {
+  width: 80%;
+}
+
+.button-width {
+  width: 100%;
 }
 </style>
-
 
 <script>
 import {mapActions, mapGetters} from 'vuex'   //vuex 추가
