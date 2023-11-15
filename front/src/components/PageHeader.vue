@@ -3,54 +3,80 @@
     <div id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <router-link to="/" class="navbar-brand">Im Guru</router-link>
-<!--        <button-->
-<!--            class="navbar-toggler"-->
-<!--            type="button"-->
-<!--            data-toggle="collapse"-->
-<!--            data-target="#navbarNav"-->
-<!--            aria-controls="navbarNav"-->
-<!--            aria-expanded="false"-->
-<!--            aria-label="Toggle navigation"-->
-<!--        >-->
-<!--          <span class="navbar-toggler-icon"></span>-->
-<!--        </button>-->
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <!--        <button-->
+        <!--            class="navbar-toggler"-->
+        <!--            type="button"-->
+        <!--            data-toggle="collapse"-->
+        <!--            data-target="#navbarNav"-->
+        <!--            aria-controls="navbarNav"-->
+        <!--            aria-expanded="false"-->
+        <!--            aria-label="Toggle navigation"-->
+        <!--        >-->
+        <!--          <span class="navbar-toggler-icon"></span>-->
+        <!--        </button>-->
+
+        <!--        <div class="collapse navbar-collapse" id="navbarNav">-->
+        <!--          <ul class="navbar-nav">-->
+        <!--            <li class="nav-item">-->
+        <!--              <router-link to="/board/list" v-if="this.$store.state.isLogin" class="nav-link">게시판</router-link>-->
+        <!--            </li>-->
+        <!--            <li class="nav-item">-->
+        <!--              <router-link to="/message/list" v-if="this.$store.state.isLogin" class="nav-link">보낸 메세지</router-link>-->
+        <!--            </li>-->
+        <!--            <li class="nav-item">-->
+        <!--              <router-link to="/admin/main" v-if="Role()" class="nav-link">관리자 페이지</router-link>-->
+        <!--            </li>-->
+        <!--          </ul>-->
+        <!--        </div>-->
+
+        <div class="collapse navbar-collapse">
           <ul class="navbar-nav">
-            <router-link to="/about">About</router-link> |
-            <router-link to="/post/list">게시판</router-link>
-<!--            <li class="nav-item">-->
-<!--              <router-link to="/board/list" v-if="this.$store.state.isLogin" class="nav-link">게시판</router-link>-->
-<!--            </li>-->
-<!--            &lt;!&ndash;            <li>&ndash;&gt;-->
-<!--            &lt;!&ndash;              <b-dropdown v-if="this.$store.state.isLogin" text="메세지" class="m-md-2" split>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <b-dropdown-item><router-link to="/message/received" class="nav-link">받은 메세지</router-link></b-dropdown-item>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <b-dropdown-item><router-link to="/message/send" class="nav-link">보낸 메세지</router-link></b-dropdown-item>&ndash;&gt;-->
-<!--            &lt;!&ndash;              </b-dropdown>&ndash;&gt;-->
-<!--            &lt;!&ndash;            </li>&ndash;&gt;-->
-<!--            <li class="nav-item">-->
-<!--              <router-link to="/message/received" v-if="this.$store.state.isLogin" class="nav-link">받은 메세지</router-link>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--              <router-link to="/message/send" v-if="this.$store.state.isLogin" class="nav-link">보낸 메세지</router-link>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--              <router-link to="/admin/main" v-if="Role()" class="nav-link">관리자 페이지</router-link>-->
-<!--            </li>-->
+            <li class="nav-item">
+              <router-link to="/about" class="nav-link">About</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/post/list" class="nav-link">게시판</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/message/list" class="nav-link">메세지</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/admin/main" class="nav-link"> <!-- v-if="Role()" --> 관리자 페이지</router-link>
+            </li>
           </ul>
         </div>
 
         <div class="d-flex">
-<!--          <router-link to="/signup" v-if="!this.$store.state.isLogin" class="nav-link" style="margin-right: 10px;">회원 가입-->
-<!--          </router-link>-->
-<!--          <router-link to="/login" v-if="!this.$store.state.isLogin" class="no-underline" style="margin-right: 10px;">-->
-<!--            로그인-->
-<!--          </router-link>-->
-<!--          <router-link to="/login" v-if="this.$store.state.isLogin" @click="fnLogout" class="no-underline">로그아웃-->
-<!--          </router-link>-->
-<!--          <router-link to="/member/main" v-if="this.$store.state.isLogin" class="no-underline">&nbsp; 마이페이지-->
-<!--          </router-link>-->
+          <!--          <router-link to="/signup" v-if="!this.$store.state.isLogin" class="nav-link" style="margin-right: 10px;">회원 가입-->
+          <!--          </router-link>-->
+          <!--          <router-link to="/login" v-if="!this.$store.state.isLogin" class="no-underline" style="margin-right: 10px;">-->
+          <!--            로그인-->
+          <!--          </router-link>-->
+          <!--          <router-link to="/login" v-if="this.$store.state.isLogin" @click="fnLogout" class="no-underline">로그아웃-->
+          <!--          </router-link>-->
+          <!--          <router-link to="/member/main" v-if="this.$store.state.isLogin" class="no-underline">&nbsp; 마이페이지-->
+          <!--          </router-link>-->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <router-link to="/join/member" class="nav-link">회원가입</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/join/guru" class="nav-link">도사가입</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/login" class="nav-link no-underline">로그인</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/login" @click="fnLogout" class="nav-link no-underline">로그아웃</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/member/main" class="nav-link no-underline">마이페이지</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/guru/main" class="nav-link no-underline">도사페이지</router-link>
+            </li>
+          </ul>
         </div>
-
 
       </div>
     </div>
@@ -59,9 +85,7 @@
 
 <style scoped>
 
-.no-underline {
-  text-decoration: none !important;
-}
+
 </style>
 
 <script>
