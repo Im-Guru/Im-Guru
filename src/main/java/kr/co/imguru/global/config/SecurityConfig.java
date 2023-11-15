@@ -45,14 +45,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/login", "api/v1/join/**").permitAll()
 
-                .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-                .requestMatchers("/api/v1/skill/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+//                .requestMatchers("/api/v1/member/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+//                .requestMatchers("/api/v1/skill/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
 //                .requestMatchers("/api/v1/post/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-                .requestMatchers("/api/v1/reply/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-                .requestMatchers("/api/v1/message/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-                .requestMatchers("/api/v1/review/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-                .requestMatchers("/api/v1/report/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
-                .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN")
+//                .requestMatchers("/api/v1/reply/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+//                .requestMatchers("/api/v1/message/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+//                .requestMatchers("/api/v1/review/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+//                .requestMatchers("/api/v1/report/**").hasAnyRole("USER", "GURU", "ADMIN", "MANAGER")
+//                .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN")
 
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated();
