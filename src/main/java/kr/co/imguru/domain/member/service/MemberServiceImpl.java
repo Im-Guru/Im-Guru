@@ -136,6 +136,27 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member.get());
     }
 
+    @Override
+    public String checkEmailValid(String email) {
+        isEmail(email);
+
+        return email;
+    }
+
+    @Override
+    public String checkNicknameValid(String nickname) {
+        isNickname(nickname);
+
+        return nickname;
+    }
+
+    @Override
+    public String checkTelephoneValid(String telephone) {
+        isTelephone(telephone);
+
+        return telephone;
+    }
+
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {
             throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);

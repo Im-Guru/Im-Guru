@@ -27,4 +27,12 @@ public interface MemberService {
 
     void deleteMember(String memberNickname);
 
+
+
+    String checkEmailValid(String email);
+
+    String checkNicknameValid(String nickname);
+
+    String checkTelephoneValid(String telephone);
+
 }

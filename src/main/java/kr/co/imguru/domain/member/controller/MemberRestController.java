@@ -72,4 +72,22 @@ public class MemberRestController {
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
+
+
+    /** 회원가입 시, 중복 확인 버튼 체크 위한 API **/
+
+    @PostMapping("/member/checkEmail/{email}")
+    public ResponseFormat<String> checkEmailValid(@PathVariable String email) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.checkEmailValid(email));
+    }
+
+    @PostMapping("/member/checkNickname/{nickname}")
+    public ResponseFormat<String> checkNicknameValid(@PathVariable String nickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.checkNicknameValid(nickname));
+    }
+
+    @PostMapping("/member/checkTelephone/{telephone}")
+    public ResponseFormat<String> checkTelephoneValid(@PathVariable String telephone) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.checkTelephoneValid(telephone));
+    }
 }
