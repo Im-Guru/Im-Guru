@@ -19,3 +19,21 @@
     padding: 8px;
     text-align: right;
 }
+
+.no-underline {
+    text-decoration: none !important;
+}
+
+.hover-pointer {
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.small-icon {
+    font-size: 15px; /* Adjust the font size to your preference */
+}
+
+.small-button {
+    font-size: 12px; /* Adjust the font size for the button text */
+    padding: 4px 8px; /* Adjust padding for the button */
+}
