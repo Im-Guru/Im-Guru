@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "axios": "^1.6.1",
+    "bootstrap": "^5.3.2",
+    "bootstrap-vue": "^2.23.1",
+    "bootstrap-vue-3": "^0.5.1",
     "cli-service": "^0.0.2",
     "core-js": "^3.8.3",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
