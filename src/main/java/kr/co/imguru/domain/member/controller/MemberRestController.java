@@ -20,7 +20,7 @@ public class MemberRestController {
 
     private final MemberService memberService;
 
-    @PostMapping("/join")
+    @PostMapping("/join/member")
     public ResponseFormat<Void> createMember(@RequestBody @Valid MemberCreateDto createDto) {
         memberService.createMember(createDto);
 
