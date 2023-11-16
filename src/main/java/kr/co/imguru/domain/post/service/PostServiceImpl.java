@@ -24,6 +24,8 @@ import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -226,6 +228,16 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    @Transactional
+    public Page<PostReadDto> searchPostWithPaging(Pageable pageable, String postCategory, String skill, String searchType, String searchText) {
+        return postSearchRepository.findWithPaging(pageable, postCategory, skill, searchType, searchText).map(this::toReadDto);
+    }
+
+
+
+
+
     /*
    Redis에 기록된 정보들을 DB에 업데이트를 진행하면서 데이터의 일관성을 유지하고, Redis의 저장된 정보들을 초기화
    Spring Scheduled를 사용하여 일정 시간마다 실행이 되도록 설정
@@ -382,8 +394,11 @@ public class PostServiceImpl implements PostService {
                 .fileFormat(fileFormatList)
                 .price(post.getPrice())
                 .isGuru(post.isGuru())
+                .skillName(post.getMember().getSkill().getName())
+                .replyCnt(postRepository.countRepliesByPostId(post.getId()))
                 .viewCnt(post.getViewCnt())
                 .likeCnt(post.getLikeCnt())
+                .regDate(post.getRegDate())
                 .build();
     }
 
@@ -396,8 +411,11 @@ public class PostServiceImpl implements PostService {
                 .content(post.getContent())
                 .price(post.getPrice())
                 .isGuru(post.isGuru())
+                .skillName(post.getMember().getSkill().getName())
+                .replyCnt(postRepository.countRepliesByPostId(post.getId()))
                 .viewCnt(post.getViewCnt())
                 .likeCnt(post.getLikeCnt())
+                .regDate(post.getRegDate())
                 .build();
     }
 
