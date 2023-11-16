@@ -28,7 +28,11 @@ public class MemberCreateDto {
 
     private String job;
 
-    private String address;
+    private String zoneCode;
+
+    private String roadAddress;
+
+    private String detailAddress;
 
     private LocalDate birthDate;
 

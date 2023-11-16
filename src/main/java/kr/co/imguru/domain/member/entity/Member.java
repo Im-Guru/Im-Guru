@@ -52,9 +52,18 @@ public class Member extends BaseEntity {
     private String job;
 
     // 다음 주소 API 사용 예정, 해당 속성은 변경될 가능성 있음
-    @Column(name = "address")
-    @NotBlank
-    private String address;
+//    @Column(name = "address")
+//    @NotBlank
+//    private String address;
+
+    @Column(name = "zone_code")
+    private String zoneCode;
+
+    @Column(name = "road_address")
+    private String roadAddress;
+
+    @Column(name = "detail_address")
+    private String detailAddress;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
@@ -78,7 +87,9 @@ public class Member extends BaseEntity {
                   String nickname,
                   String telephone,
                   String job,
-                  String address,
+                  String zoneCode,
+                  String roadAddress,
+                  String detailAddress,
                   LocalDate birthDate,
                   Gender gender,
                   Role role,
@@ -89,7 +100,9 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.telephone = telephone;
         this.job = job;
-        this.address = address;
+        this.zoneCode = zoneCode;
+        this.roadAddress = roadAddress;
+        this.detailAddress = detailAddress;
         this.birthDate = birthDate;
         this.gender = gender;
         this.role = role;
@@ -100,7 +113,9 @@ public class Member extends BaseEntity {
         this.password = updateDto.getPassword();
         this.name = updateDto.getName();
         this.job = updateDto.getJob();
-        this.address = updateDto.getAddress();
+        this.zoneCode = updateDto.getZoneCode();
+        this.roadAddress = updateDto.getRoadAddress();
+        this.detailAddress = updateDto.getDetailAddress();
         this.birthDate = updateDto.getBirthDate();
         this.skill = updateSkill;
     }

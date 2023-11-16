@@ -1,6 +1,5 @@
 package kr.co.imguru.domain.member.dto;
 
-import kr.co.imguru.domain.skill.entity.Skill;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +21,11 @@ public class MemberUpdateDto {
 
     private String job;
 
-    private String address;
+    private String zoneCode;
+
+    private String roadAddress;
+
+    private String detailAddress;
 
     private LocalDate birthDate;
 
