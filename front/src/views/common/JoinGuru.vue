@@ -18,22 +18,19 @@
               <div class="mb-4">
                 <label for="input-2" class="form-label text-md-right"><strong>비밀번호</strong></label>
                 <b-form-input class="form-height" v-model="form.password" type="password" id="input-3"
-                              ref="passwordInput"
-                              placeholder="비밀번호를 입력해주세요" required></b-form-input>
+                              ref="passwordInput" placeholder="비밀번호를 입력해주세요" required></b-form-input>
               </div>
 
               <div class="mb-4">
                 <label for="input-2-1" class="form-label text-md-right"><strong>비밀번호 확인</strong></label>
                 <b-form-input class="form-height" v-model="form.confirmPassword" type="password" id="input-3-1"
-                              ref="confirmPasswordInput"
-                              placeholder="비밀번호 확인을 입력해주세요" required></b-form-input>
+                              ref="confirmPasswordInput" placeholder="비밀번호 확인을 입력해주세요" required></b-form-input>
               </div>
 
               <div class="mb-4">
                 <label for="input-3" class="form-label text-md-right"><strong>이름</strong></label>
                 <b-form-input class="form-height" v-model="form.name" type="text" id="input-2" placeholder="이름을 입력해주세요"
-                              ref="nameInput"
-                              required></b-form-input>
+                              ref="nameInput" required></b-form-input>
               </div>
 
               <div class="mb-4">
@@ -58,27 +55,26 @@
               <div class="mb-4">
                 <label for="input-2" class="form-label text-md-right"><strong>직업</strong></label>
                 <b-form-input class="form-height" v-model="form.job" type="text" id="input-2" placeholder="직업을 입력해주세요"
-                              ref="jobInput"
-                              required></b-form-input>
+                              ref="jobInput" required></b-form-input>
               </div>
 
               <div class="mb-4">
                 <label for="input-6" class="form-label text-md-right"><strong>주소</strong></label>
                 <b-input-group>
-                  <b-form-input v-model="form.zonecode" type="text" id="input-6-1" placeholder="우편번호" ref="addressInput"
+                  <b-form-input v-model="form.zoneCode" type="text" id="input-6-1" placeholder="우편번호" ref="zoneCodeInput"
                                 readonly></b-form-input>
                   <b-button id="postcode" @click="openPostcode">검색</b-button>
                 </b-input-group>
                 <div class="row mt-2">
                   <div class="col-md-12">
                     <b-form-input v-model="form.roadAddress" type="text" id="input-6-2" placeholder="주소"
-                                  readonly></b-form-input>
+                                  ref="roadAddressInput" readonly></b-form-input>
                   </div>
                 </div>
                 <div class="row mt-2">
                   <div class="col-md-12">
                     <b-form-input v-model="form.detailAddress" type="text" id="input-6-3"
-                                  placeholder="상세주소"></b-form-input>
+                                  ref="detailAddressInput" placeholder="상세주소"></b-form-input>
                   </div>
                 </div>
               </div>
@@ -103,7 +99,7 @@
 
               <div class="mb-4">
                 <label for="input-10" class="form-label text-md-right"><strong>전문 기술</strong></label>
-                <b-form-select v-model="form.skillName" :options="form.options" ></b-form-select>
+                <b-form-select v-model="form.skillName" :options="form.skillOptions"></b-form-select>
               </div>
 
               <br>
@@ -119,7 +115,7 @@
 </template>
 
 <script>
-import {options} from 'axios';
+import axios from "axios";
 
 export default {
   data() {
@@ -131,39 +127,42 @@ export default {
         name: '',
         nickname: '',
         telephone: '',
+        job: '',
         address: '',
-        zonecode: '',
+        zoneCode: '',
         roadAddress: '',
         detailAddress: '',
         birthDate: '',
         gender: 'MALE',
         role: 'USER',
-        job: '',
-        skillName: ['null'],
-        options: [
-          {value: 'Java', text: 'Java'},
-          {value: 'Python', text: 'Python'},
-          {value: 'JavaScript', text: 'JavaScript'},
-          {value: 'SpringBoot', text: 'SpringBoot'},
-          {value: 'React', text: 'React'},
-          {value: 'C++', text: 'C++'},
-          {value: 'C#', text: 'C#'},
-          {value: 'Flutter', text: 'Flutter'},
-          {value: 'Spring', text: 'Spring'},
-          {value: 'Node.js', text: 'Node.js'}
-        ]
+
+        skillName: null, // 선택된 기술을 저장할 변수
+        skillOptions: [] // 기술 목록을 저장할 배열
       }
     }
   },
+  mounted() {
+    // 컴포넌트가 마운트되면 기술 목록을 가져옴
+    this.fetchSkills();
+  },
   methods: {
-    options,
     openPostcode() {
       new window.daum.Postcode({
         oncomplete: (data) => {
-          this.form.zonecode = data.zonecode;
+          this.form.zoneCode = data.zonecode;
           this.form.roadAddress = data.roadAddress;
         },
       }).open();
+    },
+
+    async fetchSkills() {
+      try {
+        const response = await axios.get('/api/v1//skill/all');
+        console.log(response.data.data);
+        this.form.skillOptions = response.data.data.map(skill => ({ value: skill.name, text: skill.name }));
+      } catch (error) {
+        console.error('Failed to fetch skills', error);
+      }
     },
 
     // 정규 표현식을 사용하여 이메일 유효성 검사
@@ -179,13 +178,11 @@ export default {
         this.$refs.emailInput.focus();
         return;
       }
-
       if (!this.isValidEmail(this.form.email)) {
         alert("올바른 이메일 형식이 아닙니다. 다시 확인해주세요.");
         this.$refs.emailInput.focus();
         return;
       }
-
       this.$axios.post(`/api/v1/member/checkEmail/${email}`)
           .then(() => {
             alert("사용 가능한 이메일 입니다.");
@@ -283,9 +280,19 @@ export default {
         this.$refs.jobInput.focus();
         return;
       }
-      if (!this.form.zonecode) {
-        alert("주소를 입력해주세요.");
-        this.$refs.addressInput.focus();
+      if (!this.form.zoneCode) {
+        alert("우편번호를 입력해주세요.");
+        this.$refs.zoneCodeInput.focus();
+        return;
+      }
+      if (!this.form.roadAddress) {
+        alert("도로명 주소를 입력해주세요.");
+        this.$refs.roadAddressInput.focus();
+        return;
+      }
+      if (!this.form.detailAddress) {
+        alert("상세 주소를 입력해주세요.");
+        this.$refs.detailAddressInput.focus();
         return;
       }
       if (!this.form.birthDate) {
@@ -294,12 +301,12 @@ export default {
         return;
       }
 
-      this.form.address = (this.form.roadAddress + " " + this.form.detailAddress);
-
       this.$axios.post("/api/v1/join/guru", this.form)
           .then((res) => {
             alert(res.data.message)
-            this.$router.push({name: 'Login'})
+            this.$router.push({
+              name: 'LoginMember'
+            })
           }).catch((err) => {
         alert(err.response.data.message);
         this.$store.state.loadingStatus = false;
