@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -28,10 +29,15 @@ public class PostReadDto {
 
     private boolean isGuru;
 
+    private String skillName;
+
     private String price;
+
+    private int replyCnt;
 
     private Long likeCnt;
 
     private Long viewCnt;
 
+    private LocalDateTime regDate;
 }
