@@ -1,71 +1,71 @@
 <template>
 
-    <div class="lds-facebook" v-if="loading">
-        <div>
-        </div>
-        <div>
-        </div>
-        <div>
-        </div>
+  <div class="lds-facebook" v-if="loading">
+    <div>
     </div>
+    <div>
+    </div>
+    <div>
+    </div>
+  </div>
 
 </template>
 
 <script>
 export default {
-    props: {
-        loading: {
-            type: Boolean,
-            required: true,
-        },
+  props: {
+    loading: {
+      type: Boolean,
+      required: true,
     },
+  },
 }
 </script>
 
 <style>
 .lds-facebook {
-    display: inline-block;
-    position: fixed;
-    width: 64px;
-    height: 64px;
-    top: 50%;
-    left: 50%;
+  display: inline-block;
+  position: fixed;
+  width: 64px;
+  height: 64px;
+  top: 50%;
+  left: 50%;
 }
 
 .lds-facebook div {
-    display: inline-block;
-    position: absolute;
-    left: 6px;
-    width: 13px;
-    background: #A0E9FF;
-    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  display: inline-block;
+  position: absolute;
+  left: 6px;
+  width: 13px;
+  background: #A0E9FF;
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
 
 .lds-facebook div:nth-child(1) {
-    left: 6px;
-    animation-delay: -0.24s;
+  left: 6px;
+  animation-delay: -0.24s;
 }
 
 .lds-facebook div:nth-child(2) {
-    left: 26px;
-    animation-delay: -0.12s;
+  left: 26px;
+  animation-delay: -0.12s;
 }
 
 .lds-facebook div:nth-child(3) {
-    left: 45px;
-    animation-delay: 0s;
+  left: 45px;
+  animation-delay: 0s;
 }
 
 @keyframes lds-facebook {
-    0% {
-        top: 6px;
-        height: 51px;
-    }
+  0% {
+    top: 6px;
+    height: 51px;
+  }
 
-    50%,
-    100% {
-        top: 19px;
-        height: 26px;
-    }
+  50%,
+  100% {
+    top: 19px;
+    height: 26px;
+  }
 }
 </style>

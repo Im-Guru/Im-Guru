@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Getter
 @Builder
@@ -26,7 +25,11 @@ public class MemberReadDto {
 
     private String job;
 
-    private String address;
+    private String zoneCode;
+
+    private String roadAddress;
+
+    private String detailAddress;
 
     private LocalDate birthDate;
 
