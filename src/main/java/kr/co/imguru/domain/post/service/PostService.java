@@ -3,6 +3,8 @@ package kr.co.imguru.domain.post.service;
 import kr.co.imguru.domain.post.dto.PostCreateDto;
 import kr.co.imguru.domain.post.dto.PostReadDto;
 import kr.co.imguru.domain.post.dto.PostUpdateDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,5 +33,8 @@ public interface PostService {
     void deletePost(Long postId);
 
     void updateCntToRedis(final Long postId, String hashKey);
+
+
+    Page<PostReadDto> searchPostWithPaging(Pageable pageable, String postCategory, String skill, String searchType, String searchText);
 
 }

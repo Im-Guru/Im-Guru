@@ -11,6 +11,9 @@ import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -109,4 +112,19 @@ public class PostRestController {
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
+
+    /**
+     * Search List Post API + Paging default page=0, size=10
+     * http://localhost:8080/api/v1/posts?page=0&size=10 -> 이런식으로 지정해서 사용도 가능
+     *
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/posts")
+    public ResponseFormat<Page<PostReadDto>> getPagedPosts(@PageableDefault(page = 0, size = 10) Pageable pageable
+            , @RequestParam(required = false) String postCategory, @RequestParam(required = false) String skill
+            , @RequestParam(required = false) String searchType, @RequestParam(required = false) String searchText) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.searchPostWithPaging(pageable, postCategory, skill, searchType, searchText));
+    }
+
 }
