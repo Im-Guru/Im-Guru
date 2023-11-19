@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.member.dto;
 
+import kr.co.imguru.global.auth.TokenDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +40,8 @@ public class MemberReadDto {
 
     private String skillName;
 
-    private String token;
+//    private String token;
+
+    private TokenDto token;
 
 }
