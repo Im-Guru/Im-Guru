@@ -6,6 +6,7 @@ import kr.co.imguru.domain.member.dto.MemberLoginDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.service.MemberService;
+import kr.co.imguru.global.auth.TokenDto;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +73,10 @@ public class MemberRestController {
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
+    @GetMapping("/refresh")
+    public ResponseFormat<TokenDto> refresh(@RequestBody @Valid TokenDto tokenDto) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.refreshAccessToken(tokenDto));
+    }
 
 
     /** 회원가입 시, 중복 확인 버튼 체크 위한 API **/

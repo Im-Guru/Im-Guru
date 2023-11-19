@@ -10,10 +10,14 @@ import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
 import kr.co.imguru.global.auth.JwtProvider;
+import kr.co.imguru.global.auth.Token;
+import kr.co.imguru.global.auth.TokenDto;
+import kr.co.imguru.global.auth.TokenRepository;
 import kr.co.imguru.global.common.Gender;
 import kr.co.imguru.global.common.Role;
 import kr.co.imguru.global.exception.DuplicatedException;
 import kr.co.imguru.global.exception.IllegalArgumentException;
+import kr.co.imguru.global.exception.InvalidRequestException;
 import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     private final SkillRepository skillRepository;
+
+    private final TokenRepository tokenRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -55,7 +62,6 @@ public class MemberServiceImpl implements MemberService {
         isTelephone(createDto.getTelephone());
         isNickname(createDto.getNickname());
         isConfirmPassword(createDto.getPassword(), createDto.getConfirmPassword());
-
 
         Optional<Skill> skill = skillRepository.findByNameAndIsDeleteFalse(createDto.getSkillName());
         isSkill(skill);
@@ -157,6 +163,63 @@ public class MemberServiceImpl implements MemberService {
         return telephone;
     }
 
+    public String createRefreshToken(Member member) {
+        Token token = tokenRepository.save(
+                Token.builder()
+                        .id(member.getId())
+                        .refreshToken(UUID.randomUUID().toString())
+                        .expiration(3600)        // 유효시간 설정 - 60분
+                        .build()
+        );
+
+        return token.getRefreshToken();
+    }
+
+    public Token validRefreshToken(Member member, String refreshToken) {
+        Optional<Token> token = tokenRepository.findById(member.getId());
+
+        isToken(token);
+
+        // redis에 해당 유저의 토큰이 존재하는지 체크
+        if (token.get().getRefreshToken() == null) {
+            return null;
+        } else {
+            // refreshToken은 있지만, 만료시간이 얼마 남지 않았다면 만료시간 연장
+            if (token.get().getExpiration() < 10) {
+                token.get().setExpiration(3600);
+                tokenRepository.save(token.get());
+            }
+
+            // token이 같은지 비교
+            if (!token.get().getRefreshToken().equals(refreshToken)) {
+                throw new InvalidRequestException(ResponseStatus.FAIL_REFRESHTOKEN_NOT_FOUND);
+            } else {
+                return token.get();
+            }
+        }
+    }
+
+    @Override
+    public TokenDto refreshAccessToken(TokenDto tokenDto) {
+        String email = jwtProvider.getEmail(tokenDto.getAccessToken());
+
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(member);
+
+        Token refreshToken = validRefreshToken(member.get(), tokenDto.getRefreshToken());
+
+        isRefreshToken(refreshToken);
+
+        return TokenDto.builder()
+                .accessToken(jwtProvider.createToken(email, String.valueOf(member.get().getRole())))
+                .refreshToken(refreshToken.getRefreshToken())
+                .build();
+
+    }
+
+
+
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {
             throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
@@ -204,6 +267,18 @@ public class MemberServiceImpl implements MemberService {
     private void isPassword(String requestPassword, String getPassword) {
         if (!passwordEncoder.matches(requestPassword, getPassword)) {
             throw new IllegalArgumentException(ResponseStatus.FAIL_MEMBER_PASSWORD_NOT_MATCHED);
+        }
+    }
+
+    private void isToken(Optional<Token> token) {
+        if (token.isEmpty()) {
+            throw new NotFoundException(ResponseStatus.FAIL_TOKEN_NOT_FOUND);
+        }
+    }
+
+    private void isRefreshToken(Token refreshToken) {
+        if (refreshToken == null) {
+            throw new InvalidRequestException(ResponseStatus.FAIL_LOGIN_NOT_SUCCESS);
         }
     }
 
@@ -280,7 +355,11 @@ public class MemberServiceImpl implements MemberService {
                 .gender(String.valueOf(member.getGender()))
                 .role(String.valueOf(member.getRole()))
                 .skillName(member.getSkill().getName())
-                .token(jwtProvider.createToken(member.getEmail(), String.valueOf(member.getRole())))
+                .token(TokenDto.builder()
+                                .accessToken(jwtProvider.createToken(member.getEmail(), String.valueOf(member.getRole())))
+                                .refreshToken(createRefreshToken(member))
+                                .build()
+                )
                 .build();
     }
 
