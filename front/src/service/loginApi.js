@@ -24,7 +24,8 @@ export default {
             if (userInfoResponse.data.length === 0) {
                 return 'notFound'
             } else {
-                const accessToken = userInfoResponse.data.data.accessToken;
+                console.log(userInfoResponse)
+                const accessToken = userInfoResponse.data.data.token.accessToken;
                 const role = userInfoResponse.data.data.role;
                 // const nickname = userInfoResponse.data.data.nickname;
                 const expirationTime = new Date().getTime() + (1800000); //30분
