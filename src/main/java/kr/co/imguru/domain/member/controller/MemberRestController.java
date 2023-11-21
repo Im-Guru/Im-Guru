@@ -35,7 +35,7 @@ public class MemberRestController {
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseFormat<MemberReadDto> loginMember(@RequestBody @Valid MemberLoginDto loginDto) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.loginMember(loginDto));
     }

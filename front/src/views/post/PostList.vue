@@ -71,10 +71,11 @@
               <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
               <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
             </div>
+<!--            <div class="post-content" v-html="item.content"></div>-->
             <div class="post-content">
-              <span v-if="item.content.length < 50">{{ item.content }} &nbsp;&nbsp;</span>
-              <span v-else>{{ item.content.substring(0, 50) + "..." }}</span>
+              {{ truncateAndStripTags(item.content, 100) }}
             </div>
+
             <div class="post-status">
               <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
               <i class="fa-solid fa-heart small-icon">{{ item.likeCnt }}&nbsp;</i>
@@ -273,6 +274,19 @@ export default {
       });
       this.fnGetList();
     },
+
+    truncateAndStripTags: function(text, length) {
+      // 태그 제거
+      let strippedText = text.replace(/<[^>]+>/g, '');
+
+      // 길이 제한 및 말줄임표 추가
+      if (strippedText.length <= length) {
+        return strippedText;
+      } else {
+        return strippedText.substring(0, length) + '...';
+      }
+    },
+
     formatDateTime(dateTimeStr) {
       const dateTime = new Date(dateTimeStr);
       const now = new Date();

@@ -14,7 +14,7 @@ public interface PostService {
 
 //    void createPost(PostCreateDto createDto);
 
-    void createPost(PostCreateDto createDto, List<MultipartFile> files) throws IOException;
+    Long createPost(String email, PostCreateDto createDto, List<MultipartFile> files) throws IOException;
 
     PostReadDto getPost(Long postId);
 

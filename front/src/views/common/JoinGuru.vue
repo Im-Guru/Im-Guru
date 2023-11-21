@@ -157,7 +157,7 @@ export default {
 
     async fetchSkills() {
       try {
-        const response = await axios.get('/api/v1//skill/all');
+        const response = await axios.get('/api/v1/skill/all');
         console.log(response.data.data);
         this.form.skillOptions = response.data.data.map(skill => ({ value: skill.name, text: skill.name }));
       } catch (error) {

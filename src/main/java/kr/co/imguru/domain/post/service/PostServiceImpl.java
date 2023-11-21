@@ -56,8 +56,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void createPost(PostCreateDto createDto, List<MultipartFile> files) throws IOException {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
+    public Long createPost(String email, PostCreateDto createDto, List<MultipartFile> files) throws IOException {
+//        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
+
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
 
         isMember(member);
 
@@ -84,6 +86,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+        return post.getId();
     }
 
     @Override
@@ -322,6 +325,12 @@ public class PostServiceImpl implements PostService {
             /* 업로드 */
             file.transferTo(uploadPath);
         }
+//        for (MultipartFile file : files) {
+//            /*업로드 경로*/
+//            java.io.File uploadPath = new java.io.File(rootDir + "/media/" + postId + "_" + file.getOriginalFilename());
+//            /*업로드*/
+//            file.transferTo(uploadPath);
+//        }
     }
 
     private void isMember(Optional<Member> member) {
