@@ -4,14 +4,26 @@
     margin: auto;
 }
 
+.board-detail {
+    width: 768px;
+    margin: auto;
+    text-align: left;
+}
+
 .post-list {
     width: 868px;
     margin: auto;
     text-align: left;
 }
 
-.board-detail {
-    width: 768px;
+.post-detail {
+    width: 668px;
+    margin: auto;
+    text-align: left;
+}
+
+.post-write {
+    width: 868px;
     margin: auto;
     text-align: left;
 }
