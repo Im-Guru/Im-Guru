@@ -7,6 +7,8 @@ import JoinMember from "@/views/common/JoinMember.vue";
 import LoginMember from "@/views/common/LoginMember.vue";
 
 import PostList from "@/views/post/PostList.vue";
+import PostDetail from "@/views/post/PostDetail.vue";
+import PostWrite from "@/views/post/PostWrite.vue";
 
 import MessageList from "@/views/message/MessageList.vue";
 
@@ -58,6 +60,16 @@ const routes = [
         path: '/post/list',
         name: 'PostList',
         component: PostList
+    },
+    {
+        path: '/post/detail',
+        name: 'PostDetail',
+        component: PostDetail
+    },
+    {
+        path: '/post/write',
+        name: 'PostWrite',
+        component: PostWrite
     },
 
 

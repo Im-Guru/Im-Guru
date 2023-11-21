@@ -6,6 +6,7 @@ import kr.co.imguru.domain.post.dto.PostCreateDto;
 import kr.co.imguru.domain.post.dto.PostReadDto;
 import kr.co.imguru.domain.post.dto.PostUpdateDto;
 import kr.co.imguru.domain.post.service.PostService;
+import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,11 +41,13 @@ public class PostRestController {
 //    }
 
     @PostMapping(value = "/post", consumes = {"multipart/form-data"})
-    public ResponseFormat<Void> createPost(@RequestPart("createDto") @Valid PostCreateDto createDto,
+    public ResponseFormat<Long> createPost(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                           @RequestPart("createDto") @Valid PostCreateDto createDto,
                                            @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
-        postService.createPost(createDto, files);
 
-        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+        Long postId = postService.createPost(userDetails.getUsername(), createDto, files);
+
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postId);
     }
 
     /*파일 링크 클릭 시 파일 저장*/
