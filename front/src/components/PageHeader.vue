@@ -36,7 +36,8 @@
 
 
         <div class="d-flex">
-          <router-link to="/signup" v-if="!isLoggedIn" class="nav-link" style="margin-right: 10px;">회원 가입</router-link>
+          <router-link to="/join/member" v-if="!isLoggedIn" class="nav-link" style="margin-right: 10px;">회원 가입</router-link>
+          <router-link to="/join/guru" v-if="!isLoggedIn" class="nav-link" style="margin-right: 10px;">도사 가입</router-link>
           <router-link to="/login" v-if="!isLoggedIn" class="no-underline" style="margin-right: 10px;">로그인</router-link>
           <router-link to="/login" v-if="isLoggedIn" @click="fnLogout" class="no-underline">로그아웃</router-link>
           <router-link to="/member/main" v-if="isLoggedIn" class="no-underline">&nbsp; 마이페이지</router-link>
