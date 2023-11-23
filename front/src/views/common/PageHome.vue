@@ -8,7 +8,7 @@
 
       <ul class="skill-list">
         <li>
-          <router-link to="/post/all/skill=programming" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '프로그래밍' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/programming.png')" alt="Skill-Programming">
               <br><label class="mt-3">프로그래밍</label>
@@ -17,7 +17,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=interior" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '인테리어' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/interior.png')" alt="Skill-Interior">
               <br><label class="mt-3">인테리어</label>
@@ -26,7 +26,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=translate" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '번역' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/translate.png')" alt="Skill - Translate">
               <br><label class="mt-3">번역</label>
@@ -35,7 +35,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=law" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '법률' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/law.png')" alt="Skill - Law">
               <br><label class="mt-3">법률</label>
@@ -44,7 +44,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=clean" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '청소' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/clean.png')" alt="Skill - Clean">
               <br><label class="mt-3">청소</label>
@@ -53,7 +53,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=document" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '문서작업' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/document.png')" alt="Skill - Document">
               <br><label class="mt-3">문서작업</label>
@@ -62,7 +62,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=design" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '디자인' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/design.png')" alt="Skill - Design">
               <br><label class="mt-3">디자인</label>
@@ -71,7 +71,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=music" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '음악' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/music.png')" alt="Skill - Music">
               <br><label class="mt-3">음악</label>
@@ -80,7 +80,7 @@
         </li>
 
         <li>
-          <router-link to="/post/all/skill=etc" class="skill-link">
+          <router-link :to="{ path: '/post/list', query: { skill: '기타' } }" class="skill-link">
             <div class="skill-item hover-effect">
               <img :src="require('@/assets/image/skill/etc.png')" alt="Skill - Etc">
               <br><label class="mt-3">기타</label>
