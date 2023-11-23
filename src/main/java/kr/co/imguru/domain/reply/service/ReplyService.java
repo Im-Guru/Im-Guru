@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReplyService {
 
-    void createReply(ReplyCreateDto replyCreateDto);
+    Long createReply(String email, Long postId, ReplyCreateDto replyCreateDto);
 
     ReplyReadDto getReply(Long replyId);
 
@@ -18,11 +18,11 @@ public interface ReplyService {
 
     List<ReplyReadDto> getAllReplies();
 
-    ReplyReadDto addLikeReplyByMemberNickname(Long replyId, String memberNickname);
+    ReplyReadDto addLikeReply(String email, Long replyId);
 
     List<ReplyReadDto> getLikeRepliesByMember(String memberNickname);
 
     ReplyReadDto updateReply(Long replyId, ReplyUpdateDto updateDto);
 
-    void deleteReply(Long replyId);
+    Long deleteReply(String email, Long postId, Long replyId);
 }

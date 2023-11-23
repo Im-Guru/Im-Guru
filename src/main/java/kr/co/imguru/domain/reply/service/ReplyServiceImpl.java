@@ -43,14 +43,18 @@ public class ReplyServiceImpl implements ReplyService {
     //Create
     @Override
     @Transactional
-    public void createReply(ReplyCreateDto createDto) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
-        isMember(member);
+    public Long createReply(String email, Long postId, ReplyCreateDto createDto) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isMember(loginMember);
 
-        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(createDto.getPostId());
+        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
         isPost(post);
 
-        replyRepository.save(toEntity(createDto, member.get(), post.get()));
+        Reply reply = toEntity(createDto, loginMember.get(), post.get());
+
+        replyRepository.save(reply);
+
+        return reply.getId();
     }
 
     //Read One
@@ -100,8 +104,8 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @Transactional
-    public ReplyReadDto addLikeReplyByMemberNickname(Long replyId, String memberNickname) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+    public ReplyReadDto addLikeReply(String email, Long replyId) {
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(member);
 
         Optional<Reply> reply = replyRepository.findByIdAndIsDeleteFalse(replyId);
@@ -155,13 +159,23 @@ public class ReplyServiceImpl implements ReplyService {
     //Delete
     @Override
     @Transactional
-    public void deleteReply(Long replyId) {
+    public Long deleteReply(String email, Long postId, Long replyId) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isMember(loginMember);
+
+        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
+        isPost(post);
+
         Optional<Reply> reply = replyRepository.findByIdAndIsDeleteFalse(replyId);
         isReply(reply);
+
+        isWriter(loginMember, reply);
 
         reply.get().changeDeleteAt();
 
         replyRepository.save(reply.get());
+
+        return reply.get().getId();
     }
 
     private void isMember(Optional<Member> member) {
@@ -213,6 +227,8 @@ public class ReplyServiceImpl implements ReplyService {
                 .postTitle(reply.getPost().getTitle())
                 .content(reply.getContent())
                 .likeCnt(reply.getLikeCnt())
+                .regDate(reply.getRegDate())
+                .memberSkill(reply.getMember().getSkill().getName())
                 .build();
     }
 

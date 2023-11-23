@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -22,4 +24,8 @@ public class ReplyReadDto {
     private String content;
 
     private Long likeCnt;
+
+    private LocalDateTime regDate;
+
+    private String memberSkill;
 }
