@@ -93,21 +93,16 @@ public class PostRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getPostsByMember(memberNickname));
     }
 
-    @PostMapping("/post/like/{postId}/{memberNickname}")
-    public ResponseFormat<PostReadDto> addLikePost(@PathVariable Long postId,
-                                                   @PathVariable String memberNickname) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.addLikePostByMemberNickname(postId, memberNickname));
-    }
-
     @GetMapping("/post/like/{memberNickname}")
     public ResponseFormat<List<PostReadDto>> readLikePostsByMember(@PathVariable String memberNickname) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByMember(memberNickname));
     }
 
-    @PutMapping("/post/{postId}")
-    public ResponseFormat<PostReadDto> updatePost(@PathVariable Long postId,
+    @PatchMapping("/post/{postId}")
+    public ResponseFormat<PostReadDto> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                  @PathVariable Long postId,
                                                   @RequestBody @Valid PostUpdateDto updateDto) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(postId, updateDto));
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto));
     }
 
     @DeleteMapping("/post/{postId}")
@@ -127,8 +122,17 @@ public class PostRestController {
     @GetMapping("/posts")
     public ResponseFormat<Page<PostReadDto>> getPagedPosts(@PageableDefault(page = 0, size = 10) Pageable pageable
             , @RequestParam(required = false) String postCategory, @RequestParam(required = false) String skill
+            , @RequestParam(required = false) String role
             , @RequestParam(required = false) String searchType, @RequestParam(required = false) String searchText) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.searchPostWithPaging(pageable, postCategory, skill, searchType, searchText));
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.searchPostWithPaging(pageable, postCategory, skill, role, searchType, searchText));
+    }
+
+
+    @PostMapping("/post/like/{postId}")
+    public ResponseFormat<PostReadDto> addPostLike(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                   @PathVariable Long postId) {
+
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.addPostLike(userDetails.getUsername(), postId));
     }
 
 }

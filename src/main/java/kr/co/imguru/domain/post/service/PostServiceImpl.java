@@ -142,31 +142,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostReadDto addLikePostByMemberNickname(Long postId, String memberNickname) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
-        isMember(member);
-
-        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
-        isPost(post);
-
-        isLikePostDuplicated(postId, member.get().getId());
-
-        LikePost create = LikePost.builder()
-                .member(member.get())
-                .post(post.get())
-                .build();
-
-        likePostRepository.save(create);
-
-        post.get().addLikeCnt();
-
-        postRepository.save(post.get());
-
-        return toReadDto(post.get());
-    }
-
-    @Override
-    @Transactional
     public List<PostReadDto> getLikePostsByMember(String memberNickname) {
         return postSearchRepository.findLikePostsByMemberNickname(memberNickname)
                 .stream()
@@ -176,14 +151,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostReadDto updatePost(Long postId, PostUpdateDto updateDto) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(updateDto.getMemberNickname());
-        isMember(member);
+    public PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isMember(loginMember);
 
         Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
         isPost(post);
 
-        isWriter(member, post);
+        isWriter(loginMember, post);
 
         isPostCategory(updateDto.getCategoryName());
         post.get().changePost(updateDto);
@@ -233,12 +208,34 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Page<PostReadDto> searchPostWithPaging(Pageable pageable, String postCategory, String skill, String searchType, String searchText) {
-        return postSearchRepository.findWithPaging(pageable, postCategory, skill, searchType, searchText).map(this::toReadDto);
+    public Page<PostReadDto> searchPostWithPaging(Pageable pageable, String postCategory, String skill, String role, String searchType, String searchText) {
+        return postSearchRepository.findWithPaging(pageable, postCategory, skill, role, searchType, searchText).map(this::toReadDto);
     }
 
+    @Override
+    @Transactional
+    public PostReadDto addPostLike(String email, Long postId) {
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isMember(member);
 
+        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
+        isPost(post);
 
+        isLikePostDuplicated(postId, member.get().getId());
+
+        LikePost create = LikePost.builder()
+                .member(member.get())
+                .post(post.get())
+                .build();
+
+        likePostRepository.save(create);
+
+        post.get().addLikeCnt();
+
+        postRepository.save(post.get());
+
+        return toReadDto(post.get());
+    }
 
 
     /*

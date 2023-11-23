@@ -24,17 +24,16 @@ public interface PostService {
 
     List<PostReadDto> getPostsByMember(String memberNickname);
 
-    PostReadDto addLikePostByMemberNickname(Long postId, String memberNickname);
-
     List<PostReadDto> getLikePostsByMember(String memberNickname);
 
-    PostReadDto updatePost(Long postId, PostUpdateDto updateDto);
+    PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto);
 
     void deletePost(Long postId);
 
     void updateCntToRedis(final Long postId, String hashKey);
 
+    Page<PostReadDto> searchPostWithPaging(Pageable pageable, String postCategory, String skill, String role, String searchType, String searchText);
 
-    Page<PostReadDto> searchPostWithPaging(Pageable pageable, String postCategory, String skill, String searchType, String searchText);
+    PostReadDto addPostLike(String email, Long postId);
 
 }
