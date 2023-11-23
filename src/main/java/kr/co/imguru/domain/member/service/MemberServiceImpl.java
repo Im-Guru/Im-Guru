@@ -7,6 +7,10 @@ import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
+import kr.co.imguru.domain.post.entity.Post;
+import kr.co.imguru.domain.post.repository.PostRepository;
+import kr.co.imguru.domain.reply.entity.Reply;
+import kr.co.imguru.domain.reply.repository.ReplyRepository;
 import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
 import kr.co.imguru.global.auth.JwtProvider;
@@ -35,6 +39,10 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     private final SkillRepository skillRepository;
+
+    private final PostRepository postRepository;
+
+    private final ReplyRepository replyRepository;
 
     private final TokenRepository tokenRepository;
 
@@ -218,7 +226,31 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+    @Override
+    @Transactional
+    public boolean checkAuthor(String email, Long postId) {
+        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
 
+        if (post.get().getMember().getEmail().equals(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean checkReplier(String email, Long replyId) {
+        Optional<Reply> reply = replyRepository.findByIdAndIsDeleteFalse(replyId);
+        isReply(reply);
+
+        if (reply.get().getMember().getEmail().equals(email)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {
@@ -279,6 +311,12 @@ public class MemberServiceImpl implements MemberService {
     private void isRefreshToken(Token refreshToken) {
         if (refreshToken == null) {
             throw new InvalidRequestException(ResponseStatus.FAIL_LOGIN_NOT_SUCCESS);
+        }
+    }
+
+    private void isReply(Optional<Reply> reply) {
+        if(reply.isEmpty()) {
+            throw new NotFoundException(ResponseStatus.FAIL_REPLY_NOT_FOUND);
         }
     }
 
