@@ -17,4 +17,7 @@ public interface SkillService {
     SkillReadDto updateSkill(Long skillId, SkillUpdateDto updateDto);
 
     void deleteSkill(Long skillId);
+
+    SkillReadDto checkGuruSkill(String email);
+
 }

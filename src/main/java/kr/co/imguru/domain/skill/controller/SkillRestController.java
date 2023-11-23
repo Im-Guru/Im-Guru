@@ -5,9 +5,11 @@ import kr.co.imguru.domain.skill.dto.SkillCreateDto;
 import kr.co.imguru.domain.skill.dto.SkillReadDto;
 import kr.co.imguru.domain.skill.dto.SkillUpdateDto;
 import kr.co.imguru.domain.skill.service.SkillService;
+import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,5 +49,10 @@ public class SkillRestController {
         skillService.deleteSkill(skillId);
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+    }
+
+    @PostMapping("/skill/checkGuruSkill")
+    public ResponseFormat<SkillReadDto> checkGuruSkill(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, skillService.checkGuruSkill(userDetails.getUsername()));
     }
 }
