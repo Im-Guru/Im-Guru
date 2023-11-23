@@ -1,24 +1,22 @@
 <template>
+<!--  <div class="post-container">-->
   <div class="post-detail mt-5">
     <div class="common-buttons mb-3">
-      <i v-if="isAuthor()" @click="fnUpdate" class="fa-2x fa-solid fa-pen-to-square mouse-cursor small-icon"></i>
-      <i v-if="isAuthor()" @click="fnDelete" class="fa-2x fa-solid fa-trash mouse-cursor small-icon"></i>
-      <i @click="fnList" class="fa-2x fa-solid fa-list mouse-cursor small-icon"></i>
+      <i v-if="isAuthor" @click="fnUpdate" class="fa-2x fa-solid fa-pen-to-square mouse-cursor small-icon"></i>&nbsp;
+      <i v-if="isAuthor" @click="fnDelete" class="fa-2x fa-solid fa-trash mouse-cursor small-icon"></i>&nbsp;
+      <i @click="fnList" class="fa-2x fa-solid fa-list mouse-cursor small-icon"></i>&nbsp;
     </div>
-    <p>{{category}} - {{skill}}</p>
+    <p>{{ category }} - {{ skill }}</p>
 
     <h2><strong>{{ title }}</strong></h2>
     <div>
-        <span class="mouse-cursor" @click="fnMemberView(author)">{{ author }}</span>
-        <span class="small-font">&nbsp; {{ formatDateTime(created_at) }}</span>
-        <span class="small-font">&nbsp; 조회: {{ viewCnt }}</span>
-
-<!--        <i class="fa-solid fa-ban mouse-cursor" v-if="!isAuthor()" @click="toReportPost(postId, title)"></i>-->
-<!--        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isAuthor()" @click="toMessageWrite(author)"></i>-->
+      <span class="mouse-cursor" @click="fnMemberView(author)">{{ author }}</span>
+      <span class="small-font">&nbsp; {{ formatDateTime(created_at) }}</span>
+      <span class="small-font">&nbsp; 조회: {{ viewCnt }}</span>
 
       <div class="icon-container">
-        <i class="fa-solid fa-ban mouse-cursor" v-if="!isAuthor()" @click="toReportPost(postId, title)"></i>&nbsp;
-        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isAuthor()" @click="toMessageWrite(author)"></i>
+        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isAuthor" @click="toMessageWrite(author)">&nbsp;</i>
+        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isAuthor" @click="toReportPost(postId, title)">&nbsp;</i>&nbsp;
       </div>
 
     </div>
@@ -26,15 +24,17 @@
     <hr>
     <div class="board-contents">
       <div v-if="hasImages">
-        <img v-for="(file, index) in files" :key="index" :src="file.fileUrl" :alt="'게시글 이미지 ' + (index + 1)" class="img-fluid"/>
+        <img v-for="(file, index) in files" :key="index" :src="file.fileUrl" :alt="'게시글 이미지 ' + (index + 1)"
+             class="img-fluid"/>
       </div>
       <div v-html="content"></div>
 
-      <div>가격: {{ price }}</div>
+      <div v-if="isGuru">가격: {{ price }}</div>
     </div>
 
     <div class="button-container">
-      <i class="fa-3x fa-solid fa-heart heart-icon" @click="toPostLike(postId, loginUserNickname)"></i>
+      <i class="fa-3x fa-solid fa-thumbs-up heart-icon" @click="toPostLike(postId)"></i>
+<!--      <i class="fa-solid fa-thumbs-up"></i>-->
     </div>
 
     <div>
@@ -47,38 +47,49 @@
 
     <hr>
 
-<!--    <div v-for="(reply, idx) in replyList" :key="idx" class="mt-5">-->
-<!--      <i class="fa-solid fa-trash mouse-cursor" @click="removeReply(reply.replyId,reply.postId)"></i>-->
-<!--      <i class="fa-solid fa-envelope mouse-cursor" @click="toMessageWrite(reply.memberNickname)"></i>-->
-<!--      <i class="fa-solid fa-heart Reply-heart-icon" @click="toReplyLike(reply.replyId, loginUserNickname)"><small>&nbsp;{{-->
-<!--          reply.likeCnt-->
-<!--        }}</small></i>-->
-<!--      <div class="reply-detail">-->
-<!--        <strong class="mouse-cursor" @click="fnMemberView(reply.memberNickname)">[{{ reply.memberNickname }}]</strong>-->
-<!--        <div class="create-at">-->
-<!--          <span>{{ formatDate(reply.regDate) }}</span>-->
-<!--        </div>-->
-<!--        <p>{{ reply.content }}</p>-->
-<!--      </div>-->
-<!--    </div>-->
 
-<!--    <div class="mt-5">-->
-<!--      <label for="reply"><strong>댓글</strong></label>-->
-<!--      <div style="position: relative;">-->
-<!--        <textarea id="reply" ref="replyInput" rows="5" v-model="reply" class="form-control" style="resize: none;"-->
-<!--                  placeholder="댓글을 남겨보세요."></textarea>-->
-<!--        <button type="button" class="btn btn-outline-primary btn-rounded" @click="replySave"-->
-<!--                style="position: absolute; right: 10px; bottom: 10px;">댓글 저장-->
-<!--        </button>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!-- --------------- -->
+    <div v-for="(reply, idx) in replyList" :key="idx" class="reply-container">
+      <div class="icon-container">
+<!--        <i class="fa-solid fa-trash mouse-cursor" v-if="isReplier" @click="removeReply(reply.replyId,reply.postId)">&nbsp;</i>-->
+<!--        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isReplier" @click="toMessageWrite(reply.memberNickname)">&nbsp;</i>-->
+<!--        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isReplier" @click="toReportReply(reply.replyId, reply.content)"></i>&nbsp;-->
+        <i class="fa-solid fa-trash mouse-cursor" v-if="isReplierArray[idx]" @click="removeReply(reply.replyId, reply.postId)">&nbsp;</i>
+        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isReplierArray[idx]" @click="toMessageWrite(reply.memberNickname)">&nbsp;</i>
+        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isReplierArray[idx]" @click="toReportReply(reply.replyId, reply.content)"></i>&nbsp;
+
+      </div>
+      <div class="reply-detail">
+        <strong class="mouse-cursor" @click="fnMemberView(reply.memberNickname)">[{{ reply.memberNickname }}]</strong>
+        <br>
+        <span class="small-font">{{reply.memberSkill}}</span>
+        <p class="mt-1">{{ reply.content }}</p>
+      </div>
+      <span><small>{{ formatDateTime(reply.regDate) }} - </small></span>
+      <i class="fa-solid fa-thumbs-up Reply-heart-icon" @click="toReplyLike(reply.replyId)"><small>&nbsp;좋아요 {{reply.likeCnt}}</small></i>
+    </div>
+
+    <div class="mt-5">
+      <label for="reply"><strong>댓글</strong></label>
+      <div style="position: relative;">
+        <textarea id="reply" ref="replyInput" rows="5" v-model="reply" class="form-control" style="resize: none;"
+                  placeholder="댓글을 남겨보세요."></textarea>
+        <button type="button" class="btn btn-outline-primary btn-rounded" @click="replySave"
+                style="position: absolute; right: 10px; bottom: 10px;">댓글 저장
+        </button>
+      </div>
+    </div>
+
+    <!-- --------------- -->
+
 
   </div>
+
+<!--  </div>-->
 
 </template>
 
 <script>
-// import jwt_decode from "jsonwebtoken";
 
 export default {
   data() { //변수생성
@@ -87,7 +98,7 @@ export default {
       idx: this.$route.query.idx,
       postId: '',
       category: '',
-      skill:'',
+      skill: '',
       title: '',
       author: '',
       content: '',
@@ -104,11 +115,15 @@ export default {
       isPostLiked: false,
       isReplyLiked: false,
       likeCnt: 0,
+      isAuthor: false,
+      isGuru: '',
+      isReplierArray: [], // 각 댓글에 대한 isReplier를 저장할 배열 추가
     }
   },
   mounted() {
     this.fnGetView()
-    // this.fnGetReply()
+    this.fnGetReply()
+    this.checkAuthor(this.idx)
   },
   computed: {
     hasImages() {
@@ -134,6 +149,7 @@ export default {
         this.category = res.data.data.postCategory
         this.skill = res.data.data.skillName
         this.viewCnt = res.data.data.viewCnt
+        this.isGuru = res.data.data.guru;
         // 서버에서 게시물의 좋아요 상태와 개수 가져오기
         // this.isLiked = res.data.data.isLiked;
         this.likeCnt = res.data.data.likeCnt;
@@ -145,6 +161,7 @@ export default {
         } else {
           alert(err.response.data.message);
         }
+        this.$store.state.loadingStatus = false;
       })
     },
 
@@ -160,6 +177,10 @@ export default {
       this.$router.go(this.$router.currentRoute)
     },
     fnUpdate() {
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
       this.$router.push({
         path: './write',
         query: this.requestBody
@@ -168,17 +189,28 @@ export default {
     fnDelete() {
       if (!confirm("게시글을 삭제하시겠습니까?")) return
 
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
+
       this.$axios.delete('/api/v1/post/' + this.idx, {})
           .then((res) => {
             alert(res.data.message)
             this.fnList();
           }).catch((err) => {
-        if (err.response.status === 401 || err.response.status === 404) {
+        if (err.response.status === 401 || err.response.status === 400) {
+          alert("로그인을 먼저 해주세요!");
           this.$router.push({path: '/login'});
+        } if (err.response.status === 404) {
+          alert("잘못된 경로입니다.");
+          alert(err.response.data.message);
+          location.reload()
         } else {
           alert(err.response.data.message);
           location.reload()
         }
+        this.$store.state.loadingStatus = false;
       })
     },
     isImageFile(file) {
@@ -189,25 +221,57 @@ export default {
     },
 
 
-    fnGetReply() {
-      this.$axios.get('/api/v1/reply/' + this.idx, {
+    // ------------------------
+    async fnGetReply() {
+      await this.$axios.get('/api/v1/reply/post/' + this.idx, {
         params: this.requestBody
-      }).then((res) => {
-        console.log("llll" + res);
+      }).then(async (res) => {
         console.log(res.data.data);
         this.replyList = res.data.data
         this.replyAuthorNickname = res.data.data.memberNickname
-      }).catch((err) => {
-        if (err.response.status === 401 || err.response.status === 404) {
-          this.$router.push({path: '/login'});
-        } else {
-          alert(err.response.data.message);
-          location.reload()
+
+        // 각 댓글에 대해 checkReplier 호출
+        for (const reply of this.replyList) {
+           await this.checkReplier(reply.replyId);
         }
+
+      }).catch((err) => {
+        alert(err.response.data.message);
+        // if (err.response.status === 401 || err.response.status === 404) {
+        //   this.$router.push({path: '/login'});
+        // } else {
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // }
+        this.$store.state.loadingStatus = false;
+
       })
     },
+    async checkReplier(replyId) {
+      await this.$axios.post(`/api/v1/member/checkReplier/${replyId}`, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      }).then((res) => {
+        console.log("replier: " + res.data.data);
+        // 각 댓글에 대한 isReplier를 저장할 배열에 추가
+        this.isReplierArray.push(res.data.data);
+      }).catch((err) => {
+        console.log("======checkReplier======")
+        console.log(err.response.data.message);
+      })
+      this.$store.state.loadingStatus = false;
+
+    },
+
     removeReply(replyId, postId) {
       if (!confirm("댓글을 삭제하시겠습니까?")) return
+
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
+
       this.$axios.delete(`/api/v1/reply/${postId}/${replyId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
@@ -216,18 +280,30 @@ export default {
         alert(res.data.message)
         this.fnPost(postId);
       }).catch((err) => {
-        if (err.response.status === 401 || err.response.status === 404) {
+        if (err.response.status === 401 || err.response.status === 400) {
+          alert("로그인을 먼저 해주세요!");
           this.$router.push({path: '/login'});
+        } if (err.response.status === 404) {
+          alert("잘못된 경로입니다.");
+          alert(err.response.data.message);
+          location.reload()
         } else {
           alert(err.response.data.message);
           location.reload()
         }
+        this.$store.state.loadingStatus = false;
+
       })
     },
     replySave() {
       if (!this.reply) {
         alert("댓글을 입력해주세요.");
         this.$refs.replyInput.focus();
+        return;
+      }
+
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
         return;
       }
 
@@ -245,21 +321,40 @@ export default {
             alert(res.data.message)
             this.fnPost(this.idx);
           }).catch((err) => {
-        if (err.response.status === 401 || err.response.status === 404) {
+        if (err.response.status === 401 || err.response.status === 400) {
+          alert("로그인을 먼저 해주세요!");
           this.$router.push({path: '/login'});
+        } if (err.response.status === 404) {
+          alert("잘못된 경로입니다.");
+          alert(err.response.data.message);
+          location.reload()
         } else {
           alert(err.response.data.message);
           location.reload()
         }
+        this.$store.state.loadingStatus = false;
+
       })
     },
+    // ------------------------
+
     toMessageWrite(receiverNickname) {
+
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
+
       this.$router.push({
         path: '/message/write',
         query: {name: receiverNickname}
       })
     },
     toReportPost(postId, title) {
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
       this.$router.push({
         path: '/report/write',
         query: {
@@ -269,36 +364,54 @@ export default {
 
       })
     },
-    toPostLike(postId, loginNickname) {
+
+    toPostLike(postId) {
       // 좋아요 상태 토글
       this.isPostLiked = !this.isPostLiked;
 
-      this.$axios.post(`/api/v1/post/like/${postId}/${loginNickname}`, {like: this.isPostLiked})
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
 
+      this.$axios.post(`/api/v1/post/like/${postId}`, {like: this.isPostLiked}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      })
           .then(() => {
-            // if (this.isLiked) {
-            //   this.likeCnt++;
-            // } else {
-            //   this.likeCnt--;
-            // }
             alert("좋아요!");
           })
           .catch((err) => {
-            if (err.response.status === 401 || err.response.status === 404) {
+            if (err.response.status === 401) {
+              alert("로그인을 먼저 해주세요!");
               this.$router.push({path: '/login'});
+            } if (err.response.status === 404) {
+              alert("잘못된 경로입니다.");
+              alert(err.response.data.message);
+              location.reload()
             } else {
               alert(err.response.data.message);
+              location.reload()
             }
             this.$store.state.loadingStatus = false;
           });
     },
 
-    toReplyLike(replyId, loginNickname) {
+    toReplyLike(replyId) {
       // 좋아요 상태 토글
       this.isReplyLiked = !this.isReplyLiked;
 
-      this.$axios.post(`/api/v1/reply/like/${replyId}/${loginNickname}`, {like: this.isReplyLiked})
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
 
+      this.$axios.post(`/api/v1/reply/like/${replyId}`, {like: this.isReplyLiked}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      })
           .then(() => {
             // if (this.isLiked) {
             //   this.likeCnt++;
@@ -309,45 +422,57 @@ export default {
             location.reload()
           })
           .catch((err) => {
-            if (err.response.status === 401 || err.response.status === 404) {
+            if (err.response.status === 401 || err.response.status === 400) {
+              alert("로그인을 먼저 해주세요!");
               this.$router.push({path: '/login'});
+            } if (err.response.status === 404) {
+              alert("잘못된 경로입니다.");
+              alert(err.response.data.message);
+              location.reload()
             } else {
               alert(err.response.data.message);
+              location.reload()
             }
             this.$store.state.loadingStatus = false;
           });
     },
-    // getEmailFromToken() {
-    //   const accessToken = localStorage.getItem("user_token");
-    //   if (accessToken) {
-    //     const decodedToken = jwt_decode(accessToken);
-    //     const userEmail = decodedToken.email; // 토큰에서 이메일을 가져옴
-    //     return userEmail;
-    //   } else {
-    //     return null; // 토큰이 없는 경우 처리
-    //   }
-    // },
-    // isAuthor() {
-    //   const userEmail = this.getEmailFromToken();
-    //   // 이메일을 사용하여 작성자 여부를 확인
-    //   if (userEmail && userEmail === this.author) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // },
+    toReportReply(replyId, replyContent) {
 
-    isAuthor() {
-      if (localStorage.getItem("user_nickname") === this.author) {
-        return true;
-      } else return false;
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
+
+      this.$router.push({
+        path: '/report/write',
+        query: {
+          reportReply: replyId,
+          replyContent: replyContent,
+        }
+
+      })
     },
-    isReplyAuthor() {
-      console.log("====" + this.replyAuthorNickname);
-      if (localStorage.getItem("user_nickname") === this.replyAuthorNickname) {
-        return true;
-      } else return false;
+
+    async checkAuthor(postId) {
+      this.$axios.post(`/api/v1/member/checkAuthor/${postId}`, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      }).then((res) => {
+        console.log(res.data.data);
+        this.isAuthor = res.data.data;
+      }).catch((err) => {
+        console.log("======checkAuthor======")
+        console.log(err.response.data.message);
+        // if (err.response.status === 401 || err.response.status === 404) {
+        //   this.$router.push({path: '/login'});
+        // } else {
+        //   alert(err.response.data.message);
+        // }
+        // this.$store.state.loadingStatus = false;
+      })
     },
+
     fnMemberView(author) {
       this.$router.push({
         path: '../member/view',
@@ -387,7 +512,7 @@ export default {
 }
 
 .small-icon {
-  font-size: 20px; /* Adjust the font size to your preference */
+  font-size: 15px; /* Adjust the font size to your preference */
 }
 
 .mouse-cursor {
@@ -396,17 +521,17 @@ export default {
 
 /* 하트 아이콘 스타일링 */
 .heart-icon {
-  color: red; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
+  color: blue; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
   font-size: 3rem; /* 원하는 크기로 설정합니다. */
   cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
   font-size: 30px;
 }
 
 .Reply-heart-icon {
-  color: #fd8181; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
+  color: deepskyblue; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
   cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
-  font-size: 20px;
-  vertical-align: -10px;
+  font-size: 15px;
+  //vertical-align: -10px;
 }
 
 /* 하트 아이콘과 버튼 컨테이너 스타일 */

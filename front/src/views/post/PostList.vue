@@ -30,6 +30,12 @@
           <b-button :class="{ active: skill === '디자인' }" class="nav-link d-block mb-2"
                     @click="fnSelectSkill('디자인')">디자인
           </b-button>
+          <b-button :class="{ active: skill === '음악' }" class="nav-link d-block mb-2"
+                    @click="fnSelectSkill('음악')">음악
+          </b-button>
+          <b-button :class="{ active: skill === '기타' }" class="nav-link d-block mb-2"
+                    @click="fnSelectSkill('기타')">기타
+          </b-button>
         </nav>
       </div>
 
@@ -41,6 +47,15 @@
           <button type="button" class="btn btn-outline-dark btn-rounded small-button" @click="fnWrite">
             <span><i class="fa-solid fa-pen small-icon"></i></span>
             글쓰기
+          </button>
+        </div>
+
+        <div class="nav-buttons mb-3">
+          <button :class="{ active: role === '' }" class="btn btn-link" @click="fnSelectRole('')">
+            전체글
+          </button>
+          <button :class="{ active: role === 'GURU' }" class="btn btn-link" @click="fnSelectRole('GURU')">
+            도사
           </button>
         </div>
 
@@ -149,6 +164,7 @@ export default {
       searchType: 'title',
       searchText: '',
       totalPage: '',
+      role:'',
       selectedOption: [
         {value: 'title', text: '제목'},
         {value: 'writer', text: '작성자'},
@@ -172,9 +188,19 @@ export default {
   },
   mounted() {
     const postCategoryFromURL = this.$route.query.postCategory;
+    const skillFromURL = this.$route.query.skill;
+    const roleFromURL = this.$route.query.role;
 
     if (postCategoryFromURL) {
       this.postCategory = postCategoryFromURL;
+    }
+
+    if (skillFromURL) {
+      this.skill = skillFromURL;
+    }
+
+    if (roleFromURL) {
+      this.role = roleFromURL;
     }
 
     this.fnGetList();
@@ -188,15 +214,13 @@ export default {
         totalPage: this.totalPage,
         postCategory: this.postCategory,
         skill: this.skill,
+        role: this.role,
         searchText: this.searchText,
         searchType: this.searchType,
       }
       this.$axios.get("/api/v1/posts", {
         params: this.requestBody,
       }).then((res) => {
-        console.log(res);
-        console.log("------");
-        console.log(res.data.data);
         this.page = res.data.data.number;
         this.size = res.data.data.size;
         this.totalPage = res.data.data.totalPages;
@@ -220,6 +244,12 @@ export default {
       })
     },
     fnWrite() {
+
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
+
       this.$router.push({
         path: './write'
       })
@@ -248,6 +278,12 @@ export default {
           this.fnPage(nextPage);
         }
       }
+    },
+    fnSelectRole(role) {
+      this.role = role;
+      this.page = 0;
+      this.$router.push({path: this.$route.path, query: {role}});
+      this.fnGetList();
     },
     fnSelectCategory(postCategory) {
       this.postCategory = postCategory;

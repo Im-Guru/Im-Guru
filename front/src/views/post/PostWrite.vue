@@ -18,7 +18,7 @@
         <label for="postCategory" class="mt-3"><strong>전문기술</strong></label>
       </div>
       <div class="col">
-        <b-form-select v-model="skillName" :options="skillOptions"></b-form-select>
+        <b-form-input type="text" v-model="skillName" readonly></b-form-input>
       </div>
     </div>
 
@@ -60,7 +60,6 @@
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import UploadAdapter from './UploadAdapter';
-import axios from "axios";
 
 export default {
   components: {'ck-editor': CKEditor.component},
@@ -95,6 +94,7 @@ export default {
       price:'',
       created_at: '',
       postCategory: 'FREE',
+      skillName: null, // 선택된 기술을 저장할 변수
       options: [
         {value: 'FREE', text: '자유게시판'},
         {value: 'QNA', text: '질문글'},
@@ -107,28 +107,35 @@ export default {
         {value: 'INFO', text: '정보공유'},
       ],
 
-      skillName: null, // 선택된 기술을 저장할 변수
-      skillOptions: [] // 기술 목록을 저장할 배열
-
     }
+  },
+  created() {
+    this.checkGuruSkill();
   },
   mounted() {
     this.fnGetView();
-    this.fetchSkills();
   },
   methods: {
     handleFileChange(event) {
       this.createDto.files = Array.from(event.target.files); // 선택한 모든 파일을 배열로 저장
     },
-    async fetchSkills() {
-      try {
-        const response = await axios.get('/api/v1/skill/all');
-        console.log(response.data.data);
-        this.skillOptions = response.data.data.map(skill => ({ value: skill.name, text: skill.name }));
-      } catch (error) {
-        console.error('Failed to fetch skills', error);
-      }
+
+    async checkGuruSkill() {
+      this.$axios.post('/api/v1/skill/checkGuruSkill', null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+        },
+      }).then((res) => {
+        this.skillName = res.data.data.name;
+      }).catch((err) => {
+        if (err.response.status === 401 || err.response.status === 404) {
+          this.$router.push({ path: '/login' });
+        } else {
+          alert(err.response.data.message);
+        }
+      })
     },
+
     fnGetView() {
       if (this.idx !== undefined) {
         this.$axios.get('/api/v1/post/' + this.idx, {
@@ -165,6 +172,11 @@ export default {
       })
     },
     fnSave() {
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        return;
+      }
+
       this.createDto.title = this.title
       this.createDto.content = this.content
       this.createDto.price = this.price || 0
@@ -222,7 +234,8 @@ export default {
             })
             .then((res) => {
               alert(res.data.message);
-              this.fnView(res.data.data);
+              console.log(res.data.data);
+              this.fnView(res.data.data.postId);
             })
             .catch((err) => {
               if (err.response.status === 401 || err.response.status === 404) {

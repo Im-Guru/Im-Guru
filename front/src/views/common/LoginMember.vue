@@ -97,6 +97,7 @@ export default {
       }
     },
     goToPages() {
+      this.$store.state.isLogin = true;
       this.$router.push({
         name: 'PageHome'
       })

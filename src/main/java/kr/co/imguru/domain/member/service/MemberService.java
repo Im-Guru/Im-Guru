@@ -30,6 +30,10 @@ public interface MemberService {
 
     TokenDto refreshAccessToken(TokenDto tokenDto);
 
+    boolean checkAuthor(String email, Long postId);
+
+    boolean checkReplier(String email, Long replyId);
+
     String checkEmailValid(String email);
 
     String checkNicknameValid(String nickname);

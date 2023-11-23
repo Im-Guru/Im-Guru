@@ -73,6 +73,12 @@ public class SkillServiceImpl implements SkillService {
         skillRepository.save(skill.get());
     }
 
+    @Override
+    @Transactional
+    public SkillReadDto checkGuruSkill(String email) {
+        return toReadDto(skillRepository.findByGuruSkill(email));
+    }
+
     private void isSkill(Optional<Skill> skill) {
         if (skill.isEmpty()) {
             throw new NotFoundException(ResponseStatus.FAIL_SKILL_NOT_FOUND);

@@ -6,7 +6,7 @@ import actions from "./actions";
 export default createStore({
     state: {
         user: null,
-        isLogin: false,
+        isLogin: !!localStorage.getItem('user_token'),
         loadingStatus: false,
     },
     mutations,

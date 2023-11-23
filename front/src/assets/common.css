@@ -16,6 +16,14 @@
     text-align: left;
 }
 
+.post-container {
+    width: 700px; /* 적절한 너비 설정 */
+    margin: auto;
+    border-radius: 20px; /* 원하는 둥근 네모의 반지름 설정 */
+    background-color: #dddddd;
+    overflow: hidden; /* 둥근 모서리를 제대로 보이게 하려면 overflow 속성을 설정해야 합니다. */
+}
+
 .post-detail {
     width: 668px;
     margin: auto;
@@ -26,6 +34,13 @@
     width: 868px;
     margin: auto;
     text-align: left;
+}
+
+.reply-container {
+    border-radius: 10px; /* 둥근 네모의 반지름을 조절하세요 */
+    border: 1px solid #ccc; /* 원하는 테두리 스타일 및 색상을 설정하세요 */
+    padding: 10px; /* 적절한 안쪽 여백 설정 */
+    margin-bottom: 10px; /* 댓글 간의 간격 설정 */
 }
 
 .board-contents {

@@ -5,9 +5,12 @@ import kr.co.imguru.domain.reply.dto.ReplyCreateDto;
 import kr.co.imguru.domain.reply.dto.ReplyReadDto;
 import kr.co.imguru.domain.reply.dto.ReplyUpdateDto;
 import kr.co.imguru.domain.reply.service.ReplyService;
+import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +23,12 @@ public class ReplyRestController {
     private final ReplyService replyService;
 
     //Create
-    @PostMapping("/reply")
-    public ResponseFormat<Void> createReply(@RequestBody @Valid ReplyCreateDto createDto) {
-        replyService.createReply(createDto);
+    @PostMapping("/reply/{postId}")
+    public ResponseFormat<Long> createReply(@AuthenticationPrincipal UserDetails userDetails,
+                                            @PathVariable Long postId,
+                                            @RequestBody @Valid ReplyCreateDto createDto) {
 
-        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.createReply(userDetails.getUsername(), postId, createDto));
     }
 
     //Read One
@@ -49,10 +53,10 @@ public class ReplyRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.getRepliesByMember(memberNickname));
     }
 
-    @PostMapping("/reply/like/{replyId}/{memberNickname}")
-    public ResponseFormat<ReplyReadDto> addLikeReply(@PathVariable Long replyId,
-                                                   @PathVariable String memberNickname) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.addLikeReplyByMemberNickname(replyId, memberNickname));
+    @PostMapping("/reply/like/{replyId}")
+    public ResponseFormat<ReplyReadDto> addLikeReply(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                     @PathVariable Long replyId) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.addLikeReply(userDetails.getUsername(), replyId));
     }
 
     @GetMapping("/reply/like/{memberNickname}")
@@ -67,10 +71,12 @@ public class ReplyRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.updateReply(replyId, updateDto));
     }
 
-    @DeleteMapping("/reply/{replyId}")
-    public ResponseFormat<Void> deleteReply(@PathVariable Long replyId) {
-        replyService.deleteReply(replyId);
+    @DeleteMapping("/reply/{postId}/{replyId}")
+    public ResponseFormat<Long> deleteReply(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @PathVariable Long postId,
+                                            @PathVariable Long replyId) {
 
-        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.deleteReply(userDetails.getUsername(), postId, replyId));
     }
+
 }

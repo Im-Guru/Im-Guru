@@ -9,6 +9,7 @@ import kr.co.imguru.domain.member.entity.QMember;
 import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.entity.QPost;
 import kr.co.imguru.global.common.PostCategory;
+import kr.co.imguru.global.common.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -58,7 +59,7 @@ public class PostSearchRepository {
 
 
 
-    public Page<Post> findWithPaging(Pageable pageable, String postCategory, String skill, String searchType, String searchText) {
+    public Page<Post> findWithPaging(Pageable pageable, String postCategory, String skill, String role, String searchType, String searchText) {
 
         // 조건에 맞는 쿼리 구성
         JPAQuery<Post> query = queryFactory
@@ -66,11 +67,12 @@ public class PostSearchRepository {
                 .leftJoin(post.member, member)
                 .where(
                         post.isDelete.eq(Boolean.FALSE),
-                        post.postCategory.eq(PostCategory.QNA)
-                                .or(post.postCategory.eq(PostCategory.FREE))
-                                .or(post.postCategory.eq(PostCategory.INFO)),
+//                        post.postCategory.eq(PostCategory.QNA)
+//                                .or(post.postCategory.eq(PostCategory.FREE))
+//                                .or(post.postCategory.eq(PostCategory.INFO)),
                         postCategoryEq(postCategory),
                         postSkillEq(skill),
+                        postIsGuru(role),
                         postSearchText(searchType, searchText)
                 )
                 .orderBy(post.regDate.desc())
@@ -86,6 +88,7 @@ public class PostSearchRepository {
         if (!StringUtils.hasText(category)) {
             return null;
         }
+
         return post.postCategory.eq(PostCategory.valueOf(category));
     }
 
@@ -93,7 +96,17 @@ public class PostSearchRepository {
         if (!StringUtils.hasText(skill)) {
             return null;
         }
+
         return post.member.skill.name.eq(skill);
+    }
+
+    private BooleanExpression postIsGuru(String role) {
+        if (!StringUtils.hasText(role)) {
+            return null;
+        }
+
+        return post.isGuru.eq(Boolean.TRUE);
+
     }
 
     private BooleanExpression postSearchText(String searchType, String searchText) {
@@ -103,8 +116,6 @@ public class PostSearchRepository {
             return post.title.contains(searchText);
         } else if (searchType.equals("writer")) {
             return post.member.nickname.contains(searchText);
-        } else if (searchType.equals("guru")){
-            return post.isDelete.eq(Boolean.TRUE);
         } else {
             return post.title.contains(searchText).or(post.member.nickname.contains(searchText));
         }
