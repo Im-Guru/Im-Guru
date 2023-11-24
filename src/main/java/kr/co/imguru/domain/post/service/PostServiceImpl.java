@@ -237,6 +237,61 @@ public class PostServiceImpl implements PostService {
         return toReadDto(post.get());
     }
 
+    @Override
+    @Transactional
+    public List<PostReadDto> getPostsByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(loginMember);
+
+        return postSearchRepository.findPostsByMemberNickname(loginMember.get().getNickname())
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+
+    }
+
+    @Override
+    @Transactional
+    public List<PostReadDto> getLikePostsByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(loginMember);
+
+        return postSearchRepository.findLikePostsByMemberNickname(loginMember.get().getNickname())
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+
+    }
+
+    @Override
+    @Transactional
+    public List<PostReadDto> getPostsByMemberNickname(String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+
+        isMember(member);
+
+        return postSearchRepository.findPostsByMemberNickname(memberNickname)
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+
+    }
+
+    @Override
+    @Transactional
+    public List<PostReadDto> getLikePostsByMemberNickname(String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+
+        isMember(member);
+
+        return postSearchRepository.findLikePostsByMemberNickname(memberNickname)
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
 
     /*
    Redis에 기록된 정보들을 DB에 업데이트를 진행하면서 데이터의 일관성을 유지하고, Redis의 저장된 정보들을 초기화

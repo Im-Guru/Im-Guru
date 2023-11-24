@@ -93,7 +93,7 @@
 
             <div class="post-status">
               <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
-              <i class="fa-solid fa-heart small-icon">{{ item.likeCnt }}&nbsp;</i>
+              <i class="fa-solid fa-thumbs-up small-icon">{{ item.likeCnt }}&nbsp;</i>
               <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
               <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
             </div>

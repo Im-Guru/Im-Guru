@@ -79,4 +79,14 @@ public class ReplyRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.deleteReply(userDetails.getUsername(), postId, replyId));
     }
 
+    @PostMapping("/reply/myWrite")
+    public ResponseFormat<List<ReplyReadDto>> getRepliesByLoginMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.getRepliesByLoginMember(userDetails.getUsername()));
+    }
+
+    @PostMapping("/reply/member/{memberNickname}")
+    public ResponseFormat<List<ReplyReadDto>> getRepliesByMemberNickname(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, replyService.getRepliesByMemberNickname(memberNickname));
+    }
+
 }

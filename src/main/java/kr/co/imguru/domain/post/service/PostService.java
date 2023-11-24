@@ -36,4 +36,12 @@ public interface PostService {
 
     PostReadDto addPostLike(String email, Long postId);
 
+    List<PostReadDto> getPostsByLoginMember(String email);
+
+    List<PostReadDto> getLikePostsByLoginMember(String email);
+
+    List<PostReadDto> getPostsByMemberNickname(String memberNickname);
+
+    List<PostReadDto> getLikePostsByMemberNickname(String memberNickname);
+
 }

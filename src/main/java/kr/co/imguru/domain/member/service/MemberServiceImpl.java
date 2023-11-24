@@ -125,17 +125,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
-        isMember(member);
+    public MemberReadDto updateMember(String email, MemberUpdateDto updateDto) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isMember(loginMember);
+
         isConfirmPassword(updateDto.getPassword(), updateDto.getConfirmPassword());
-        isPassword(member.get().getPassword(), updateDto.getPassword());
 
-        member.get().changeMember(updateDto, skillRepository.findByNameAndIsDeleteFalse(updateDto.getSkillName()).get());
+//        isPassword(loginMember.get().getPassword(), updateDto.getPassword());
 
-        memberRepository.save(member.get());
+        loginMember.get().changeMember(updateDto, passwordEncoder.encode(updateDto.getPassword()), skillRepository.findByNameAndIsDeleteFalse(updateDto.getSkillName()).get());
 
-        return toReadDto(member.get());
+        memberRepository.save(loginMember.get());
+
+        return toReadDto(loginMember.get());
     }
 
     @Override
@@ -251,6 +253,27 @@ public class MemberServiceImpl implements MemberService {
         }
 
     }
+
+    @Override
+    @Transactional
+    public MemberReadDto getMemberByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(loginMember);
+
+        return toReadDto(loginMember.get());
+    }
+
+    @Override
+    @Transactional
+    public MemberReadDto getMemberDetailByMemberNickname(String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+
+        isMember(member);
+
+        return toReadDto(member.get());
+    }
+
 
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {

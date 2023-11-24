@@ -34,5 +34,19 @@ public class GuruInfoSearchRepository {
         return Optional.ofNullable(temp);
     }
 
+    public Optional<GuruInfo> findGuruInfoByEmail(String email) {
+        GuruInfo temp = queryFactory
+                .selectFrom(guruInfo)
+                .join(member)
+                .on(guruInfo.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        guruInfo.isDelete.eq(Boolean.FALSE),
+                        guruInfo.member.email.eq(email)
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(temp);
+    }
 
 }

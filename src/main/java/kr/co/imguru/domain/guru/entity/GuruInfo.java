@@ -31,7 +31,7 @@ public class GuruInfo extends BaseEntity {
 
     @Column(name = "company_name")
     @NotBlank
-    private String companyName;     // 회사 소개
+    private String companyName;     // 회사명
 
     @Column(name = "position")
     @NotBlank
