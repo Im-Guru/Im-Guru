@@ -31,12 +31,12 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     @Override
     @Transactional
-    public void createGuruInfo(String memberNickname, GuruInfoCreateDto createDto) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+    public void createGuruInfo(String email, GuruInfoCreateDto createDto) {
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
 
         isGuruMember(member);
 
-        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByEmail(email);
 
         isGuruInfoDuplicated(guruInfo);
 
@@ -50,6 +50,28 @@ public class GuruInfoServiceImpl implements GuruInfoService {
     public GuruInfoReadDto getGuruInfo(String memberNickname) {
         Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
 
+        isGuruInfo(guruInfo);
+
+        return toReadDto(guruInfo.get());
+    }
+
+    @Override
+    @Transactional
+    public GuruInfoReadDto getGuruInfoByMember(String memberNickname) {
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
+
+        isGuruInfo(guruInfo);
+
+        return toReadDto(guruInfo.get());
+    }
+
+    @Override
+    @Transactional
+    public GuruInfoReadDto getGuruInfoByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isGuruMember(loginMember);
+
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByEmail(email);
         isGuruInfo(guruInfo);
 
         return toReadDto(guruInfo.get());

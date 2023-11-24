@@ -9,9 +9,13 @@ import java.util.List;
 
 public interface GuruInfoService {
 
-    void createGuruInfo(String memberNickname, GuruInfoCreateDto createDto);
+    void createGuruInfo(String email, GuruInfoCreateDto createDto);
 
     GuruInfoReadDto getGuruInfo(String memberNickname);
+
+    GuruInfoReadDto getGuruInfoByMember(String memberNickname);
+
+    GuruInfoReadDto getGuruInfoByLoginMember(String email);
 
     List<GuruInfoReadDto> getAllGuruInfos();
 
