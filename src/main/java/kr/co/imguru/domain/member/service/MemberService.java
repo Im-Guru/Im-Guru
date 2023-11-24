@@ -24,7 +24,7 @@ public interface MemberService {
 
     List<MemberReadDto> getAllGuruMembers();
 
-    MemberReadDto updateMember(String memberNickname, MemberUpdateDto updateDto);
+    MemberReadDto updateMember(String email, MemberUpdateDto updateDto);
 
     void deleteMember(String memberNickname);
 
@@ -33,6 +33,12 @@ public interface MemberService {
     boolean checkAuthor(String email, Long postId);
 
     boolean checkReplier(String email, Long replyId);
+
+    MemberReadDto getMemberByLoginMember(String email);
+
+    MemberReadDto getMemberDetailByMemberNickname(String memberNickname);
+
+
 
     String checkEmailValid(String email);
 

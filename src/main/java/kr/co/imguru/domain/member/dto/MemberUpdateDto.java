@@ -13,11 +13,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MemberUpdateDto {
 
+    private String email;
+
     private String password;
 
     private String confirmPassword;
 
     private String name;
+
+    private String nickname;
+
+    private String telephone;
 
     private String job;
 

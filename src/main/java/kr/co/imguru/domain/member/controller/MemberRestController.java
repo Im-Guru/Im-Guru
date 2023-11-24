@@ -64,10 +64,16 @@ public class MemberRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getAllGuruMembers());
     }
 
-    @PutMapping("/member/{memberNickname}")
-    public ResponseFormat<MemberReadDto> updateMember(@PathVariable String memberNickname,
-                             @RequestBody @Valid MemberUpdateDto updateDto) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.updateMember(memberNickname, updateDto));
+//    @PutMapping("/member/{memberNickname}")
+//    public ResponseFormat<MemberReadDto> updateMember(@PathVariable String memberNickname,
+//                             @RequestBody @Valid MemberUpdateDto updateDto) {
+//        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.updateMember(memberNickname, updateDto));
+//    }
+
+    @PostMapping("/member/update")
+    public ResponseFormat<MemberReadDto> updateMember(@AuthenticationPrincipal UserDetails userDetails,
+                                                      @RequestBody @Valid MemberUpdateDto updateDto) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.updateMember(userDetails.getUsername(), updateDto));
     }
 
     @DeleteMapping("/member/{memberNickname}")
@@ -93,6 +99,18 @@ public class MemberRestController {
                                                 @PathVariable Long replyId) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.checkReplier(userDetails.getUsername(), replyId));
     }
+
+    @PostMapping("/member/myInfo")
+    public ResponseFormat<MemberReadDto> getMemberByLoginMember(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getMemberByLoginMember(userDetails.getUsername()));
+    }
+
+    @PostMapping("/member/{memberNickname}")
+    public ResponseFormat<MemberReadDto> getMemberDetailByMemberNickname(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getMemberDetailByMemberNickname(memberNickname));
+    }
+
+
 
 
     /** 회원가입 시, 중복 확인 버튼 체크 위한 API **/
