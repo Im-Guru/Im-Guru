@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -134,5 +135,28 @@ public class PostRestController {
 
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.addPostLike(userDetails.getUsername(), postId));
     }
+
+
+
+    @PostMapping("/posts/myWrite")
+    public ResponseFormat<List<PostReadDto>> getPostsByLoginMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getPostsByLoginMember(userDetails.getUsername()));
+    }
+
+    @PostMapping("/posts/myLike")
+    public ResponseFormat<List<PostReadDto>> getLikePostsByLoginMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByLoginMember(userDetails.getUsername()));
+    }
+
+    @PostMapping("/posts/member/{memberNickname}")
+    public ResponseFormat<List<PostReadDto>> getPostsByMemberNickname(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getPostsByMemberNickname(memberNickname));
+    }
+
+    @PostMapping("/posts/like/member/{memberNickname}")
+    public ResponseFormat<List<PostReadDto>> getLikePostsByMemberNickname(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByMemberNickname(memberNickname));
+    }
+
 
 }
