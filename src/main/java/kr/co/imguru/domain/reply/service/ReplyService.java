@@ -25,4 +25,8 @@ public interface ReplyService {
     ReplyReadDto updateReply(Long replyId, ReplyUpdateDto updateDto);
 
     Long deleteReply(String email, Long postId, Long replyId);
+
+    List<ReplyReadDto> getRepliesByLoginMember(String email);
+
+    List<ReplyReadDto> getRepliesByMemberNickname(String memberNickname);
 }

@@ -178,6 +178,34 @@ public class ReplyServiceImpl implements ReplyService {
         return reply.get().getId();
     }
 
+    @Override
+    @Transactional
+    public List<ReplyReadDto> getRepliesByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(loginMember);
+
+        return replySearchRepository.findRepliesByMemberNickname(loginMember.get().getNickname())
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ReplyReadDto> getRepliesByMemberNickname(String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+
+        isMember(member);
+
+        return replySearchRepository.findRepliesByMemberNickname(memberNickname)
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+
+
     private void isMember(Optional<Member> member) {
         if(member.isEmpty()) {
             throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
