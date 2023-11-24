@@ -10,8 +10,9 @@
 
     <h2><strong>{{ title }}</strong></h2>
     <div>
-      <span class="mouse-cursor" @click="fnMemberView(author)">{{ author }}</span>
-      <span class="small-font">&nbsp; {{ formatDateTime(created_at) }}</span>
+      <span class="mouse-cursor" @click="fnMemberView(author)"><strong>{{ author }}</strong></span>
+      <br>
+      <span class="small-font">{{ formatDateTime(created_at) }}</span>
       <span class="small-font">&nbsp; 조회: {{ viewCnt }}</span>
 
       <div class="icon-container">
@@ -51,20 +52,18 @@
     <!-- --------------- -->
     <div v-for="(reply, idx) in replyList" :key="idx" class="reply-container">
       <div class="icon-container">
-<!--        <i class="fa-solid fa-trash mouse-cursor" v-if="isReplier" @click="removeReply(reply.replyId,reply.postId)">&nbsp;</i>-->
-<!--        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isReplier" @click="toMessageWrite(reply.memberNickname)">&nbsp;</i>-->
-<!--        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isReplier" @click="toReportReply(reply.replyId, reply.content)"></i>&nbsp;-->
         <i class="fa-solid fa-trash mouse-cursor" v-if="isReplierArray[idx]" @click="removeReply(reply.replyId, reply.postId)">&nbsp;</i>
         <i class="fa-solid fa-envelope mouse-cursor" v-if="!isReplierArray[idx]" @click="toMessageWrite(reply.memberNickname)">&nbsp;</i>
         <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isReplierArray[idx]" @click="toReportReply(reply.replyId, reply.content)"></i>&nbsp;
-
       </div>
+
       <div class="reply-detail">
         <strong class="mouse-cursor" @click="fnMemberView(reply.memberNickname)">[{{ reply.memberNickname }}]</strong>
         <br>
         <span class="small-font">{{reply.memberSkill}}</span>
         <p class="mt-1">{{ reply.content }}</p>
       </div>
+
       <span><small>{{ formatDateTime(reply.regDate) }} - </small></span>
       <i class="fa-solid fa-thumbs-up Reply-heart-icon" @click="toReplyLike(reply.replyId)"><small>&nbsp;좋아요 {{reply.likeCnt}}</small></i>
     </div>
