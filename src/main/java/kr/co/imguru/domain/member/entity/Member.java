@@ -109,8 +109,8 @@ public class Member extends BaseEntity {
         this.skill = skill;
     }
 
-    public void changeMember(MemberUpdateDto updateDto, Skill updateSkill) {
-        this.password = updateDto.getPassword();
+    public void changeMember(MemberUpdateDto updateDto, String encodePassword, Skill updateSkill) {
+        this.password = encodePassword;
         this.name = updateDto.getName();
         this.job = updateDto.getJob();
         this.zoneCode = updateDto.getZoneCode();
