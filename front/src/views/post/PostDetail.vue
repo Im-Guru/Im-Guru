@@ -350,12 +350,16 @@ export default {
       })
     },
     toReportPost(postId, title) {
+
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
         return;
       }
+
+      if (!confirm("해당 게시글을 신고하시겠습니까?")) return
+
       this.$router.push({
-        path: '/report/write',
+        path: '/report/post',
         query: {
           reportPost: postId,
           postTitle: title,
@@ -442,8 +446,10 @@ export default {
         return;
       }
 
+      if (!confirm("해당 댓글을 신고하시겠습니까?")) return
+
       this.$router.push({
-        path: '/report/write',
+        path: '/report/reply',
         query: {
           reportReply: replyId,
           replyContent: replyContent,
