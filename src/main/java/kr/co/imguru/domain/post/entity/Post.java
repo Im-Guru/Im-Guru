@@ -2,6 +2,7 @@ package kr.co.imguru.domain.post.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.admin.dto.AdminPostDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.post.dto.PostUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
@@ -70,6 +71,13 @@ public class Post extends BaseEntity {
 
     public void changePost(PostUpdateDto updateDto) {
         this.postCategory = PostCategory.valueOf(updateDto.getCategoryName());
+        this.title = updateDto.getTitle();
+        this.content = updateDto.getContent();
+        this.price = updateDto.getPrice();
+    }
+
+    public void changePost(AdminPostDto updateDto) {
+        this.postCategory = PostCategory.valueOf(updateDto.getPostCategory());
         this.title = updateDto.getTitle();
         this.content = updateDto.getContent();
         this.price = updateDto.getPrice();

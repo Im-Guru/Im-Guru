@@ -26,14 +26,14 @@ export default {
             } else {
                 console.log(userInfoResponse)
                 const accessToken = userInfoResponse.data.data.token.accessToken;
-                const role = userInfoResponse.data.data.role;
+                // const role = userInfoResponse.data.data.role;
                 // const nickname = userInfoResponse.data.data.nickname;
                 const expirationTime = new Date().getTime() + (1800000); //30분
                 // const expirationTime = new Date().getTime() + (5000); //5초
 
                 // 유효 시간과 사용자 정보를 로컬 스토리지에 저장
                 localStorage.setItem('user_token', accessToken);
-                localStorage.setItem('user_role', role);
+                // localStorage.setItem('user_role', role);
                 // localStorage.setItem('user_nickname', nickname);
                 localStorage.setItem('user_expiration', expirationTime);
 
@@ -53,7 +53,7 @@ export default {
     logout() {
         // 로그아웃 시 로컬 스토리지의 관련 정보 삭제
         localStorage.removeItem('user_token');
-        localStorage.removeItem('user_role');
+        // localStorage.removeItem('user_role');
         // localStorage.removeItem('user_nickname');
         localStorage.removeItem('user_expiration');
 

@@ -2,6 +2,7 @@ package kr.co.imguru.domain.skill.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.admin.dto.AdminSkillDto;
 import kr.co.imguru.domain.skill.dto.SkillUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
@@ -29,6 +30,10 @@ public class Skill extends BaseEntity {
     }
 
     public void changeSkill(SkillUpdateDto updateDto) {
+        this.name = updateDto.getName();
+    }
+
+    public void changeSkillByAdmin(AdminSkillDto updateDto) {
         this.name = updateDto.getName();
     }
 

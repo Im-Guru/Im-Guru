@@ -2,6 +2,7 @@ package kr.co.imguru.domain.reply.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.admin.dto.AdminReplyDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.reply.dto.ReplyUpdateDto;
@@ -48,6 +49,10 @@ public class Reply extends BaseEntity {
     }
 
     public void changeReply(ReplyUpdateDto updateDto) {
+        this.content = updateDto.getContent();
+    }
+
+    public void changeReplyByAdmin(AdminReplyDto updateDto) {
         this.content = updateDto.getContent();
     }
 

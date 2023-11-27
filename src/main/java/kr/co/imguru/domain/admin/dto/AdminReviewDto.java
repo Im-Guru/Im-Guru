@@ -1,4 +1,4 @@
-package kr.co.imguru.domain.review.dto;
+package kr.co.imguru.domain.admin.dto;
 
 import kr.co.imguru.domain.file.entity.FileFormat;
 import lombok.AllArgsConstructor;
@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewReadDto {
+public class AdminReviewDto {
 
     private Long reviewId;
 
@@ -29,5 +30,11 @@ public class ReviewReadDto {
     private int rate;
 
     private Long likeCnt;
+
+    private boolean isDelete;
+
+    private LocalDateTime regDate;
+
+    private LocalDateTime modDate;
 
 }

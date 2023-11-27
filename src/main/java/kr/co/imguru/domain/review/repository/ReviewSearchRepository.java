@@ -46,6 +46,28 @@ public class ReviewSearchRepository {
                 .fetch();
     }
 
+    public List<Review> findReviewsGuruByMember(Long memberId) {
+        return queryFactory
+                .selectFrom(review)
+                .join(member).on(review.guru.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        review.guru.id.eq(memberId)
+                )
+                .fetch();
+    }
+
+    public List<Review> findReviewsUserByMember(Long memberId) {
+        return queryFactory
+                .selectFrom(review)
+                .join(member).on(review.user.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        review.user.id.eq(memberId)
+                )
+                .fetch();
+    }
+
     public List<Review> findLikeReviewsByMemberNickname(String memberNickname) {
         return queryFactory
                 .selectFrom(review)

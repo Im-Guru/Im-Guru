@@ -50,6 +50,28 @@ public class ReplySearchRepository {
                 .fetch();
     }
 
+    public List<Reply> findRepliesByMember(Long memberId) {
+        return queryFactory
+                .selectFrom(reply)
+                .join(member).on(reply.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        reply.member.id.eq(memberId)
+                )
+                .fetch();
+    }
+
+    public List<Reply> findRepliesByPost(Long postId) {
+        return queryFactory
+                .selectFrom(reply)
+                .join(post).on(reply.post.id.eq(post.id))
+                .fetchJoin()
+                .where(
+                        reply.post.id.eq(postId)
+                )
+                .fetch();
+    }
+
     public List<Reply> findLikeRepliesByMemberNickname(String memberNickname) {
         return queryFactory
                 .selectFrom(reply)

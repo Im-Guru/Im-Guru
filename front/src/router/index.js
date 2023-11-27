@@ -18,7 +18,21 @@ import PostList from "@/views/post/PostList.vue";
 import PostDetail from "@/views/post/PostDetail.vue";
 import PostWrite from "@/views/post/PostWrite.vue";
 
+import ReportPostWrite from "@/views/report/ReportPostWrite.vue";
+import ReportReplyWrite from "@/views/report/ReportReplyWrite.vue";
+
 import MessageList from "@/views/message/MessageList.vue";
+
+import ReviewWrite from "@/views/review/ReviewWrite.vue";
+
+import AdminView from "@/views/admin/AdminView.vue";
+import AdminMain from "@/views/admin/AdminMain.vue";
+import AdminSkill from "@/views/admin/AdminSkill.vue";
+import AdminReportReply from "@/views/admin/AdminReportReply.vue";
+import AdminReportPost from "@/views/admin/AdminReportPost.vue";
+import AdminMemberPost from "@/views/admin/AdminMemberPost.vue";
+import AdminMemberReply from "@/views/admin/AdminMemberReply.vue";
+import AdminMemberPostDetail from "@/views/admin/AdminMemberPostDetail.vue";
 
 
 const requireAuth = () => (from, to, next) => {
@@ -104,9 +118,6 @@ const routes = [
     },
 
 
-
-
-
     // Post
     {
         path: '/post/list',
@@ -126,6 +137,18 @@ const routes = [
     },
 
 
+    // Report
+    {
+        path: '/report/post',
+        name: 'ReportPostWrite',
+        component: ReportPostWrite,
+    },
+    {
+        path: '/report/reply',
+        name: 'ReportReplyWrite',
+        component: ReportReplyWrite,
+    },
+
 
     // Message
     {
@@ -133,7 +156,68 @@ const routes = [
         name: 'MessageList',
         component: MessageList,
         beforeEnter: requireAuth()
-    }
+    },
+
+
+    // Review
+    {
+        path: '/review/write',
+        name: 'ReviewWrite',
+        component: ReviewWrite,
+        beforeEnter: requireAuth
+    },
+
+
+    // Admin
+    {
+        path: '/admin/view',
+        name: 'AdminView',
+        component: AdminView,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/main',
+        name: 'AdminMain',
+        component: AdminMain,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/reportPost/list',
+        name: 'AdminReportPost',
+        component: AdminReportPost,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/reportReply/list',
+        name: 'AdminReportReply',
+        component: AdminReportReply,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/skill/list',
+        name: 'AdminSkill',
+        component: AdminSkill,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/member/post',
+        name: 'AdminMemberPost',
+        component: AdminMemberPost,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/member/reply',
+        name: 'AdminMemberReply',
+        component: AdminMemberReply,
+        beforeEnter: requireAuth
+    },
+    {
+        path: '/admin/member/post/detail',
+        name: 'AdminMemberPostDetail',
+        component: AdminMemberPostDetail,
+        beforeEnter: requireAuth
+    },
+
 ]
 
 const router = createRouter({
