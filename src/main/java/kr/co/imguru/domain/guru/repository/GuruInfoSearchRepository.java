@@ -49,4 +49,18 @@ public class GuruInfoSearchRepository {
         return Optional.ofNullable(temp);
     }
 
+    public Optional<GuruInfo> findGuruInfoByMemberId(Long memberId) {
+        GuruInfo temp = queryFactory
+                .selectFrom(guruInfo)
+                .join(member)
+                .on(guruInfo.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        guruInfo.member.id.eq(memberId)
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(temp);
+    }
+
 }

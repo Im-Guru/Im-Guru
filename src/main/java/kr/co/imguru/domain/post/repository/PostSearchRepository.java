@@ -57,6 +57,49 @@ public class PostSearchRepository {
                 .fetch();
     }
 
+    public List<Post> findPostsByMemberId(Long memberId) {
+        return queryFactory
+                .selectFrom(post)
+                .join(member).on(post.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        post.member.id.eq(memberId)
+                )
+                .fetch();
+    }
+
+    public List<Post> findPostsByMemberGuru() {
+        return queryFactory
+                .selectFrom(post)
+                .join(member).on(post.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        post.member.role.eq(Role.ROLE_GURU)
+                )
+                .fetch();
+    }
+
+    public List<Post> findPostsByMemberUser() {
+        return queryFactory
+                .selectFrom(post)
+                .join(member).on(post.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        post.member.role.eq(Role.ROLE_USER)
+                )
+                .fetch();
+    }
+
+    public List<Post> findPostsBySkill(Long skillId) {
+        return queryFactory
+                .selectFrom(post)
+                .join(member).on(post.member.id.eq(member.id))
+                .fetchJoin()
+                .where(
+                        post.member.skill.id.eq(skillId)
+                )
+                .fetch();
+    }
 
 
     public Page<Post> findWithPaging(Pageable pageable, String postCategory, String skill, String role, String searchType, String searchText) {
