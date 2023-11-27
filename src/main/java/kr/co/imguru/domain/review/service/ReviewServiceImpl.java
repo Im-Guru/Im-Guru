@@ -309,6 +309,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private ReviewReadDto toReadDto(Review review) {
         return ReviewReadDto.builder()
+                .reviewId(review.getId())
                 .userNickname(review.getUser().getNickname())
                 .guruNickname(review.getGuru().getNickname())
                 .guruSkill(review.getGuru().getSkill().getName())
@@ -320,6 +321,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private ReviewReadDto toReadDetailDto(Review review, List<FileFormat> fileFormatList) {
         return ReviewReadDto.builder()
+                .reviewId(review.getId())
                 .userNickname(review.getUser().getNickname())
                 .guruNickname(review.getGuru().getNickname())
                 .guruSkill(review.getGuru().getSkill().getName())

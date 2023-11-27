@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ReviewReadDto {
 
+    private Long reviewId;
+
     private String userNickname;
 
     private String guruNickname;
