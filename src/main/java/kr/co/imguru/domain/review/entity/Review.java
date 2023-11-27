@@ -3,6 +3,7 @@ package kr.co.imguru.domain.review.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kr.co.imguru.domain.admin.dto.AdminReviewDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
@@ -54,6 +55,11 @@ public class Review extends BaseEntity {
     }
 
     public void changeReview(ReviewUpdateDto updateDto) {
+        this.content = updateDto.getContent();
+        this.rate = updateDto.getRate();
+    }
+
+    public void changeReviewByAdmin(AdminReviewDto updateDto) {
         this.content = updateDto.getContent();
         this.rate = updateDto.getRate();
     }

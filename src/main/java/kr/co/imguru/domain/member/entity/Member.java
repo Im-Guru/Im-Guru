@@ -4,6 +4,7 @@ package kr.co.imguru.domain.member.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.admin.dto.AdminMemberDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.global.common.BaseEntity;
@@ -117,6 +118,21 @@ public class Member extends BaseEntity {
         this.roadAddress = updateDto.getRoadAddress();
         this.detailAddress = updateDto.getDetailAddress();
         this.birthDate = updateDto.getBirthDate();
+        this.skill = updateSkill;
+    }
+
+    public void changeMemberByAdmin(AdminMemberDto updateDto, String encodePassword, Skill updateSkill) {
+        this.email = updateDto.getEmail();
+        this.password = encodePassword;
+        this.name = updateDto.getName();
+        this.nickname = updateDto.getNickname();
+        this.telephone = updateDto.getTelephone();
+        this.job = updateDto.getJob();
+        this.zoneCode = updateDto.getZoneCode();
+        this.roadAddress = updateDto.getRoadAddress();
+        this.detailAddress = updateDto.getDetailAddress();
+        this.birthDate = updateDto.getBirthDate();
+        this.gender = Gender.valueOf(updateDto.getGender());
         this.skill = updateSkill;
     }
 

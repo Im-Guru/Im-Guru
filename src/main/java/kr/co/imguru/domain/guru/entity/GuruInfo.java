@@ -3,6 +3,7 @@ package kr.co.imguru.domain.guru.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kr.co.imguru.domain.admin.dto.AdminGuruInfoDto;
 import kr.co.imguru.domain.guru.dto.GuruInfoUpdateDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.global.common.BaseEntity;
@@ -73,6 +74,16 @@ public class GuruInfo extends BaseEntity {
     }
 
     public void changeGuruInfo(GuruInfoUpdateDto updateDto) {
+        this.intro = updateDto.getIntro();
+        this.companyName = updateDto.getCompanyName();
+        this.position = updateDto.getPosition();
+        this.careerAt = updateDto.getCareerAt();
+        this.contactTime = updateDto.getContactTime();
+        this.workArea = updateDto.getWorkArea();
+        this.description = updateDto.getDescription();
+    }
+
+    public void changeGuruInfoByAdmin(AdminGuruInfoDto updateDto) {
         this.intro = updateDto.getIntro();
         this.companyName = updateDto.getCompanyName();
         this.position = updateDto.getPosition();
