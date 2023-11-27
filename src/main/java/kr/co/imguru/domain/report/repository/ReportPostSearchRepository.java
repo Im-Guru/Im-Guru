@@ -46,6 +46,17 @@ public class ReportPostSearchRepository {
                 .fetch();
     }
 
+    public List<ReportPost> findReportPostsByPost(Long postId) {
+        return queryFactory
+                .selectFrom(reportPost)
+                .join(post).on(reportPost.post.id.eq(post.id))
+                .fetchJoin()
+                .where(
+                        reportPost.post.id.eq(postId)
+                )
+                .fetch();
+    }
+
     public ReportPost existsByPostIdAndMemberNickname(Long postId, String memberNickname) {
         return queryFactory
                 .selectFrom(reportPost)

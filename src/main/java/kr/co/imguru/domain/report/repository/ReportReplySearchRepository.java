@@ -46,6 +46,17 @@ public class ReportReplySearchRepository {
                 .fetch();
     }
 
+    public List<ReportReply> findReportRepliesByReply(Long replyId) {
+        return queryFactory
+                .selectFrom(reportReply)
+                .join(reply).on(reportReply.reply.id.eq(reply.id))
+                .fetchJoin()
+                .where(
+                        reportReply.reply.id.eq(replyId)
+                )
+                .fetch();
+    }
+
     public ReportReply existsByReplyIdAndMemberNickname(Long replyId, String memberNickname) {
         return queryFactory
                 .selectFrom(reportReply)
