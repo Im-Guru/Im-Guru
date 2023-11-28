@@ -68,6 +68,8 @@ public enum ResponseStatus {
     FAIL_SKILL_NAME_DUPLICATED("클라이언트가 요청한 스킬이 중복되었습니다.", HttpStatus.BAD_REQUEST),
     FAIL_SKILL_OUT_OF_BOUND("클라이언트가 요청한 스킬의 갯수가 초과되었습니다.", HttpStatus.BAD_REQUEST),
 
+    FAIL_PAY_NOT_FOUND("클라이언트가 요청한 결제정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // Login Failed Status
     FAIL_LOGIN_NOT_SUCCESS("로그인이 되지 않았습니다. 재시도 해주세요.", HttpStatus.BAD_REQUEST),
 
