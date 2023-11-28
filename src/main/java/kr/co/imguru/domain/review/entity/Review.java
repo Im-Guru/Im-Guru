@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kr.co.imguru.domain.admin.dto.AdminReviewDto;
 import kr.co.imguru.domain.member.entity.Member;
+import kr.co.imguru.domain.pay.entity.Pay;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;
@@ -30,6 +31,10 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "guru", referencedColumnName = "member_id")
     private Member guru;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pay_id")
+    private Pay pay;
+
     @Column(name = "content")
     @NotBlank
     private String content;
@@ -44,11 +49,13 @@ public class Review extends BaseEntity {
     @Builder
     public Review(Member user,
                   Member guru,
+                  Pay pay,
                   String content,
                   int rate,
                   Long likeCnt) {
         this.user = user;
         this.guru = guru;
+        this.pay = pay;
         this.content = content;
         this.rate = rate;
         this.likeCnt = likeCnt;

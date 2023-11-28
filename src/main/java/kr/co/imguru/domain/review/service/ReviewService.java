@@ -12,7 +12,7 @@ public interface ReviewService {
 
 //    void createReview(ReviewCreateDto createDto);
 
-    void createReview(ReviewCreateDto createDto, List<MultipartFile> files) throws IOException;
+    void createReview(String email, ReviewCreateDto createDto, List<MultipartFile> files) throws IOException;
 
     ReviewReadDto getReview(Long reviewId);
 
@@ -22,7 +22,7 @@ public interface ReviewService {
 
     List<ReviewReadDto> getAllReviews();
 
-    ReviewReadDto addLikeReviewByMemberNickname(Long reviewId, String memberNickname);
+    ReviewReadDto addLikeReviewByMember(Long reviewId, String email);
 
     List<ReviewReadDto> getLikeReviewsByMember(String memberNickname);
 

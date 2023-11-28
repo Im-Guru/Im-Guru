@@ -6,6 +6,7 @@ import kr.co.imguru.domain.review.dto.ReviewCreateDto;
 import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
 import kr.co.imguru.domain.review.service.ReviewService;
+import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,9 +39,10 @@ public class ReviewRestController {
 //    }
 
     @PostMapping(value = "/review", consumes = {"multipart/form-data"})
-    public ResponseFormat<Void> createPost(@RequestPart("createDto") @Valid ReviewCreateDto createDto,
-                                           @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
-        reviewService.createReview(createDto, files);
+    public ResponseFormat<Void> createReview(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                             @RequestPart("createDto") @Valid ReviewCreateDto createDto,
+                                             @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
+        reviewService.createReview(userDetails.getUsername(), createDto, files);
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
@@ -86,10 +90,10 @@ public class ReviewRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getAllReviews());
     }
 
-    @PostMapping("/review/like/{reviewId}/{memberNickname}")
-    public ResponseFormat<ReviewReadDto> addLikeReview(@PathVariable Long reviewId,
-                                                     @PathVariable String memberNickname) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.addLikeReviewByMemberNickname(reviewId, memberNickname));
+    @PostMapping("/review/like/{reviewId}")
+    public ResponseFormat<ReviewReadDto> addLikeReview(@AuthenticationPrincipal UserDetails userDetails,
+                                                       @PathVariable Long reviewId) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.addLikeReviewByMember(reviewId, userDetails.getUsername()));
     }
 
     @GetMapping("/review/like/{memberNickname}")
