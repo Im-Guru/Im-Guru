@@ -1,14 +1,58 @@
 <template>
   <div class="container my-5 col-8">
-    <div class="report-header">
+    <div class="review-header">
       <h2><strong>후기</strong></h2>
     </div>
 
-    <hr class="report-divider">
+    <hr class="review-divider">
 
+    <div class="review-input">
+      <div class="form-group row align-items-center">
 
+        <div class="row">
+          <label for="guruNickname" class="col-md-2 col-form-label"><strong>도사 명: </strong></label>
+          <div class="col-md-4">
+            <input type="text" id="guruNickname" v-model="guruNickname" class="form-control" readonly>
+          </div>
+          <label for="categoryName" class="col-md-2 col-form-label"><strong>도사 전문 분야: </strong></label>
+          <div class="col-md-4">
+            <input type="text" id="guruSkill" v-model="guruSkill" class="form-control" readonly>
+          </div>
+        </div>
 
+        <div class="row mt-3">
+          <label for="userNickname" class="col-md-2 col-form-label"><strong>사용자 명: </strong></label>
+          <div class="col-md-4">
+            <input type="text" id="userNickname" v-model="userNickname" class="form-control" readonly>
+          </div>
 
+          <label for="rate" class="col-md-2 col-form-label"><strong>별점: </strong></label>
+          <div class="col-md-4">
+            <input type="text" id="rate" v-model="rate" class="form-control">
+          </div>
+        </div>
+
+        <label for="payId" class="col-md-2 col-form-label" hidden><strong>결제 ID: </strong></label>
+        <div class="col-md-4" hidden>
+          <input type="text" id="payId" v-model="payId" class="form-control" readonly>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="review-input mt-3">
+      <div class="form-group row align-items-center">
+        <label for="content" class="col-md-2 col-form-label"><strong>후기 내용: </strong></label>
+        <div class="col-md-10">
+          <textarea id="content" cols="40" rows="10" v-model="content" class="form-control"
+                    style="resize: none;" placeholder="후기 내용을 입력해주세요." required></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-buttons mt-3 d-flex justify-content-end">
+      <button type="button" class="btn btn-primary btn-rounded" @click="fnSave">보내기</button>
+    </div>
 
   </div>
 </template>
@@ -16,7 +60,7 @@
 
 <script>
 export default {
-  name: "ReportWrite",
+  name: "reviewWrite",
 
   data() { //변수생성
     return {

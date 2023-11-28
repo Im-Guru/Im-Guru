@@ -22,6 +22,8 @@ public class ReviewReadDto {
 
     private String guruSkill;
 
+    private Long payId;
+
     private String content;
 
     private List<FileFormat> fileFormat;

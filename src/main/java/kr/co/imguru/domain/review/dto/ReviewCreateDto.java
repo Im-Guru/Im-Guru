@@ -15,6 +15,8 @@ public class ReviewCreateDto {
 
     private String guruNickname;
 
+    private Long payId;
+
     private String content;
 
     private int rate;

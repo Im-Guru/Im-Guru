@@ -9,6 +9,8 @@ import kr.co.imguru.domain.like.repository.LikeReviewRepository;
 import kr.co.imguru.domain.like.repository.LikeReviewSearchRepository;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
+import kr.co.imguru.domain.pay.entity.Pay;
+import kr.co.imguru.domain.pay.repository.PayRepository;
 import kr.co.imguru.domain.review.dto.ReviewCreateDto;
 import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
@@ -40,6 +42,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final MemberRepository memberRepository;
 
+    private final PayRepository payRepository;
+
     private final LikeReviewRepository likeReviewRepository;
 
     private final FileRepository fileRepository;
@@ -64,8 +68,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void createReview(ReviewCreateDto createDto, List<MultipartFile> files) throws IOException {
-        Optional<Member> user = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getUserNickname());
+    public void createReview(String email, ReviewCreateDto createDto, List<MultipartFile> files) throws IOException {
+        Optional<Member> user = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(user);
         isUser(user);
 
@@ -73,7 +77,10 @@ public class ReviewServiceImpl implements ReviewService {
         isMember(guru);
         isGuru(guru);
 
-        Review review = toEntity(createDto, user.get(), guru.get());
+        Optional<Pay> pay = payRepository.findById(createDto.getPayId());
+        isPay(pay);
+
+        Review review = toEntity(createDto, user.get(), guru.get(), pay.get());
 
         reviewRepository.save(review);
 
@@ -146,8 +153,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewReadDto addLikeReviewByMemberNickname(Long reviewId, String memberNickname) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+    public ReviewReadDto addLikeReviewByMember(Long reviewId, String email) {
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(member);
 
         Optional<Review> review = reviewRepository.findByIdAndIsDeleteFalse(reviewId);
@@ -283,6 +290,12 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    private void isPay(Optional<Pay> pay) {
+        if(pay.isEmpty()) {
+            throw new NotFoundException(ResponseStatus.FAIL_PAY_NOT_FOUND);
+        }
+    }
+
     private void isWriter(Optional<Member> member, Optional<Review> review) {
         if (!member.get().getNickname().equals(review.get().getUser().getNickname())) {
             throw new ForbiddenException(ResponseStatus.FAIL_REVIEW_WRITER_NOT_MATCH);
@@ -297,10 +310,11 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private Review toEntity(ReviewCreateDto dto, Member user, Member guru) {
+    private Review toEntity(ReviewCreateDto dto, Member user, Member guru, Pay pay) {
         return Review.builder()
                 .user(user)
                 .guru(guru)
+                .pay(pay)
                 .content(dto.getContent())
                 .rate(dto.getRate())
                 .likeCnt(0L)
