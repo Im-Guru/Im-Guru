@@ -3,7 +3,6 @@ package kr.co.imguru.domain.reply.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.imguru.domain.like.entity.QLikeReply;
 import kr.co.imguru.domain.member.entity.QMember;
-import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.entity.QPost;
 import kr.co.imguru.domain.reply.entity.QReply;
 import kr.co.imguru.domain.reply.entity.Reply;

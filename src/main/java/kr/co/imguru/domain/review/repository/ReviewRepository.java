@@ -2,7 +2,6 @@ package kr.co.imguru.domain.review.repository;
 
 import kr.co.imguru.domain.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

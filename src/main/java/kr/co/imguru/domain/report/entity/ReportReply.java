@@ -3,7 +3,6 @@ package kr.co.imguru.domain.report.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import kr.co.imguru.domain.member.entity.Member;
-import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.global.common.BaseEntity;
 import kr.co.imguru.global.common.ReportCategory;

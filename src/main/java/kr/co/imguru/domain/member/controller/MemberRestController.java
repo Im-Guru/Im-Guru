@@ -6,8 +6,6 @@ import kr.co.imguru.domain.member.dto.MemberLoginDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.service.MemberService;
-import kr.co.imguru.domain.skill.dto.SkillReadDto;
-import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.auth.TokenDto;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
