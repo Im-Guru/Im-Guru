@@ -2,7 +2,6 @@ package kr.co.imguru.domain.like.entity;
 
 import jakarta.persistence.*;
 import kr.co.imguru.domain.member.entity.Member;
-import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.global.common.BaseEntity;
 import lombok.AccessLevel;

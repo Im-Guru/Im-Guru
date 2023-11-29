@@ -28,7 +28,13 @@
 
           <label for="rate" class="col-md-2 col-form-label"><strong>별점: </strong></label>
           <div class="col-md-4">
-            <input type="text" id="rate" v-model="rate" class="form-control">
+            <!--            <input type="text" id="rate" v-model="rate" class="form-control">-->
+            <div class="star-rating">
+              <div class="star" id="rate" v-for="index in 5" :key="index" @click="check(index)">
+                <span v-if="index < rate">🍎</span>
+                <span v-if="index >= rate">🍏</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -64,42 +70,60 @@ export default {
 
   data() { //변수생성
     return {
-
+      guruNickname: '',
+      guruSkill: '',
+      userNickname: '',
+      payId: '',
+      content: '',
+      rate: '',
     }
   },
   mounted() {
     this.fnLoginMember();
   },
   methods: {
+    check(index) {
+      this.rate = index + 1;
+    },
     fnLoginMember() {
-      // this.$axios.post(`/api/v1/member/myInfo`, "", {
-      //   headers: {
-      //     Authorization: `Bearer ${localStorage.getItem('user_token')}`
-      //   }
-      // }).then((res) => {
-      //   console.log(res);
-      //
-      //   this.memberNickname = res.data.data.nickname;
-      // }).catch((err) => {
-      //   console.log(err);
-      //
-      //   // if (err.response.status === 401 || err.response.status === 400) {
-      //   //   alert("로그인을 먼저 해주세요!");
-      //   //   this.$router.push({path: '/login'});
-      //   // }
-      //   // if (err.response.status === 404) {
-      //   //   alert("잘못된 경로입니다.");
-      //   //   alert(err.response.data.message);
-      //   //   location.reload()
-      //   // } else {
-      //   //   alert(err.response.data.message);
-      //   //   location.reload()
-      //   // }
-      //   // this.$store.state.loadingStatus = false;
-      // })
+      this.$axios.post(`/api/v1/member/myInfo`, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      }).then((res) => {
+        console.log(res);
+
+        this.userNickname = res.data.data.nickname;
+      }).catch((err) => {
+        console.log(err);
+
+        // if (err.response.status === 401 || err.response.status === 400) {
+        //   alert("로그인을 먼저 해주세요!");
+        //   this.$router.push({path: '/login'});
+        // }
+        // if (err.response.status === 404) {
+        //   alert("잘못된 경로입니다.");
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // } else {
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // }
+        // this.$store.state.loadingStatus = false;
+      })
     },
 
   }
 }
 
 </script>
+
+<style>
+.star {
+  display: inline-block; /* or inline-flex */
+  margin-right: 5px; /* Adjust the margin as needed */
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+</style>
+

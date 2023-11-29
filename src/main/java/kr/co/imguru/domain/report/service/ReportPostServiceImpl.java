@@ -1,7 +1,6 @@
 package kr.co.imguru.domain.report.service;
 
 import jakarta.transaction.Transactional;
-import kr.co.imguru.domain.guru.entity.GuruInfo;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.post.entity.Post;

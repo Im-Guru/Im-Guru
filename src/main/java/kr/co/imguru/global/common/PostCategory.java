@@ -3,8 +3,6 @@ package kr.co.imguru.global.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
-
 @Getter
 @AllArgsConstructor
 public enum PostCategory {

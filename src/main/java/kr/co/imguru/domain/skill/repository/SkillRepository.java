@@ -1,6 +1,5 @@
 package kr.co.imguru.domain.skill.repository;
 
-import kr.co.imguru.domain.skill.dto.SkillReadDto;
 import kr.co.imguru.domain.skill.entity.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -27,8 +27,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public void createMessage(MessageCreateDto createDto) {
-        Optional<Member> sender = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getSenderNickname());
+    public void createMessage(String email, MessageCreateDto createDto) {
+        Optional<Member> sender = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(sender);
 
         Optional<Member> receiver = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getReceiverNickname());
@@ -40,8 +40,8 @@ public class MessageServiceImpl implements MessageService {
     //해당 회원과 메세지 받거나 보낸 회원 리스트
     @Override
     @Transactional
-    public List<MessageMemberDto> getMessageByMember(String memberNickname) {
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+    public List<MessageMemberDto> getMessageByMember(String email) {
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(member);
 
         List<Long> tempList = messageRepository.findMemberMessageList(member.get().getId());
@@ -87,6 +87,7 @@ public class MessageServiceImpl implements MessageService {
 
     private MessageReadDto toReadDto(Message message) {
         return MessageReadDto.builder()
+                .messageId(message.getId())
                 .senderNickname(message.getSender().getNickname())
                 .receiverNickname(message.getReceiver().getNickname())
                 .content(message.getContent())
