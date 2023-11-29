@@ -8,6 +8,8 @@ import kr.co.imguru.domain.message.service.MessageService;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +22,15 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping("/message")
-    public ResponseFormat<Void> createMessage(@RequestBody @Valid MessageCreateDto createDto) {
-        messageService.createMessage(createDto);
-
+    public ResponseFormat<Void> createMessage(@AuthenticationPrincipal UserDetails userDetails,
+                                              @RequestBody @Valid MessageCreateDto createDto) {
+        messageService.createMessage(userDetails.getUsername(), createDto);
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
 
-    @GetMapping("/message/{memberNickname}")
-    public ResponseFormat<List<MessageMemberDto>> readMessageList(@PathVariable String memberNickname) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, messageService.getMessageByMember(memberNickname));
+    @PostMapping("/message/list")
+    public ResponseFormat<List<MessageMemberDto>> readMessageList(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, messageService.getMessageByMember(userDetails.getUsername()));
     }
 
     @GetMapping("/message/{sender}/{receiver}")
