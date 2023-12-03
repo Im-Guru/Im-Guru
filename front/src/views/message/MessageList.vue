@@ -4,7 +4,6 @@
     <h1>Message List Page</h1>
     <div>{{this.userNickname}} 님 쪽지함 목록</div>
     <hr>
-
     <div>
       <div v-for="(message, idx) in messageList" :key="idx" class="message-container">
         <div class="message-detail hover-pointer" @click="fnMessageDetail(message.memberNickname)">
@@ -16,6 +15,7 @@
     </div>
 
   </div>
+
 </template>
 <script>
 
@@ -24,9 +24,7 @@ export default {
   data() { //변수생성
     return {
       userNickname: '',
-
       messageList: [],
-
     }
   },
   mounted() {
@@ -41,11 +39,9 @@ export default {
         }
       }).then((res) => {
         console.log(res);
-
         this.userNickname = res.data.data.nickname;
       }).catch((err) => {
         console.log(err);
-
         // if (err.response.status === 401 || err.response.status === 400) {
         //   alert("로그인을 먼저 해주세요!");
         //   this.$router.push({path: '/login'});
@@ -80,20 +76,18 @@ export default {
         this.$store.state.loadingStatus = false;
       })
     },
-
     fnMessageDetail(member) {
       this.$router.push({
         path: '../message/detail',
         query: {member}
       })
     },
-
   }
-
 }
-
-
 </script>
 
 <style scoped>
+
+
+
 </style>
