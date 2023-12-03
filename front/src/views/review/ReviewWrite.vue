@@ -1,4 +1,5 @@
 <template>
+
   <div class="container my-5 col-8">
     <div class="review-header">
       <h2><strong>후기</strong></h2>
@@ -63,7 +64,6 @@
   </div>
 </template>
 
-
 <script>
 export default {
   name: "reviewWrite",
@@ -86,6 +86,12 @@ export default {
       this.rate = index + 1;
     },
     fnLoginMember() {
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
+        return;
+      }
+
       this.$axios.post(`/api/v1/member/myInfo`, "", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`

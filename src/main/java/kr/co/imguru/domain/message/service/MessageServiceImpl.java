@@ -58,14 +58,14 @@ public class MessageServiceImpl implements MessageService {
     //리스트에서 클릭 한 해당 회원과 주고 받은 메세지 리스트 조회
     @Override
     @Transactional
-    public List<MessageReadDto> getDetailMessageByMember(String sender, String receiver) {
-        Optional<Member> senderMember = memberRepository.findByNicknameAndIsDeleteFalse(sender);
-        isMember(senderMember);
+    public List<MessageReadDto> getDetailMessage(String email, String member) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+        isMember(loginMember);
 
-        Optional<Member> receiverMember = memberRepository.findByNicknameAndIsDeleteFalse(receiver);
-        isMember(receiverMember);
+        Optional<Member> messageMember = memberRepository.findByNicknameAndIsDeleteFalse(member);
+        isMember(messageMember);
 
-        return messageRepository.findMessagesBetweenMembers(senderMember.get().getId(), receiverMember.get().getId())
+        return messageRepository.findMessagesBetweenMembers(loginMember.get().getId(), messageMember.get().getId())
                 .stream()
                 .map(this::toReadDto)
                 .toList();

@@ -178,6 +178,7 @@ export default {
     fnUpdate() {
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
       this.$router.push({
@@ -190,6 +191,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -268,6 +270,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -303,6 +306,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -341,18 +345,20 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
       this.$router.push({
         path: '/message/write',
-        query: {name: receiverNickname}
+        query: {member: receiverNickname}
       })
     },
     toReportPost(postId, title) {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -374,6 +380,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -407,6 +414,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -443,6 +451,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
@@ -513,7 +522,7 @@ export default {
 <style scoped>
 .small-font {
   font-size: 0.8rem;
-  color: gray;
+  color: rgb(128, 128, 128);
 }
 
 .small-icon {

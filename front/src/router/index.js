@@ -22,6 +22,8 @@ import ReportPostWrite from "@/views/report/ReportPostWrite.vue";
 import ReportReplyWrite from "@/views/report/ReportReplyWrite.vue";
 
 import MessageList from "@/views/message/MessageList.vue";
+import MessageWrite from "@/views/message/MessageWrite.vue";
+import MessageDetail from "@/views/message/MessageDetail.vue";
 
 import ReviewWrite from "@/views/review/ReviewWrite.vue";
 
@@ -157,6 +159,18 @@ const routes = [
         component: MessageList,
         beforeEnter: requireAuth()
     },
+    {
+      path: '/message/write',
+      name: 'MessageWrite',
+      component: MessageWrite,
+      beforeEnter: requireAuth()
+    },
+    {
+        path: '/message/detail',
+        name: 'MessageDetail',
+        component: MessageDetail,
+        beforeEnter: requireAuth()
+    },
 
 
     // Review
@@ -164,7 +178,7 @@ const routes = [
         path: '/review/write',
         name: 'ReviewWrite',
         component: ReviewWrite,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
 
 
@@ -173,49 +187,49 @@ const routes = [
         path: '/admin/view',
         name: 'AdminView',
         component: AdminView,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/main',
         name: 'AdminMain',
         component: AdminMain,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/reportPost/list',
         name: 'AdminReportPost',
         component: AdminReportPost,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/reportReply/list',
         name: 'AdminReportReply',
         component: AdminReportReply,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/skill/list',
         name: 'AdminSkill',
         component: AdminSkill,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/member/post',
         name: 'AdminMemberPost',
         component: AdminMemberPost,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/member/reply',
         name: 'AdminMemberReply',
         component: AdminMemberReply,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
     {
         path: '/admin/member/post/detail',
         name: 'AdminMemberPostDetail',
         component: AdminMemberPostDetail,
-        beforeEnter: requireAuth
+        beforeEnter: requireAuth()
     },
 
 ]
