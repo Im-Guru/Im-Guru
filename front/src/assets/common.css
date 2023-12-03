@@ -89,3 +89,6 @@
     font-size: 12px; /* Adjust the font size for the button text */
     padding: 4px 8px; /* Adjust padding for the button */
 }
+
+.ck-editor__editable { height: 300px; }
+
