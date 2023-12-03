@@ -14,6 +14,6 @@ public interface MessageService {
     List<MessageMemberDto> getMessageByMember(String email);
 
     //리스트에서 클릭 한 해당 회원과 주고 받은 메세지 리스트 조회
-    List<MessageReadDto> getDetailMessageByMember(String sender, String receiver);
+    List<MessageReadDto> getDetailMessage(String email, String member);
 
 }

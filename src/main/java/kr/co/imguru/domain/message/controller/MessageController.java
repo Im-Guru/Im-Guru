@@ -33,8 +33,9 @@ public class MessageController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, messageService.getMessageByMember(userDetails.getUsername()));
     }
 
-    @GetMapping("/message/{sender}/{receiver}")
-    public ResponseFormat<List<MessageReadDto>> readDetailMessageList(@PathVariable String sender, @PathVariable String receiver) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, messageService.getDetailMessageByMember(sender, receiver));
+    @GetMapping("/message/{member}")
+    public ResponseFormat<List<MessageReadDto>> readDetailMessageList(@AuthenticationPrincipal UserDetails userDetails,
+                                                                      @PathVariable String member) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, messageService.getDetailMessage(userDetails.getUsername(), member));
     }
 }

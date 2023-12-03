@@ -24,10 +24,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Long> findMemberMessageList(@Param("userId") Long userId);
 
     @Query("SELECT msg FROM Message msg WHERE " +
-            "(msg.sender.id = :sender AND msg.receiver.id = :receiver) OR " +
-            "(msg.sender.id = :receiver AND msg.receiver.id = :sender) " +
+            "(msg.sender.id = :member AND msg.receiver.id = :login) OR " +
+            "(msg.sender.id = :login AND msg.receiver.id = :member) " +
             "ORDER BY msg.regDate ASC")
-    List<Message> findMessagesBetweenMembers(@Param("sender") Long sender, @Param("receiver") Long receiver);// sender와 receiver간에 주고 받은 메세지 목록
+    List<Message> findMessagesBetweenMembers(@Param("login") Long login, @Param("member") Long member);
+    // 로그인한 유저와 선택한 유저간의 주고받은 메세지 목록
 
 
 }
