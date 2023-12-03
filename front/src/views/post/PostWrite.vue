@@ -8,12 +8,12 @@
         <label for="postCategory" class="mt-3"><strong>카테고리</strong></label>
       </div>
       <div class="col-sm">
-        <b-form-select v-model="postCategory" :options="options" v-if="!isAdmin()" id="postCategory"></b-form-select>
-        <b-form-select v-model="postCategory" :options="adminOptions" v-if="isAdmin()" id="postCategory"></b-form-select>
+        <b-form-select v-model="postCategory" :options="options" v-if="this.role !== 'ROLE_ADMIN'" id="postCategory"></b-form-select>
+        <b-form-select v-model="postCategory" :options="adminOptions" v-if="this.role === 'ROLE_ADMIN'" id="postCategory"></b-form-select>
       </div>
     </div>
 
-    <div class="row mb-3" v-if="isGuru()">
+    <div class="row mb-3" v-if="this.role === 'ROLE_GURU'">
       <div class="col-2 d-flex flex-column align-items-center">
         <label for="postCategory" class="mt-3"><strong>전문기술</strong></label>
       </div>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="row mb-3" v-if="isGuru()">
+    <div class="row mb-3" v-if="this.role === 'ROLE_GURU'">
       <div class="col-2 d-flex flex-column align-items-center">
         <label for="postTitle" class="mt-3"><strong>가격</strong></label>
       </div>
@@ -106,6 +106,7 @@ export default {
         {value: 'QNA', text: '질문글'},
         {value: 'INFO', text: '정보공유'},
       ],
+      role: '',
 
     }
   },
@@ -114,12 +115,39 @@ export default {
   },
   mounted() {
     this.fnGetView();
+    this.fnLoginMember();
   },
   methods: {
+    fnLoginMember() {
+      this.$axios.post(`/api/v1/member/myInfo`, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      }).then((res) => {
+        console.log(res);
+        this.memberNickname = res.data.data.nickname;
+        this.role = res.data.data.role;
+      }).catch((err) => {
+        console.log(err);
+
+        // if (err.response.status === 401 || err.response.status === 400) {
+        //   alert("로그인을 먼저 해주세요!");
+        //   this.$router.push({path: '/login'});
+        // }
+        // if (err.response.status === 404) {
+        //   alert("잘못된 경로입니다.");
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // } else {
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // }
+        // this.$store.state.loadingStatus = false;
+      })
+    },
     handleFileChange(event) {
       this.createDto.files = Array.from(event.target.files); // 선택한 모든 파일을 배열로 저장
     },
-
     async checkGuruSkill() {
       this.$axios.post('/api/v1/skill/checkGuruSkill', null, {
         headers: {
@@ -246,18 +274,6 @@ export default {
               }
             });
       }
-    },
-
-    isAdmin() {
-      if (localStorage.getItem("user_role") === "ROLE_ADMIN") {
-        return true;
-      } else return false;
-    },
-
-    isGuru() {
-      if (localStorage.getItem("user_role") === "ROLE_GURU") {
-        return true;
-      } else return false;
     },
   }
 }

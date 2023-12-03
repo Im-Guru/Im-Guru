@@ -247,6 +247,7 @@ export default {
 
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
         return;
       }
 
