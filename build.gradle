@@ -43,6 +43,7 @@ dependencies {
 
     // JSON
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation group: 'org.json', name: 'json', version: '20231013'
 
     // File
     implementation 'commons-io:commons-io:2.7'
@@ -64,6 +65,9 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+    // Jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
 }
 
