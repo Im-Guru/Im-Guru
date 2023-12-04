@@ -29,3 +29,7 @@ server:
 jwt:
   secret:
     key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
+
+jasypt:
+  encryptor:
+    password: yourEncryptionPassword
