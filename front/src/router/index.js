@@ -36,6 +36,7 @@ import AdminMemberPost from "@/views/admin/AdminMemberPost.vue";
 import AdminMemberReply from "@/views/admin/AdminMemberReply.vue";
 import AdminMemberPostDetail from "@/views/admin/AdminMemberPostDetail.vue";
 
+import PayTest from "@/views/pay/PayTest.vue";
 
 const requireAuth = () => (from, to, next) => {
     const token = localStorage.getItem('user_token')
@@ -230,6 +231,13 @@ const routes = [
         name: 'AdminMemberPostDetail',
         component: AdminMemberPostDetail,
         beforeEnter: requireAuth()
+    },
+
+    // Pay
+    {
+        path: '/pay/test',
+        name: 'PayTest',
+        component: PayTest,
     },
 
 ]
