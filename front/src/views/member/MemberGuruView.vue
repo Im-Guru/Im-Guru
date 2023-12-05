@@ -8,7 +8,13 @@
       </div>
       <div class="row">
         <div class="col-2" style="text-align: center">
-          <i class="fa-solid fa-user" style="font-size: 50px"></i>
+<!--          <i class="fa-solid fa-user" style="font-size: 50px"></i>-->
+          <!-- 이미지가 있을 때 -->
+          <img v-if="this.fileFormat && this.fileFormat.fileUrl" :src="this.fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>
+
+          <!-- 이미지가 없을 때 -->
+          <i v-else class="fa-solid fa-user" style="font-size: 50px"></i><br>
+
         </div>
         <div class="col">
           <table>
@@ -30,7 +36,7 @@
             </tr>
             <tr>
               <td>주소:</td>
-              <td><small>{{ this.address }}</small></td>
+              <td>{{ this.address }}</td>
             </tr>
           </table>
         </div>
@@ -166,6 +172,7 @@ export default {
       skillName: '',
       job: '',
       address: '',
+      fileFormat: '',
 
       postCategory: '',
       replyCount: '',
@@ -197,6 +204,7 @@ export default {
         this.skillName = res.data.data.skillName;
         this.job = res.data.data.job;
         this.address = res.data.data.roadAddress + " " + res.data.data.detailAddress;
+        this.fileFormat = res.data.data.fileFormat;
 
       }).catch((err) => {
         console.log(err);

@@ -236,7 +236,7 @@ export default {
     },
 
     fnLoginMember() {
-      this.$axios.post(`/api/v1/member/myInfo`, {
+      this.$axios.post(`/api/v1/member/myInfo`,"", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
         }
