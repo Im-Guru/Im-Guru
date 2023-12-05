@@ -88,7 +88,9 @@ export default {
 
       try {
         let loginResult = await this.login({user_id: this.user_id, user_pw: this.user_pw})
-        if (loginResult) this.goToPages()
+        if (loginResult) {
+          this.goToPages();
+        }
       } catch (err) {
         alert("로그인 정보가 없습니다. 다시 확인해주세요");
         this.user_pw = '';
@@ -98,9 +100,10 @@ export default {
     },
     goToPages() {
       this.$store.state.isLogin = true;
-      this.$router.push({
-        name: 'PageHome'
-      })
+      // this.$router.push({
+      //   name: 'PageHome'
+      // })
+      window.location.href = "http://localhost:3000";
     }
   },
   computed: {
