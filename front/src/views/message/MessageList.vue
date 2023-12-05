@@ -1,8 +1,7 @@
 <template>
   <div class="message-list mt-5">
 
-    <h1>Message List Page</h1>
-    <div>{{this.userNickname}} 님 쪽지함 목록</div>
+    <h4><strong>{{this.userNickname}} 님 쪽지함 목록</strong></h4>
     <hr>
     <div>
       <div v-for="(message, idx) in messageList" :key="idx" class="message-container">
