@@ -39,7 +39,12 @@ public class GuruInfoRestController {
 
     @PostMapping("/guru/member/{memberNickname}")
     public ResponseFormat<GuruInfoReadDto> readGuruInfoByMember(@PathVariable String memberNickname) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.getGuruInfoByMember(memberNickname));
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.getGuruInfoByMemberNickname(memberNickname));
+    }
+
+    @PostMapping("/guru/member")
+    public ResponseFormat<GuruInfoReadDto> readGuruInfoByMember(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.getGuruInfoByMember(userDetails.getUsername()));
     }
 
     @PostMapping("/guru/myInfo")
@@ -54,10 +59,10 @@ public class GuruInfoRestController {
     }
 
     //Update
-    @PutMapping("/guru/{memberNickname}")
-    public ResponseFormat<GuruInfoReadDto> updateGuruInfo (@PathVariable String memberNickname,
-                               @RequestBody @Valid GuruInfoUpdateDto updateDto) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.updateGuruInfo(memberNickname, updateDto));
+    @PostMapping("/guru/update")
+    public ResponseFormat<GuruInfoReadDto> updateGuruInfo (@AuthenticationPrincipal UserDetails userDetails,
+                                                           @RequestBody @Valid GuruInfoUpdateDto updateDto) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, guruInfoService.updateGuruInfo(userDetails.getUsername(), updateDto));
     }
 
     //Delete
@@ -67,6 +72,5 @@ public class GuruInfoRestController {
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
-
 
 }

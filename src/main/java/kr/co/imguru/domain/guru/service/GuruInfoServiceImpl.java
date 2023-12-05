@@ -57,13 +57,24 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     @Override
     @Transactional
-    public GuruInfoReadDto getGuruInfoByMember(String memberNickname) {
+    public GuruInfoReadDto getGuruInfoByMemberNickname(String memberNickname) {
         Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
 
         isGuruInfo(guruInfo);
 
         return toReadDto(guruInfo.get());
     }
+
+    @Override
+    @Transactional
+    public GuruInfoReadDto getGuruInfoByMember(String email) {
+        Optional<GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByEmail(email);
+
+        isGuruInfo(guruInfo);
+
+        return toReadDto(guruInfo.get());
+    }
+
 
     @Override
     @Transactional
@@ -88,13 +99,13 @@ public class GuruInfoServiceImpl implements GuruInfoService {
 
     @Override
     @Transactional
-    public GuruInfoReadDto updateGuruInfo(String memberNickname, GuruInfoUpdateDto updateDto) {
+    public GuruInfoReadDto updateGuruInfo(String email, GuruInfoUpdateDto updateDto) {
         // 해당 회원이 존재하는지 + 전문가인지 확인
-        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+        Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
         isGuruMember(member);
 
         // 해당 회원이 작성한 전문가 정보가 있는지 확인
-        Optional <GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByMemberNickname(memberNickname);
+        Optional <GuruInfo> guruInfo = guruInfoSearchRepository.findGuruInfoByEmail(email);
         isGuruInfo(guruInfo);
 
         guruInfo.get().changeGuruInfo(updateDto);

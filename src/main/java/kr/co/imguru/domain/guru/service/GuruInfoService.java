@@ -13,13 +13,15 @@ public interface GuruInfoService {
 
     GuruInfoReadDto getGuruInfo(String memberNickname);
 
-    GuruInfoReadDto getGuruInfoByMember(String memberNickname);
+    GuruInfoReadDto getGuruInfoByMemberNickname(String memberNickname);
+
+    GuruInfoReadDto getGuruInfoByMember(String email);
 
     GuruInfoReadDto getGuruInfoByLoginMember(String email);
 
     List<GuruInfoReadDto> getAllGuruInfos();
 
-    GuruInfoReadDto updateGuruInfo(String memberNickname, GuruInfoUpdateDto updateDto);
+    GuruInfoReadDto updateGuruInfo(String email, GuruInfoUpdateDto updateDto);
 
     void deleteGuruInfo(String memberNickname);
 }
