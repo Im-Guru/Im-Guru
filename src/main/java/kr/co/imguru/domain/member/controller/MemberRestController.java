@@ -1,19 +1,30 @@
 package kr.co.imguru.domain.member.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.co.imguru.domain.member.dto.MemberCreateDto;
 import kr.co.imguru.domain.member.dto.MemberLoginDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.service.MemberService;
+import kr.co.imguru.domain.post.dto.PostCreateDto;
+import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.auth.TokenDto;
 import kr.co.imguru.global.model.ResponseFormat;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -62,12 +73,6 @@ public class MemberRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getAllGuruMembers());
     }
 
-//    @PutMapping("/member/{memberNickname}")
-//    public ResponseFormat<MemberReadDto> updateMember(@PathVariable String memberNickname,
-//                             @RequestBody @Valid MemberUpdateDto updateDto) {
-//        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.updateMember(memberNickname, updateDto));
-//    }
-
     @PostMapping("/member/update")
     public ResponseFormat<MemberReadDto> updateMember(@AuthenticationPrincipal UserDetails userDetails,
                                                       @RequestBody @Valid MemberUpdateDto updateDto) {
@@ -108,12 +113,44 @@ public class MemberRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getMemberDetailByMemberNickname(memberNickname));
     }
 
+    @PostMapping(value = "/member/image", consumes = {"multipart/form-data"})
+    public ResponseFormat<Long> uploadMemberImage(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                  @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
+
+        Long memberId = memberService.uploadMemberImage(userDetails.getUsername(), files);
+
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberId);
+    }
+
+    /*파일 링크 클릭 시 파일 저장*/
+    @GetMapping("/member/files/{fileName}")
+    public ResponseEntity<?> downloadFile(@PathVariable("fileName") String fileName,
+                                          HttpServletRequest request) throws IOException {
+        /*프로젝트 루트 경로*/
+        String rootDir = System.getProperty("user.dir");
+
+        /*file의 path를 저장 -> 클릭 시 파일로 이동*/
+        Path filePath = Path.of(rootDir + "/media/member/" + fileName);
+
+        /*파일의 패스를 uri로 변경하고 resource로 저장.*/
+        Resource resource = new UrlResource(filePath.toUri());
+
+        /*컨텐츠 타입을 가지고 온다.*/
+        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+
+    }
 
 
 
     /** 회원가입 시, 중복 확인 버튼 체크 위한 API **/
     @PostMapping("/member/checkEmail/{email}")
     public ResponseFormat<String> checkEmailValid(@PathVariable String email) {
+
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.checkEmailValid(email));
     }
 

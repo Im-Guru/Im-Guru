@@ -5,7 +5,9 @@ import kr.co.imguru.domain.member.dto.MemberLoginDto;
 import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.global.auth.TokenDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MemberService {
@@ -37,6 +39,8 @@ public interface MemberService {
     MemberReadDto getMemberByLoginMember(String email);
 
     MemberReadDto getMemberDetailByMemberNickname(String memberNickname);
+
+    Long uploadMemberImage(String email, List<MultipartFile> files) throws IOException;
 
 
 

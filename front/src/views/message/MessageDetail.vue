@@ -1,8 +1,14 @@
 <template>
   <div class="message-list mt-5">
-    <h1>Message Detail Page</h1>
-    <div><strong>{{ this.userNickname }}</strong> 님과 <strong>{{this.messageMember}}</strong> 쪽지함 목록</div>
+    <h4><strong>{{this.messageMember}}</strong> 님과 주고 받은 쪽지</h4>
+
+    <div class="mt-4" style="display: flex; justify-content: space-between;">
+      <span>상대 [{{ this.messageMember }}]</span>
+      <span>나 [{{ this.userNickname }}]</span>
+    </div>
+
     <hr>
+
     <div>
       <!--      <div v-for="(message, idx) in messageList" :key="idx" class="message-container">-->
       <div v-for="(message, idx) in messageList" :key="idx"

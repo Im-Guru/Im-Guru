@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
@@ -16,6 +17,12 @@ public interface FileRepository extends JpaRepository<File, Long> {
             "WHERE f.fileCategory=:fileCategory " +
             "AND f.fileKey=:fileKey")
     List<File> findFileByFileKey(String fileCategory, Long fileKey);
+
+    @Query("SELECT f " +
+            "FROM File f " +
+            "WHERE f.fileCategory=:fileCategory " +
+            "AND f.fileKey=:fileKey")
+    Optional<File> findOneFileByFileKey(String fileCategory, Long fileKey);
 
     @Modifying
     @Query("DELETE FROM File f " +

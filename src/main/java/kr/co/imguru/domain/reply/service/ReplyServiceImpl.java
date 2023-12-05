@@ -1,6 +1,9 @@
 package kr.co.imguru.domain.reply.service;
 
 import jakarta.transaction.Transactional;
+import kr.co.imguru.domain.file.entity.File;
+import kr.co.imguru.domain.file.entity.FileFormat;
+import kr.co.imguru.domain.file.repository.FileRepository;
 import kr.co.imguru.domain.like.entity.LikeReply;
 import kr.co.imguru.domain.like.repository.LikeReplyRepository;
 import kr.co.imguru.domain.like.repository.LikeReplySearchRepository;
@@ -21,6 +24,7 @@ import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +37,8 @@ public class ReplyServiceImpl implements ReplyService {
     private final MemberRepository memberRepository;
 
     private final PostRepository postRepository;
+
+    private final FileRepository fileRepository;
 
     private final LikeReplyRepository likeReplyRepository;
 
@@ -65,19 +71,43 @@ public class ReplyServiceImpl implements ReplyService {
 
         isReply(reply);
 
-        return toReadDto(reply.get());
+        Optional<File> memberImage = fileRepository.findOneFileByFileKey("member", reply.get().getMember().getId());
+        if (memberImage.isEmpty()) {
+            return toReadDtoWithImage(reply.get(), null);
+        } else {
+            FileFormat memberImageFormat = new FileFormat(memberImage.get());
+            return toReadDtoWithImage(reply.get(), memberImageFormat);
+        }
+
     }
 
     @Override
     @Transactional
     public List<ReplyReadDto> getRepliesByPost(Long postId) {
         Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(postId);
+
         isPost(post);
 
-        return replySearchRepository.findRepliesByPostId(postId)
-                .stream()
-                .map(this::toReadDto)
-                .toList();
+        List<ReplyReadDto> replyDtos = new ArrayList<>();
+        List<Reply> replies = replySearchRepository.findRepliesByPostId(postId);
+
+        for (Reply reply : replies) {
+            Optional<File> memberImage = fileRepository.findOneFileByFileKey("member", reply.getMember().getId());
+
+            ReplyReadDto dto;
+
+            if (memberImage.isEmpty()) {
+                dto = toReadDtoWithImage(reply, null);
+            } else {
+                FileFormat memberImageFormat = new FileFormat(memberImage.get());
+                dto = toReadDtoWithImage(reply, memberImageFormat);
+            }
+
+            replyDtos.add(dto);
+        }
+
+        return replyDtos;
+
     }
 
     @Override
@@ -251,6 +281,20 @@ public class ReplyServiceImpl implements ReplyService {
         return ReplyReadDto.builder()
                 .replyId(reply.getId())
                 .memberNickname(reply.getMember().getNickname())
+                .postId(reply.getPost().getId())
+                .postTitle(reply.getPost().getTitle())
+                .content(reply.getContent())
+                .likeCnt(reply.getLikeCnt())
+                .regDate(reply.getRegDate())
+                .memberSkill(reply.getMember().getSkill().getName())
+                .build();
+    }
+
+    private ReplyReadDto toReadDtoWithImage(Reply reply, FileFormat memberImage) {
+        return ReplyReadDto.builder()
+                .replyId(reply.getId())
+                .memberNickname(reply.getMember().getNickname())
+                .memberImage(memberImage)
                 .postId(reply.getPost().getId())
                 .postTitle(reply.getPost().getTitle())
                 .content(reply.getContent())

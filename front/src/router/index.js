@@ -6,6 +6,7 @@ import JoinGuru from "@/views/common/JoinGuru.vue";
 import JoinMember from "@/views/common/JoinMember.vue";
 import LoginMember from "@/views/common/LoginMember.vue";
 
+import MemberImage from "@/views/member/MemberImage.vue";
 import MemberMain from "@/views/member/MemberMain.vue";
 import MemberView from "@/views/member/MemberView.vue";
 import MemberUserView from "@/views/member/MemberUserView.vue";
@@ -13,6 +14,7 @@ import MemberGuruView from "@/views/member/MemberGuruView.vue";
 import MemberUserDetail from "@/views/member/MemberUserDetail.vue";
 import MemberGuruDetail from "@/views/member/MemberGuruDetail.vue";
 import GuruInfoWrite from "@/views/member/GuruInfoWrite.vue";
+import GuruInfoUpdate from "@/views/member/GuruInfoUpdate.vue";
 
 import PostList from "@/views/post/PostList.vue";
 import PostDetail from "@/views/post/PostDetail.vue";
@@ -81,6 +83,12 @@ const routes = [
 
     // Member - mypage
     {
+        path: '/member/uploadImage',
+        name: 'MemberImage',
+        component: MemberImage,
+        beforeEnter: requireAuth()
+    },
+    {
         path: '/member/main',
         name: 'MemberMain',
         component: MemberMain,
@@ -118,6 +126,12 @@ const routes = [
         name: 'GuruInfoWrite',
         component: GuruInfoWrite,
         beforeEnter: requireAuth()
+    },
+    {
+      path: '/guru/update',
+      name: 'GuruInfoUpdate',
+      component: GuruInfoUpdate,
+      beforeEnter: requireAuth()
     },
 
 

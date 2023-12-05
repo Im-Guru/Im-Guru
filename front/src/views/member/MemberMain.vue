@@ -2,19 +2,32 @@
 
   <div class="post-list">
 
-    <div class="row mt-5 mb-5">
-      <div class="row">
-        <h2>내 정보</h2>
-      </div>
+    <div class="row mt-5 mb-3">
       <div class="row">
         <div class="col-2" style="text-align: center">
-          <i class="fa-solid fa-user" style="font-size: 50px"></i>
+          <h4 class="mb-2"><strong>내 정보</strong></h4>
+
+<!--          <img :src="fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>-->
+
+<!--          <i class="fa-solid fa-user" style="font-size: 50px"></i><br>-->
+          <!-- 이미지가 있을 때 -->
+          <img v-if="fileFormat && fileFormat.fileUrl" :src="fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>
+
+          <!-- 이미지가 없을 때 -->
+          <i v-else class="fa-solid fa-user" style="font-size: 50px"></i><br>
+
+
+          <button class="mt-2 btn-sm btn-outline-dark btn-rounded small-button">
+            <router-link to="/member/uploadImage" class="no-underline">프로필 사진</router-link>
+          </button>
         </div>
+
         <div class="col">
           <table>
+            <tr><td>&nbsp;</td></tr>
             <tr>
               <td>이름:</td>
-              <td>{{ this.name }}</td>
+              <td>{{ name }}</td>
             </tr>
             <tr>
               <td>닉네임:</td>
@@ -30,19 +43,18 @@
             </tr>
             <tr>
               <td>주소:</td>
-              <td><small>{{ this.address }}</small></td>
+              <td>{{ this.address }}</td>
             </tr>
           </table>
         </div>
       </div>
-      <br>
-      <button>
-        <router-link :to="getDetailLink()">정보 수정</router-link>
-      </button>
 
-      <button v-if="role === 'ROLE_GURU'">
-        <router-link to="/guru/write">도사 정보 작성</router-link>
-      </button>
+      <div class="common-buttons">
+        <button class="btn btn-outline-dark btn-rounded small-button" style="width:100px" @click="getDetailLink">
+          정보 수정
+        </button>
+      </div>
+
     </div>
 
     <hr>
@@ -69,20 +81,23 @@
       </div>
 
       <div v-if="activeTab === 'guruInfo' & role === 'ROLE_GURU'">
-        <div class="mt-3">
+        <div class="mt-3" v-if="existGuruInfo === false">
+          <div>아직 작성 된 도사 정보가 없습니다.</div>
+          <router-link to="/guru/write">도사 정보 작성하러 가기</router-link>
+        </div>
+        <div class="mt-3" v-if="existGuruInfo === true">
           <div>
+            <router-link to="/guru/update">도사 정보 수정하기</router-link>
+
             <div v-if="guruInfoList" class="post-item hover-pointer">
-              <div>한줄소개: {{ guruInfoList.intro }}</div>
+              <div>한줄 소개: {{ guruInfoList.intro }}</div>
               <div>회사: {{ guruInfoList.companyName }}</div>
               <div>직급: {{ guruInfoList.position }}</div>
               <div>경력: {{ guruInfoList.careerAt }}</div>
-              <div>연락가능시간: {{ guruInfoList.contactTime }}</div>
-              <div>활동가능지역: {{ guruInfoList.workArea }}</div>
+              <div>연락 가능 시간: {{ guruInfoList.contactTime }}</div>
+              <div>활동 가능 지역: {{ guruInfoList.workArea }}</div>
               <div>업무 설명: {{ guruInfoList.description }}</div>
             </div>
-<!--            <div v-if="guruInfoList === ''" class="post-item hover-pointer">-->
-<!--              <div>아직 기입한 도사 정보가 없습니다 !</div>-->
-<!--            </div>-->
           </div>
         </div>
       </div>
@@ -178,12 +193,15 @@ export default {
       job: '',
       address: '',
       role:'',
+      fileFormat: '',
 
       postCategory: '',
       replyCount: '',
       likeCount: '',
 
       memberNickname: '',
+
+      existGuruInfo: '',
     }
   },
 
@@ -210,6 +228,7 @@ export default {
         this.job = res.data.data.job;
         this.address = res.data.data.roadAddress + " " + res.data.data.detailAddress;
         this.role = res.data.data.role;
+        this.fileFormat = res.data.data.fileFormat;
 
       }).catch((err) => {
         console.log(err);
@@ -319,10 +338,12 @@ export default {
         }
       }).then((res) => {
         this.guruInfoList = res.data.data;
+        this.existGuruInfo = true;
+        console.log("-------");
         console.log(res.data.data);
       }).catch((err) => {
         console.log(err);
-
+        this.existGuruInfo = false;
         //   if (err.response.status === 401 || err.response.status === 400) {
         //     alert("로그인을 먼저 해주세요!");
         //     this.$router.push({path: '/login'});
@@ -340,10 +361,16 @@ export default {
     },
     getDetailLink() {
       if (this.role === 'ROLE_GURU') {
-        return '/member/guruDetail';
+        // return '/member/guruDetail';
+        this.$router.push({
+          path: '../member/guruDetail'
+        })
       } else {
         // You can provide a default link or handle other roles as needed
-        return '/member/userDetail';
+        // return '/member/userDetail';
+        this.$router.push({
+          path: '../member/userDetail'
+        })
       }
     },
     showTab(tabName) {

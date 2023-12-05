@@ -1,5 +1,6 @@
 package kr.co.imguru.domain.reply.dto;
 
+import kr.co.imguru.domain.file.entity.FileFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,8 @@ public class ReplyReadDto {
     private Long replyId;
 
     private String memberNickname;
+
+    private FileFormat memberImage;
 
     private Long postId;
 

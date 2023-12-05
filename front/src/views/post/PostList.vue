@@ -5,35 +5,35 @@
       <!-- 좌측 카테고리 네비게이션 -->
       <div class="col-md-3 mr-5">
         <!-- 카테고리 버튼들... -->
-        <nav class="nav flex-column nav-pills nav-fill">
-          <b-button :class="{ active: skill === '' }" class="nav-link d-block mb-2"
+        <nav class="nav flex-column nav-pills nav-fill post-item">
+          <b-button :class="{ active: skill === '' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('')">전체
           </b-button>
-          <b-button :class="{ active: skill === '프로그래밍' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '프로그래밍' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('프로그래밍')">프로그래밍
           </b-button>
-          <b-button :class="{ active: skill === '인테리어' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '인테리어' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('인테리어')">인테리어
           </b-button>
-          <b-button :class="{ active: skill === '번역' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '번역' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('번역')">번역
           </b-button>
-          <b-button :class="{ active: skill === '법률' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '법률' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('법률')">법률
           </b-button>
-          <b-button :class="{ active: skill === '청소' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '청소' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('청소')">청소
           </b-button>
-          <b-button :class="{ active: skill === '문서작업' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '문서작업' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('문서작업')">문서작업
           </b-button>
-          <b-button :class="{ active: skill === '디자인' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '디자인' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('디자인')">디자인
           </b-button>
-          <b-button :class="{ active: skill === '음악' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '음악' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('음악')">음악
           </b-button>
-          <b-button :class="{ active: skill === '기타' }" class="nav-link d-block mb-2"
+          <b-button :class="{ active: skill === '기타' }" class="btn btn-link custom-button mb-3"
                     @click="fnSelectSkill('기타')">기타
           </b-button>
         </nav>
@@ -42,40 +42,43 @@
       <!-- 우측 컨텐츠 영역 -->
       <div class="col-md-9">
 
-        <!-- 글쓰기 버튼 -->
-        <div class="common-buttons mb-3">
-          <button type="button" class="btn btn-outline-dark btn-rounded small-button" @click="fnWrite">
-            <span><i class="fa-solid fa-pen small-icon"></i></span>
-            글쓰기
-          </button>
-        </div>
-
         <div class="nav-buttons mb-3">
-          <button :class="{ active: role === '' }" class="btn btn-link" @click="fnSelectRole('')">
-            전체글
-          </button>
-          <button :class="{ active: role === 'GURU' }" class="btn btn-link" @click="fnSelectRole('GURU')">
-            도사
-          </button>
+          <b-button :class="{ active: role === '' }" class="btn btn-link custom-button" @click="fnSelectRole('')">
+            모두
+          </b-button>
+          <b-button :class="{ active: role === 'GURU' }" class="btn btn-link custom-button" @click="fnSelectRole('GURU')">
+            도사만
+          </b-button>
+          <b-button :class="{ active: role === 'USER' }" class="btn btn-link custom-button" @click="fnSelectRole('USER')">
+            이용자만
+          </b-button>
+
+          <!-- 글쓰기 버튼 -->
+          <div class="common-buttons">
+            <button type="button" class="btn-sm btn-outline-dark btn-rounded small-button" @click="fnWrite">
+              <span><i class="fa-solid fa-pen small-icon"></i></span>
+              글쓰기
+            </button>
+          </div>
         </div>
 
         <!-- 카테고리 필터 버튼들 -->
         <div class="nav-buttons mb-3">
-          <button :class="{ active: postCategory === '' }" class="btn btn-link" @click="fnSelectCategory('')">
+          <b-button :class="{ active: postCategory === '' }" class="btn btn-link custom-button" @click="fnSelectCategory('')">
             전체글
-          </button>
-          <button :class="{ active: postCategory === 'NOTICE' }" class="btn btn-link" @click="fnSelectCategory('NOTICE')">
+          </b-button>
+          <b-button :class="{ active: postCategory === 'NOTICE' }" class="btn btn-link custom-button" @click="fnSelectCategory('NOTICE')">
             공지사항
-          </button>
-          <button :class="{ active: postCategory === 'QNA' }" class="btn btn-link" @click="fnSelectCategory('QNA')">
+          </b-button>
+          <b-button :class="{ active: postCategory === 'QNA' }" class="btn btn-link custom-button" @click="fnSelectCategory('QNA')">
             질문
-          </button>
-          <button :class="{ active: postCategory === 'INFO' }" class="btn btn-link" @click="fnSelectCategory('INFO')">
+          </b-button>
+          <b-button :class="{ active: postCategory === 'INFO' }" class="btn btn-link custom-button" @click="fnSelectCategory('INFO')">
             정보
-          </button>
-          <button :class="{ active: postCategory === 'FREE' }" class="btn btn-link" @click="fnSelectCategory('FREE')">
+          </b-button>
+          <b-button :class="{ active: postCategory === 'FREE' }" class="btn btn-link custom-button" @click="fnSelectCategory('FREE')">
             자유
-          </button>
+          </b-button>
         </div>
 
         <!-- 글 목록 -->
@@ -244,7 +247,6 @@ export default {
       })
     },
     fnWrite() {
-
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
         window.location.href = "http://localhost:3000/login";
@@ -348,6 +350,19 @@ export default {
 </script>
 
 <style scoped>
+
+.custom-button.active {
+  background-color: #A0E9FF; /* Set the active state background color */
+  color: black; /* Set the active state text color */
+  transition: background-color 0.3s ease-in-out;
+}
+
+.custom-button {
+  background-color: white; /* Set the active state background color */
+  color: black; /* Set the active state text color */
+  text-decoration: none !important;
+  font-weight: bold;
+}
 
 .nav-buttons {
   display: flex;

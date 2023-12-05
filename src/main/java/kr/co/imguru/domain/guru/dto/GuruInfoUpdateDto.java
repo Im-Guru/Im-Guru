@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GuruInfoUpdateDto {
 
+    private Long guruInfoId;
+
     private String intro;
 
     private String companyName;

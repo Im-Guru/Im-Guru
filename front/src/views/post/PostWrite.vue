@@ -49,6 +49,13 @@
 
     <input type="file" ref="fileInput" @change="handleFileChange" multiple/>
 
+    <!-- 업로드된 파일 목록 표시 -->
+    <div v-for="(file, index) in existsFiles" :key="index">
+      {{ file.fileName }}
+      {{ file.fileUrl }}
+      <!-- 여기에 다른 파일 정보 표시를 추가할 수 있음 -->
+    </div>
+
     <div class="d-flex justify-content-end">
       <button type="button" class="btn btn-primary btn-rounded" v-on:click="fnSave">저장</button>&nbsp;
       <button type="button" class="btn btn-success btn-rounded" v-on:click="fnList">목록</button>
@@ -107,7 +114,7 @@ export default {
         {value: 'INFO', text: '정보공유'},
       ],
       role: '',
-
+      existsFiles: [],
     }
   },
   created() {
@@ -176,6 +183,9 @@ export default {
           this.price = res.data.data.price
           this.skillName = res.data.data.skillName
           this.created_at = res.data.data.regDate
+          this.existsFiles = res.data.data.fileFormat
+
+          console.log('Exists Files:', this.existsFiles);
         }).catch((err) => {
           if (err.response.status === 401 || err.response.status === 404) {
             this.$router.push({ path: '/login' });
@@ -255,7 +265,7 @@ export default {
       } else {
         // 게시글 업데이트
         this.$axios
-            .patch("/api/v1/post/" + this.idx, this.createDto, {
+            .patch("/api/v1/post/" + this.idx, formData, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("user_token")}`,
               },

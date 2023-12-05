@@ -19,6 +19,8 @@ public class PostReadDto {
 
     private String memberNickname;
 
+    private FileFormat memberImage;
+
     private String postCategory;
 
     private String title;

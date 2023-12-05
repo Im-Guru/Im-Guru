@@ -33,13 +33,6 @@ public class PostRestController {
 
     private final PostService postService;
 
-//    @PostMapping(value = "/post")
-//    public ResponseFormat<Void> createPost(@RequestBody @Valid PostCreateDto createDto) {
-//        postService.createPost(createDto);
-//
-//        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
-//    }
-
     @PostMapping(value = "/post", consumes = {"multipart/form-data"})
     public ResponseFormat<Long> createPost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                            @RequestPart("createDto") @Valid PostCreateDto createDto,
@@ -98,11 +91,19 @@ public class PostRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByMember(memberNickname));
     }
 
-    @PatchMapping("/post/{postId}")
+//    @PatchMapping("/post/{postId}")
+//    public ResponseFormat<PostReadDto> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                                                  @PathVariable Long postId,
+//                                                  @RequestBody @Valid PostUpdateDto updateDto) {
+//        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto));
+//    }
+
+    @PatchMapping(value = "/post/{postId}", consumes = {"multipart/form-data"})
     public ResponseFormat<PostReadDto> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @PathVariable Long postId,
-                                                  @RequestBody @Valid PostUpdateDto updateDto) {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto));
+                                                  @RequestPart("createDto") @Valid PostUpdateDto updateDto,
+                                                  @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto, files));
     }
 
     @DeleteMapping("/post/{postId}")
@@ -136,7 +137,6 @@ public class PostRestController {
     }
 
 
-
     @PostMapping("/posts/myWrite")
     public ResponseFormat<List<PostReadDto>> getPostsByLoginMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getPostsByLoginMember(userDetails.getUsername()));
@@ -156,6 +156,5 @@ public class PostRestController {
     public ResponseFormat<List<PostReadDto>> getLikePostsByMemberNickname(@PathVariable String memberNickname) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByMemberNickname(memberNickname));
     }
-
 
 }
