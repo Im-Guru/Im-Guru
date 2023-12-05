@@ -26,7 +26,7 @@ public interface PostService {
 
     List<PostReadDto> getLikePostsByMember(String memberNickname);
 
-    PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto);
+    PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto, List<MultipartFile> files) throws IOException;
 
     void deletePost(Long postId);
 

@@ -57,7 +57,6 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Long createPost(String email, PostCreateDto createDto, List<MultipartFile> files) throws IOException {
-//        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getMemberNickname());
 
         Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
 
@@ -96,7 +95,9 @@ public class PostServiceImpl implements PostService {
 
         isPost(post);
 
-        /*File*/
+        updateCntToRedis(postId, "views");
+
+        /*Post File*/
         List<File> fileList = fileRepository.findFileByFileKey("post", postId);
         List<FileFormat> fileFormatList = new ArrayList<>();
 
@@ -108,9 +109,14 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        updateCntToRedis(postId, "views");
+        Optional<File> memberImage = fileRepository.findOneFileByFileKey("member", post.get().getMember().getId());
+        if (memberImage.isEmpty()) {
+            return toReadDetailDto(post.get(), fileFormatList, null);
+        } else {
+            FileFormat memberImageFormat = new FileFormat(memberImage.get());
+            return toReadDetailDto(post.get(), fileFormatList, memberImageFormat);
+        }
 
-        return toReadDetailDto(post.get(), fileFormatList);
     }
 
     @Override
@@ -151,7 +157,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto) {
+    public PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto, List<MultipartFile> files) throws IOException {
         Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(loginMember);
 
@@ -161,9 +167,27 @@ public class PostServiceImpl implements PostService {
         isWriter(loginMember, post);
 
         isPostCategory(updateDto.getCategoryName());
+
         post.get().changePost(updateDto);
 
         postRepository.save(post.get());
+
+        // 파일 저장
+        if (files != null && !files.isEmpty()) {
+            /* 지원하지 않는 확장자 파일 제거 */
+            List<MultipartFile> validatedFiles = filesValidation(files);
+
+            /* 걸러진 파일들 업로드 */
+            filesUpload(validatedFiles, post.get().getId());
+
+            /* 유효성 검증을 끝낸 파일들을 하나씩 꺼냄. */
+            for (MultipartFile validatedFile : validatedFiles) {
+                /* File Entity 생성 후 저장 */
+                File file = new File(validatedFile, post.get());
+
+                fileRepository.save(file);
+            }
+        }
 
         return toReadDto(post.get());
     }
@@ -445,10 +469,11 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    private PostReadDto toReadDetailDto(Post post, List<FileFormat> fileFormatList) {
+    private PostReadDto toReadDetailDto(Post post, List<FileFormat> fileFormatList, FileFormat memberImage) {
         return PostReadDto.builder()
                 .postId(post.getId())
                 .memberNickname(post.getMember().getNickname())
+                .memberImage(memberImage)
                 .postCategory(String.valueOf(post.getPostCategory()))
                 .title(post.getTitle())
                 .content(post.getContent())

@@ -10,8 +10,14 @@
 
     <h2><strong>{{ title }}</strong></h2>
     <div>
-      <span class="mouse-cursor" @click="fnMemberView(author)"><strong>{{ author }}</strong></span>
-      <br>
+
+      <span class="mouse-cursor d-flex " @click="fnMemberView(author)" style="align-items: center">
+        <img v-if="memberImage && memberImage.fileUrl" :src="memberImage.fileUrl" alt="이미지 파일"
+             style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid #888888;"/>
+        <i v-else class="fa-solid fa-user" style="font-size: 30px"></i>
+        <strong>&nbsp;{{ author }}</strong>
+      </span>
+
       <span class="small-font">{{ formatDateTime(created_at) }}</span>
       <span class="small-font">&nbsp; 조회: {{ viewCnt }}</span>
 
@@ -57,8 +63,11 @@
         <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isReplierArray[idx]" @click="toReportReply(reply.replyId, reply.content)"></i>&nbsp;
       </div>
 
-      <div class="reply-detail">
-        <strong class="mouse-cursor" @click="fnMemberView(reply.memberNickname)">[{{ reply.memberNickname }}]</strong>
+      <div class="reply-detail" >
+        <img v-if="reply.memberImage && reply.memberImage.fileUrl" :src="reply.memberImage.fileUrl" alt="이미지 파일"
+             style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid #888888;"/>
+        <i v-else class="fa-solid fa-user" style="font-size: 30px"></i>
+        <strong class="mouse-cursor" style="align-items: center" @click="fnMemberView(reply.memberNickname)">&nbsp;[{{ reply.memberNickname }}]</strong>
         <br>
         <span class="small-font">{{reply.memberSkill}}</span>
         <p class="mt-1">{{ reply.content }}</p>
@@ -105,10 +114,12 @@ export default {
       created_at: '',
       viewCnt: '',
       files: [],
+      memberImage: '',
       //댓글
       replyList: [],
       reply: '',
       replyAuthorNickname: '',
+      replyAuthorImage: '',
       // 좋아요
       loginUserNickname: localStorage.getItem('user_nickname'),
       isPostLiked: false,
@@ -154,6 +165,7 @@ export default {
         this.likeCnt = res.data.data.likeCnt;
         //파일 가져오기
         this.files = res.data.data.fileFormat
+        this.memberImage = res.data.data.memberImage
       }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 404) {
           this.$router.push({path: '/login'});
@@ -228,8 +240,11 @@ export default {
         params: this.requestBody
       }).then(async (res) => {
         console.log(res.data.data);
+        console.log("-----sdsdf-----");
+        console.log(res.data.data.memberImage);
         this.replyList = res.data.data
         this.replyAuthorNickname = res.data.data.memberNickname
+        this.replyAuthorImage = res.data.data.memberImage
 
         // 각 댓글에 대해 checkReplier 호출
         for (const reply of this.replyList) {

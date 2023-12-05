@@ -148,7 +148,11 @@ public class PostSearchRepository {
             return null;
         }
 
-        return post.isGuru.eq(Boolean.TRUE);
+        if (role.equals("GURU")) {
+            return post.isGuru.eq(Boolean.TRUE);
+        } else {
+            return post.isGuru.eq(Boolean.FALSE);
+        }
 
     }
 
