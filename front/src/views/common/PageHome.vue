@@ -5,7 +5,6 @@
         <span>테스트 유저: user@test.com / 1234</span><br>
         <span>도사 유저: guru@test.com / 1234</span><br>
         <span>관리자 유저: admin@test.com / 1234</span><br>
-        <span>현재 관리자 로그인 후, 새로고침 한번 해야 header에서 관리자 페이지 접근 확인할 수 있습니다,, (수정예정) - 관리자 임시는 X</span>
       </div>
       <PageBanner />
       <br><h2>안녕하세요! <strong>IM-GURU</strong> 에 방문하신 것을 환영합니다! 😄</h2><br>
