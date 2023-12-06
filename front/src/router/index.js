@@ -39,6 +39,7 @@ import AdminMemberReply from "@/views/admin/AdminMemberReply.vue";
 import AdminMemberPostDetail from "@/views/admin/AdminMemberPostDetail.vue";
 
 import PayTest from "@/views/pay/PayTest.vue";
+import PayIndex from "@/views/pay/PayIndex.vue";
 
 const requireAuth = () => (from, to, next) => {
     const token = localStorage.getItem('user_token')
@@ -128,10 +129,10 @@ const routes = [
         beforeEnter: requireAuth()
     },
     {
-      path: '/guru/update',
-      name: 'GuruInfoUpdate',
-      component: GuruInfoUpdate,
-      beforeEnter: requireAuth()
+        path: '/guru/update',
+        name: 'GuruInfoUpdate',
+        component: GuruInfoUpdate,
+        beforeEnter: requireAuth()
     },
 
 
@@ -175,10 +176,10 @@ const routes = [
         beforeEnter: requireAuth()
     },
     {
-      path: '/message/write',
-      name: 'MessageWrite',
-      component: MessageWrite,
-      beforeEnter: requireAuth()
+        path: '/message/write',
+        name: 'MessageWrite',
+        component: MessageWrite,
+        beforeEnter: requireAuth()
     },
     {
         path: '/message/detail',
@@ -252,6 +253,11 @@ const routes = [
         path: '/pay/test',
         name: 'PayTest',
         component: PayTest,
+    },
+    {
+        path: '/pay/index',
+        name: 'PayIndex',
+        component: PayIndex,
     },
 
 ]
