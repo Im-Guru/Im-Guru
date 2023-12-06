@@ -6,8 +6,13 @@
           <img :src="require('@/assets/image/imguru_logo.png')" alt="Im Guru 로고" width="100" height="100">
         </router-link>
 
-        <div class="collapse navbar-collapse">
-          <ul class="navbar-nav">
+        <button @click="toggleNav" class="navbar-toggler">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div :class="['collapse', 'navbar-collapse', { 'show': isNavOpen }]" id="navbarNav">
+
+        <ul class="navbar-nav">
             <li class="nav-item">
               <router-link to="/post/list" class="nav-link">게시판</router-link>
             </li>
@@ -20,10 +25,6 @@
             <li class="nav-item">
               <router-link to="/admin/main" class="nav-link" v-if="role === 'ROLE_ADMIN'"> 관리자 페이지</router-link>
             </li>
-
-<!--            <li class="nav-item">-->
-<!--              <router-link to="/admin/view" class="nav-link"> 관리자 임시</router-link>-->
-<!--            </li>-->
           </ul>
         </div>
 
@@ -54,6 +55,7 @@ export default {
   data() {
     return {
       role: '',
+      isNavOpen: false,
     }
   },
   computed: {
@@ -100,7 +102,9 @@ export default {
         this.$store.state.loadingStatus = false;
       })
     },
-
+    toggleNav() {
+      this.isNavOpen = !this.isNavOpen;
+    },
   }
 }
 </script>
