@@ -24,8 +24,10 @@ import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -214,19 +216,40 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void updateCntToRedis(Long postId, String hashKey) {
+//        HashOperations<String, String, Object> hashOperations = redisTemplate.opsForHash();
+//
+//        String key = "postId::" + postId;
+//
+//        if (hashOperations.get(key, hashKey) == null) {
+//            if (hashKey.equals("views")) {
+//                hashOperations.put(key, hashKey, postRepository.findByIdAndIsDeleteFalse(postId).get().getViewCnt());
+//            }
+//            hashOperations.increment(key, hashKey, 1L);
+//            System.out.println("hashOperations.get is null ---- " + hashOperations.get(key, hashKey));
+//        } else {
+//            hashOperations.increment(key, hashKey, 1L);
+//            System.out.println("hashOperations.get is not null ---- " + hashOperations.get(key, hashKey));
+//        }
+
         HashOperations<String, String, Object> hashOperations = redisTemplate.opsForHash();
 
         String key = "postId::" + postId;
 
-        if (hashOperations.get(key, hashKey) == null) {
-            if (hashKey.equals("views")) {
-                hashOperations.put(key, hashKey, postRepository.findByIdAndIsDeleteFalse(postId).get().getViewCnt());
+        try {
+            if (hashOperations.get(key, hashKey) == null) {
+                if (hashKey.equals("views")) {
+                    hashOperations.put(key, hashKey, postRepository.findByIdAndIsDeleteFalse(postId).get().getViewCnt());
+                }
+                hashOperations.increment(key, hashKey, 1L);
+                System.out.println("hashOperations.get is null ---- " + hashOperations.get(key, hashKey));
+            } else {
+                hashOperations.increment(key, hashKey, 1L);
+                System.out.println("hashOperations.get is not null ---- " + hashOperations.get(key, hashKey));
             }
-            hashOperations.increment(key, hashKey, 1L);
-            System.out.println("hashOperations.get is null ---- " + hashOperations.get(key, hashKey));
-        } else {
-            hashOperations.increment(key, hashKey, 1L);
-            System.out.println("hashOperations.get is not null ---- " + hashOperations.get(key, hashKey));
+        } catch (Exception e) {
+            // 예외 처리 (예: 로그 출력 등)
+            e.printStackTrace();
+            // 예외 처리에 따라 다른 동작을 추가할 수 있습니다.
         }
     }
 
@@ -324,23 +347,52 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Scheduled(fixedDelay = 1000L * 180L) // 180초
     public void deleteCntToRedis() {
-        String viewKey = "views";
-        Set<String> redisKey = redisTemplate.keys("postId*");
-        Iterator<String> it = redisKey.iterator();
+//        String viewKey = "views";
+//        Set<String> redisKey = redisTemplate.keys("postId*");
+//        Iterator<String> it = redisKey.iterator();
+//
+//        while (it.hasNext()) {
+//            String data = it.next();
+//            Long postId = Long.parseLong(data.split("::")[1]);
+//
+//            if (redisTemplate.opsForHash().get(data, viewKey) == null) {
+//                break;
+//            } else {
+//                Long viewCnt = Long.parseLong(String.valueOf(redisTemplate.opsForHash().get(data, viewKey)));
+//                addViewCntFromRedis(postId, viewCnt);
+//                redisTemplate.opsForHash().delete(data, viewKey);
+//            }
+//        }
+//        System.out.println("Update Complete From Redis");
 
-        while (it.hasNext()) {
-            String data = it.next();
-            Long postId = Long.parseLong(data.split("::")[1]);
+        try {
+            String viewKey = "views";
+            Set<String> redisKeys = redisTemplate.keys("postId*");
 
-            if (redisTemplate.opsForHash().get(data, viewKey) == null) {
-                break;
-            } else {
-                Long viewCnt = Long.parseLong(String.valueOf(redisTemplate.opsForHash().get(data, viewKey)));
-                addViewCntFromRedis(postId, viewCnt);
-                redisTemplate.opsForHash().delete(data, viewKey);
+            for (String key : redisKeys) {
+                Long postId = Long.parseLong(key.split("::")[1]);
+
+                Object viewCntObject = redisTemplate.opsForHash().get(key, viewKey);
+
+                if (viewCntObject != null) {
+                    Long viewCnt = Long.parseLong(String.valueOf(viewCntObject));
+                    try {
+                        addViewCntFromRedis(postId, viewCnt);
+                        redisTemplate.opsForHash().delete(key, viewKey);
+                    } catch (Exception e) {
+                        // 예외 처리 (예: 오류 기록)
+                        e.printStackTrace();
+                    }
+                }
             }
+
+            System.out.println("Redis에서 업데이트 완료");
+        } catch (RedisConnectionFailureException e) {
+            // Redis에 연결할 수 없는 경우 예외를 무시하고 계속 진행
+            System.err.println("Unable to connect to Redis. The application will continue running without Redis.");
+            e.printStackTrace();
         }
-        System.out.println("Update Complete From Redis");
+
     }
 
     private void addViewCntFromRedis(Long postId, Long viewCnt) {

@@ -29,6 +29,7 @@ import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -189,15 +190,31 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public String createRefreshToken(Member member) {
-        Token token = tokenRepository.save(
-                Token.builder()
-                        .id(member.getId())
-                        .refreshToken(UUID.randomUUID().toString())
-                        .expiration(3600)        // 유효시간 설정 - 60분
-                        .build()
-        );
+//        Token token = tokenRepository.save(
+//                Token.builder()
+//                        .id(member.getId())
+//                        .refreshToken(UUID.randomUUID().toString())
+//                        .expiration(3600)        // 유효시간 설정 - 60분
+//                        .build()
+//        );
+//
+//        return token.getRefreshToken();
+        try {
+            Token token = tokenRepository.save(
+                    Token.builder()
+                            .id(member.getId())
+                            .refreshToken(UUID.randomUUID().toString())
+                            .expiration(3600)        // 유효시간 설정 - 60분
+                            .build()
+            );
 
-        return token.getRefreshToken();
+            return token.getRefreshToken();
+        } catch (DataAccessException e) {
+            // Redis에 연결할 수 없는 경우
+            // 예외 처리 코드 추가 (예: 로그 출력 등)
+            e.printStackTrace();
+            return null; // 또는 다른 적절한 처리
+        }
     }
 
     public Token validRefreshToken(Member member, String refreshToken) {
@@ -547,9 +564,9 @@ public class MemberServiceImpl implements MemberService {
                 .role(String.valueOf(member.getRole()))
                 .skillName(member.getSkill().getName())
                 .token(TokenDto.builder()
-                                .accessToken(jwtProvider.createToken(member.getEmail(), String.valueOf(member.getRole())))
-                                .refreshToken(createRefreshToken(member))
-                                .build()
+                        .accessToken(jwtProvider.createToken(member.getEmail(), String.valueOf(member.getRole())))
+                        .refreshToken(createRefreshToken(member))
+                        .build()
                 )
                 .build();
     }
