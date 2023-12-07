@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>결제인증</h1>
-    <b-form @submit.prevent="goPayAuth">
+    <b-form name="payForm" id="payForm" ref="payForm" @submit.prevent="goPayAuth">
 
       <div>
         <!-- container -->
@@ -99,7 +99,7 @@
                 <td>viewType[popup/self]</td>
                 <td>
                   <b-form-input type="text" id="viewType" name="viewType" placeholder="결제창 팝업방식"
-                                v-model="form.viewType" ref="viewTypeInput" readonly/>
+                                v-model="form.viewType" ref="viewTypeInput" value="form.viewType" readonly/>
                 </td>
               </tr>
               </tbody>
@@ -108,6 +108,8 @@
         </div>
 
         <!-- Vue 데이터와 바인딩되는 부분 -->
+        <b-form-input v-model="form.email" name="email" hidden/>
+        <b-form-input v-model="form.cphoneNo" name="cphoneNo" hidden/>
         <b-form-input v-model="form.trPrice" name="trPrice" hidden/>
         <b-form-input v-model="form.trDay" name="trDay" hidden/>
         <b-form-input v-model="form.trTime" name="trTime" hidden/>
@@ -143,21 +145,35 @@ export default {
         trPricePlain: '',
         productNm: '',
         dutyFreeYn: 'N',
-        callbackUrl: window.location.href + '/callback',
-        cancelUrl: window.location.href + '/cancel',
+        callbackUrl: window.location.href + 'callback',
+        cancelUrl: window.location.href + 'cancel',
         mercntParam1: '',
         mercntParam2: '',
         viewType: 'self',
 
+        email: "",
+        cphoneNo: "",
         trPrice: "",
         trDay: "",
         trTime: "",
         signature: "",
       },
-      // 여기에 다른 데이터 추가 가능
     };
   },
   methods: {
+
+    /*
+       TODO: axios로 로그인 한 유저와 결제를 진행할 게시글로부터
+       trPrice = 금액
+       email = 이메일
+       cphoneNo = 전화번호
+       signature = 암호화? 뭐 그런 시그니처
+       trDay = 거래 일자
+       trTime = 거래 시간
+       이것들 받아와서 먼저 mounted로 넣어주고 결제하는 API로 전송
+       */
+
+
     goPayAuth() {
       if (!this.form.hdInfo) {
         alert("전문정보를 입력해주세요.");
@@ -217,12 +233,18 @@ export default {
 
       this.$axios.post("/api/v1/payReserv", this.form)
           .then((res) => {
-            alert(res.data.message)
+            console.log(res)
 
-            // eslint-disable-next-line no-undef
+            const obj = this.$refs.payForm.$el;
+
+            console.log(obj);
+            console.log(obj.viewType.value);
+
+            // eslint-disable-next-line
             SettlePay.pay(obj);
+
           }).catch((err) => {
-        alert(err.response.data.message);
+        console.log(err);
         this.$store.state.loadingStatus = false;
       });
 
