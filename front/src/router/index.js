@@ -38,8 +38,9 @@ import AdminMemberPost from "@/views/admin/AdminMemberPost.vue";
 import AdminMemberReply from "@/views/admin/AdminMemberReply.vue";
 import AdminMemberPostDetail from "@/views/admin/AdminMemberPostDetail.vue";
 
-import PayTest from "@/views/pay/PayTest.vue";
 import PayIndex from "@/views/pay/PayIndex.vue";
+import PayCallback from "@/views/pay/PayCallback.vue";
+import PayList from "@/views/pay/PayList.vue";
 
 const requireAuth = () => (from, to, next) => {
     const token = localStorage.getItem('user_token')
@@ -160,11 +161,13 @@ const routes = [
         path: '/report/post',
         name: 'ReportPostWrite',
         component: ReportPostWrite,
+        beforeEnter: requireAuth()
     },
     {
         path: '/report/reply',
         name: 'ReportReplyWrite',
         component: ReportReplyWrite,
+        beforeEnter: requireAuth()
     },
 
 
@@ -247,18 +250,27 @@ const routes = [
         component: AdminMemberPostDetail,
         beforeEnter: requireAuth()
     },
+    {
+        path: '/admin/pay/list',
+        name: 'PayList',
+        component: PayList,
+        beforeEnter: requireAuth()
+    },
 
     // Pay
-    {
-        path: '/pay/test',
-        name: 'PayTest',
-        component: PayTest,
-    },
     {
         path: '/pay/index',
         name: 'PayIndex',
         component: PayIndex,
+        beforeEnter: requireAuth()
     },
+    {
+        path: '/pay/callback',
+        name: 'PayCallback',
+        component: PayCallback,
+        beforeEnter: requireAuth()
+    },
+
 
 ]
 
