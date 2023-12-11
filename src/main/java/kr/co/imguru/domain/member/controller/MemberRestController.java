@@ -8,6 +8,7 @@ import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.service.MemberService;
 import kr.co.imguru.domain.post.dto.PostCreateDto;
+import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.global.auth.CustomUserDetails;
 import kr.co.imguru.global.auth.TokenDto;
 import kr.co.imguru.global.model.ResponseFormat;
@@ -106,6 +107,11 @@ public class MemberRestController {
     @PostMapping("/member/myInfo")
     public ResponseFormat<MemberReadDto> getMemberByLoginMember(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getMemberByLoginMember(userDetails.getUsername()));
+    }
+
+    @PostMapping("/member/guruInfo/{payId}")
+    public ResponseFormat<MemberReadDto> getGuruByPay(@PathVariable Long payId) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getGuruByPay(payId));
     }
 
     @PostMapping("/member/{memberNickname}")

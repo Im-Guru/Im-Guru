@@ -15,18 +15,9 @@
               <router-link to="/message/list" class="nav-link">메세지</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/review/write" class="nav-link">후기</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/pay/index" class="nav-link">결제 임시</router-link>
-            </li>
-            <li class="nav-item">
               <router-link to="/admin/main" class="nav-link" v-if="role === 'ROLE_ADMIN'"> 관리자 페이지</router-link>
             </li>
 
-            <!--            <li class="nav-item">-->
-            <!--              <router-link to="/admin/view" class="nav-link"> 관리자 임시</router-link>-->
-            <!--            </li>-->
           </ul>
         </div>
 

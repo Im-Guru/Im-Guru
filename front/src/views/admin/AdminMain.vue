@@ -164,9 +164,10 @@
   </div>
 
 
-  <b-button v-on:click="toReportPostList">게시글 신고 리스트</b-button>
-  <b-button v-on:click="toReportReplyList">댓글 신고 리스트</b-button>
-  <b-button v-on:click="toSkillList">스킬 리스트</b-button>
+  <b-button v-on:click="toReportPostList">게시글 신고 목록</b-button>
+  <b-button v-on:click="toReportReplyList">댓글 신고 목록</b-button>
+  <b-button v-on:click="toSkillList">스킬 목록</b-button>
+  <b-button v-on:click="toPayList">결제 목록</b-button>
 
   <div class="board-list mt-5">
     <table class="table table-striped">
@@ -334,6 +335,11 @@ export default {
     toSkillList() {
       this.$router.push({
         path: '/admin/skill/list',
+      })
+    },
+    toPayList() {
+      this.$router.push({
+        path: '/admin/pay/list',
       })
     },
   }

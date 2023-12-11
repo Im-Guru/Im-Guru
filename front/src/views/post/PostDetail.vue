@@ -40,8 +40,8 @@
     </div>
 
     <div class="button-container">
-      <i class="fa-3x fa-solid fa-thumbs-up heart-icon" @click="toPostLike(postId)"></i>
-<!--      <i class="fa-solid fa-thumbs-up"></i>-->
+      <i class="fa-3x fa-solid fa-thumbs-up heart-icon" @click="toPostLike(postId)">&nbsp;&nbsp;</i>
+      <i v-if="isGuru" class="fa-3x fa-solid fa-money-check-dollar pay-icon" @click="toPay(postId)">&nbsp;&nbsp;</i>
     </div>
 
     <div>
@@ -423,6 +423,22 @@ export default {
           });
     },
 
+    toPay(postId) {
+
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
+      }
+
+      this.$router.push({
+        path: '/pay/index',
+        query: {
+          idx: postId,
+        }
+      });
+
+    },
+
     toReplyLike(replyId) {
       // 좋아요 상태 토글
       this.isReplyLiked = !this.isReplyLiked;
@@ -561,6 +577,13 @@ export default {
   cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
   font-size: 15px;
   //vertical-align: -10px;
+}
+
+.pay-icon {
+  color: forestgreen; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
+  font-size: 3rem; /* 원하는 크기로 설정합니다. */
+  cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
+  font-size: 30px;
 }
 
 /* 하트 아이콘과 버튼 컨테이너 스타일 */

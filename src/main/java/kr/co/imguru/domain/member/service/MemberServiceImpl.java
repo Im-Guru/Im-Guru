@@ -10,10 +10,13 @@ import kr.co.imguru.domain.member.dto.MemberReadDto;
 import kr.co.imguru.domain.member.dto.MemberUpdateDto;
 import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
+import kr.co.imguru.domain.pay.entity.Pay;
+import kr.co.imguru.domain.pay.repository.PayRepository;
 import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.post.repository.PostRepository;
 import kr.co.imguru.domain.reply.entity.Reply;
 import kr.co.imguru.domain.reply.repository.ReplyRepository;
+import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.domain.skill.entity.Skill;
 import kr.co.imguru.domain.skill.repository.SkillRepository;
 import kr.co.imguru.global.auth.JwtProvider;
@@ -49,6 +52,8 @@ public class MemberServiceImpl implements MemberService {
     private final PostRepository postRepository;
 
     private final ReplyRepository replyRepository;
+
+    private final PayRepository payRepository;
 
     private final TokenRepository tokenRepository;
 
@@ -307,6 +312,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
+    public MemberReadDto getGuruByPay(Long payId) {
+        Optional<Pay> pay = payRepository.findById(payId);
+        isPay(pay);
+
+        Optional<Post> post = postRepository.findByIdAndIsDeleteFalse(Long.valueOf(pay.get().getMercntParam1()));
+
+        Optional<Member> guru = memberRepository.findByIdAndIsDeleteFalse(post.get().getMember().getId());
+        isMember(guru);
+
+        return toReadDto(guru.get());
+    }
+
+    @Override
+    @Transactional
     public MemberReadDto getMemberDetailByMemberNickname(String memberNickname) {
         Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
 
@@ -330,6 +349,11 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
 
         isMember(loginMember);
+
+        Optional<File> isFile = fileRepository.findOneFileByFileKey("member", loginMember.get().getId());
+        if (isFile.isPresent()) {
+            fileRepository.deleteFileByFileKey("member", loginMember.get().getId());
+        }
 
         // 파일 저장
         if (files != null && !files.isEmpty()) {
@@ -406,6 +430,12 @@ public class MemberServiceImpl implements MemberService {
     private void isMember(Optional<Member> member) {
         if (member.isEmpty()) {
             throw new NotFoundException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
+        }
+    }
+
+    private void isPay(Optional<Pay> pay) {
+        if (pay.isEmpty()) {
+            throw new NotFoundException(ResponseStatus.FAIL_PAY_NOT_FOUND);
         }
     }
 

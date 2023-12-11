@@ -7,15 +7,11 @@
         <div class="col-2" style="text-align: center">
           <h4 class="mb-2"><strong>내 정보</strong></h4>
 
-<!--          <img :src="fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>-->
-
-<!--          <i class="fa-solid fa-user" style="font-size: 50px"></i><br>-->
           <!-- 이미지가 있을 때 -->
           <img v-if="fileFormat && fileFormat.fileUrl" :src="fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>
 
           <!-- 이미지가 없을 때 -->
           <i v-else class="fa-solid fa-user" style="font-size: 50px"></i><br>
-
 
           <button class="mt-2 btn-sm btn-outline-dark btn-rounded small-button">
             <router-link to="/member/uploadImage" class="no-underline">프로필 사진</router-link>
@@ -24,7 +20,9 @@
 
         <div class="col">
           <table>
-            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
             <tr>
               <td>이름:</td>
               <td>{{ name }}</td>
@@ -33,7 +31,7 @@
               <td>닉네임:</td>
               <td>{{ this.nickname }}</td>
             </tr>
-            <tr>
+            <tr v-if="role === 'ROLE_GURU'">
               <td>기술:</td>
               <td>{{ this.skillName }}</td>
             </tr>
@@ -64,18 +62,36 @@
         <!-- 네비게이션 탭 -->
         <ul class="nav nav-tabs">
           <li class="nav-item" v-if="role === 'ROLE_GURU'">
-            <a class="nav-link hover-pointer" @click="showTab('guruInfo')" :class="{ active: activeTab === 'guruInfo' }">도사 정보</a>
+            <a class="nav-link hover-pointer" @click="showTab('guruInfo')"
+               :class="{ active: activeTab === 'guruInfo' }">도사 정보</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link hover-pointer" @click="showTab('myPosts')" :class="{ active: activeTab === 'myPosts' }">내가 작성한 게시물</a>
+            <a class="nav-link hover-pointer" @click="showTab('myPosts')" :class="{ active: activeTab === 'myPosts' }">내가
+              작성한 게시물</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link hover-pointer" @click="showTab('likedPosts')" :class="{ active: activeTab === 'likedPosts' }">내가 좋아요 누른
+            <a class="nav-link hover-pointer" @click="showTab('likedPosts')"
+               :class="{ active: activeTab === 'likedPosts' }">내가 좋아요 누른
               게시물</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link hover-pointer" @click="showTab('myReplies')" :class="{ active: activeTab === 'myReplies' }">내가 작성한
+            <a class="nav-link hover-pointer" @click="showTab('myReplies')"
+               :class="{ active: activeTab === 'myReplies' }">내가 작성한
               댓글</a>
+          </li>
+          <li class="nav-item" v-if="role !== 'ROLE_GURU'">
+            <a class="nav-link hover-pointer" @click="showTab('myReviews')"
+               :class="{ active: activeTab === 'myReviews' }">내가 작성한
+              후기</a>
+          </li>
+          <li class="nav-item" v-if="role === 'ROLE_GURU'">
+            <a class="nav-link hover-pointer" @click="showTab('myGuruReviews')"
+               :class="{ active: activeTab === 'myGuruReviews' }">내가 받은
+              후기</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link hover-pointer" @click="showTab('myPays')" :class="{ active: activeTab === 'myPays' }">내
+              결제 내역</a>
           </li>
         </ul>
       </div>
@@ -105,21 +121,27 @@
       <div v-if="activeTab === 'myPosts'">
         <div class="mt-3">
           <div>
-            <div v-for="(item, idx) in postList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
-              <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
-              <div class="post-title">
-                <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
-                <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
-              </div>
-              <div class="post-content">
-                {{ truncateAndStripTags(item.content, 100) }}
-              </div>
+            <div v-if="postList.length === 0" class="post-item">
+              작성된 게시물이 존재하지 않습니다!
+            </div>
 
-              <div class="post-status">
-                <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
-                <i class="fa-solid fa-thumbs-up small-icon">{{ item.likeCnt }}&nbsp;</i>
-                <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
-                <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+            <div v-else>
+              <div v-for="(item, idx) in postList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
+                <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
+                <div class="post-title">
+                  <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
+                  <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
+                </div>
+                <div class="post-content">
+                  {{ truncateAndStripTags(item.content, 100) }}
+                </div>
+
+                <div class="post-status">
+                  <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-thumbs-up small-icon">{{ item.likeCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
+                  <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -129,22 +151,28 @@
       <div v-if="activeTab === 'likedPosts'">
         <div class="mt-3">
           <div>
-            <div v-for="(item, idx) in likePostList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
-              <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
-              <div class="post-title">
-                <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
-                <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
-              </div>
-              <!--            <div class="post-content" v-html="item.content"></div>-->
-              <div class="post-content">
-                {{ truncateAndStripTags(item.content, 100) }}
-              </div>
+            <div v-if="likePostList.length === 0" class="post-item">
+              좋아요 누른 게시물이 존재하지 않습니다!
+            </div>
 
-              <div class="post-status">
-                <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
-                <i class="fa-solid fa-heart small-icon">{{ item.likeCnt }}&nbsp;</i>
-                <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
-                <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+            <div v-else>
+              <div v-for="(item, idx) in likePostList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
+                <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
+                <div class="post-title">
+                  <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
+                  <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
+                </div>
+                <!--            <div class="post-content" v-html="item.content"></div>-->
+                <div class="post-content">
+                  {{ truncateAndStripTags(item.content, 100) }}
+                </div>
+
+                <div class="post-status">
+                  <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-heart small-icon">{{ item.likeCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
+                  <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -154,19 +182,117 @@
       <div v-if="activeTab === 'myReplies'">
         <div class="mt-3">
           <div>
-            <div v-for="(reply, idx) in replyList" :key="idx" @click="fnPostView(reply.postId)" class="reply-container">
-              <div class="reply-detail">
-                <strong class="mouse-cursor">[{{ reply.memberNickname }}]</strong>
-                <br>
-                <span class="small-font">{{reply.memberSkill}}</span>
-                <p class="mt-1">{{ reply.content }}</p>
+            <div v-if="replyList.length === 0" class="post-item">
+              작성한 댓글이 존재하지 않습니다!
+            </div>
+
+            <div v-else>
+              <div v-for="(reply, idx) in replyList" :key="idx" @click="fnPostView(reply.postId)" class="reply-container hover-pointer">
+                <div class="reply-detail">
+                  <strong class="mouse-cursor">[{{ reply.memberNickname }}]</strong> - <span class="small-font">{{ reply.memberSkill }}</span>
+                  <p class="mt-1">{{ reply.content }}</p>
+                </div>
+                <span><small>{{ formatDateTime(reply.regDate) }} - </small></span>
+                <i class="fa-solid fa-thumbs-up Reply-heart-icon"><small>&nbsp;좋아요 {{ reply.likeCnt }}</small></i>
               </div>
-              <span><small>{{ formatDateTime(reply.regDate) }} - </small></span>
-              <i class="fa-solid fa-thumbs-up Reply-heart-icon"><small>&nbsp;좋아요 {{reply.likeCnt}}</small></i>
             </div>
           </div>
         </div>
       </div>
+
+      <div v-if="activeTab === 'myReviews'">
+        <div class="mt-3">
+          <div>
+            <div v-if="reviewList.length === 0" class="post-item">
+              작성한 후기가 존재하지 않습니다!
+            </div>
+
+            <div v-else>
+              <div v-for="(review, idx) in reviewList" :key="idx" class="reply-container">
+                <div class="reply-detail">
+                  <div style="float: left;">
+                    <strong>{{ review.guruNickname }}</strong> - <span class="small-font">{{ review.guruSkill }}</span><br>
+                    <div class="star-rating">
+                      <div class="review-star" v-for="index in 5" :key="index">
+                        <span v-if="index < review.rate"><small>🍎</small></span>
+                        <span v-if="index >= review.rate"><small>🍏</small></span>
+                      </div>
+                    </div>
+                    {{ review.content }}<br>
+                    <span><small>{{ formatDateTime(review.regDate) }}</small></span>
+                  </div>
+                  <div style="float: right;">
+                    <button class="btn-sm btn-outline-dark btn-rounded small-button">수정</button>&nbsp;
+                    <button class="btn-sm btn-outline-danger btn-rounded small-button">삭제</button>
+                  </div>
+                  <div style="clear: both;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="activeTab === 'myGuruReviews'">
+        <div class="mt-3">
+          <div>
+            <div v-if="guruReviewList.length === 0" class="post-item">
+              작성한 후기가 존재하지 않습니다!
+            </div>
+
+            <div v-else>
+              <div v-for="(review, idx) in guruReviewList" :key="idx" class="reply-container">
+                <div class="reply-detail">
+                  <div>
+                    <strong>{{ review.userNickname }}</strong><br>
+                    <div class="star-rating">
+                      <div class="review-star" v-for="index in 5" :key="index">
+                        <span v-if="index < review.rate"><small>🍎</small></span>
+                        <span v-if="index >= review.rate"><small>🍏</small></span>
+                      </div>
+                    </div>
+                    {{ review.content }}<br>
+                    <span><small>{{ formatDateTime(review.regDate) }}</small></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="activeTab === 'myPays'">
+        <div class="mt-3">
+          <div>
+            <div v-if="payList.length === 0" class="post-item">
+              결제 내역이 존재하지 않습니다!
+            </div>
+
+            <div v-else>
+              <div v-for="(pay, idx) in payList" :key="idx" class="pay-item">
+                <div class="reply-detail">
+                  <div style="float: left;">
+                    주문번호: {{ pay.ordNo }}<br>
+                    상품명: {{ pay.productNm }}<br>
+                    거래금액: {{ pay.trPrice }}<br>
+                    거래시간: {{ payDateTime(pay.trDay, pay.trTime) }}<br>
+                  </div>
+                  <div style="float: right;">
+                    <button class="btn-sm btn-outline-dark btn-rounded small-button" @click="goReview(pay.id)">후기 남기기
+                    </button>&nbsp;
+                    <button class="btn-sm btn-outline-dark btn-rounded small-button"
+                            @click="goCancel(pay.ordNo, pay.trNo)">결제 취소
+                    </button>
+                  </div>
+                  <div style="clear: both;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
 
   </div>
@@ -185,6 +311,10 @@ export default {
       likePostList: {}, // 내가 좋아요 누른 게시물 리스트
       replyList: {}, // 내가 작성한 댓글 리스트
       guruInfoList: {}, // 도사가 작성한 정보
+      reviewList: {}, // 내가 작성한 후기 리스트
+      guruReviewList: {}, // 도사가 받은 후기 리스트
+      payList: {},  // 내 결제내역
+
       activeTab: 'myPosts',
 
       name: '',
@@ -192,7 +322,7 @@ export default {
       skillName: '',
       job: '',
       address: '',
-      role:'',
+      role: '',
       fileFormat: '',
 
       postCategory: '',
@@ -202,6 +332,8 @@ export default {
       memberNickname: '',
 
       existGuruInfo: '',
+
+      existReview: '',
     }
   },
 
@@ -211,6 +343,9 @@ export default {
     this.fnLikePostList();
     this.fnReplyList();
     this.fnGuruInfoList();
+    this.fnPayList();
+    this.fnReviewList();
+    this.fnGuruReviewList();
   },
 
   methods: {
@@ -258,22 +393,22 @@ export default {
             console.log(res);
             this.postList = res.data.data;
           }).catch((err) => {
-            console.log(err);
+        console.log(err);
 
-          //   if (err.response.status === 401 || err.response.status === 400) {
-          //     alert("로그인을 먼저 해주세요!");
-          //     this.$router.push({path: '/login'});
-          //   }
-          //   if (err.response.status === 404) {
-          //     alert("잘못된 경로입니다.");
-          //     alert(err.response.data.message);
-          //     location.reload()
-          //   } else {
-          //     alert(err.response.data.message);
-          //     location.reload()
-          //   }
-          //   this.$store.state.loadingStatus = false;
-          })
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
     },
     fnLikePostList() {
       this.$axios.post(`/api/v1/posts/myLike`, "", {
@@ -286,21 +421,21 @@ export default {
 
             this.likePostList = res.data.data;
           }).catch((err) => {
-            console.log(err);
-          //   if (err.response.status === 401 || err.response.status === 400) {
-          //     alert("로그인을 먼저 해주세요!");
-          //     this.$router.push({path: '/login'});
-          //   }
-          //   if (err.response.status === 404) {
-          //     alert("잘못된 경로입니다.");
-          //     alert(err.response.data.message);
-          //     location.reload()
-          //   } else {
-          //     alert(err.response.data.message);
-          //     location.reload()
-          //   }
-          //   this.$store.state.loadingStatus = false;
-          })
+        console.log(err);
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
     },
     fnReplyList() {
       this.$axios.post(`/api/v1/reply/myWrite`, "", {
@@ -312,27 +447,168 @@ export default {
             console.log(res);
 
             this.replyList = res.data.data;
-            console.log(res.data.data);
           }).catch((err) => {
-            console.log(err);
+        console.log(err);
 
-          //   if (err.response.status === 401 || err.response.status === 400) {
-          //     alert("로그인을 먼저 해주세요!");
-          //     this.$router.push({path: '/login'});
-          //   }
-          //   if (err.response.status === 404) {
-          //     alert("잘못된 경로입니다.");
-          //     alert(err.response.data.message);
-          //     location.reload()
-          //   } else {
-          //     alert(err.response.data.message);
-          //     location.reload()
-          //   }
-          //   this.$store.state.loadingStatus = false;
-          })
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
     },
+    fnReviewList() {
+      this.$axios.post(`/api/v1/review/myWrite`, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      })
+          .then((res) => {
+            console.log(res);
+
+            this.reviewList = res.data.data;
+          }).catch((err) => {
+        console.log(err);
+
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
+    },
+    fnGuruReviewList() {
+      this.$axios.post(`/api/v1/review/guru/myWrite`, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      })
+          .then((res) => {
+            console.log(res);
+
+            this.guruReviewList = res.data.data;
+          }).catch((err) => {
+        console.log(err);
+
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
+    },
+    fnPayList() {
+      this.$axios.post(`/api/v1/pay/myPay`, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      })
+          .then((res) => {
+            console.log(res);
+
+            this.payList = res.data.data;
+          }).catch((err) => {
+        console.log(err);
+
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
+    },
+    goReview(payId) {
+      if (localStorage.getItem("user_token") === null) {
+        alert("로그인 해야 가능한 서비스입니다.");
+        window.location.href = "http://localhost:3000/login";
+        return;
+      }
+
+      // 작성된 후기가 있는지 체크
+      this.$axios.post(`/api/v1/review/check/${payId}`)
+          .then((res) => {
+            this.existReview = res.data.data;
+            console.log(this.existReview)
+
+            if (this.existReview === false) {
+              alert("이미 작성된 후기가 존재합니다.");
+            } else {
+              this.$router.push({
+                path: '../review/write',
+                query: {
+                  pay: payId,
+                }
+              });
+            }
+          }).catch((err) => {
+        if (err.response.status === 401 || err.response.status === 404) {
+          this.$router.push({path: '/login'});
+        } else {
+          alert(err.response.data.message);
+        }
+        this.$store.state.loadingStatus = false;
+      })
+
+
+    },
+    goCancel(ordNo, trNo) {
+      if (!confirm("해당 결제를 취소하시겠습니까?")) return;
+
+      this.$axios.post(`/api/v1/payCancel/${ordNo}/${trNo}`)
+          .then((res) => {
+            console.log(res.data);
+
+            if (res.data.resultCd === "0") {
+              alert("결제 취소 성공");
+              location.reload();
+            } else {
+              alert("결제 취소 실패 : " + res.data.resultMsg);
+            }
+
+          }).catch((err) => {
+        if (err.response.status === 401 || err.response.status === 404) {
+          this.$router.push({path: '/login'});
+        } else {
+          alert(err.response.data.message);
+        }
+        this.$store.state.loadingStatus = false;
+      })
+    },
+
     fnGuruInfoList() {
-      this.$axios.post(`/api/v1/guru/myInfo`, "" , {
+      this.$axios.post(`/api/v1/guru/myInfo`, "", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
         }
@@ -404,7 +680,21 @@ export default {
       }
     },
 
-    truncateAndStripTags: function(text, length) {
+    payDateTime(date, time) {
+      const dateTimeString = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6)} ${time.slice(0, 2)}:${time.slice(2, 4)}:${time.slice(4)}`;
+
+      // Date 객체를 생성하고, Intl.DateTimeFormat을 사용하여 원하는 형식으로 포맷
+      return new Date(dateTimeString).toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+    },
+
+    truncateAndStripTags: function (text, length) {
       // 태그 제거
       let strippedText = text.replace(/<[^>]+>/g, '');
 
@@ -440,6 +730,13 @@ export default {
   cursor: pointer;
 }
 
+.pay-item {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
 .post-category {
   color: #888;
   font-size: 15px;
@@ -466,4 +763,9 @@ export default {
   text-align: right;
 }
 
+.review-star {
+  display: inline-block; /* or inline-flex */
+  margin-right: 5px; /* Adjust the margin as needed */
+  transition: background-color 0.3s ease-in-out;
+}
 </style>

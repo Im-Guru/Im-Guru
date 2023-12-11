@@ -8,14 +8,12 @@
       </div>
       <div class="row">
         <div class="col-2" style="text-align: center">
-<!--          <i class="fa-solid fa-user" style="font-size: 50px"></i>-->
           <!-- 이미지가 있을 때 -->
           <img v-if="this.fileFormat && this.fileFormat.fileUrl" :src="this.fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>
-
           <!-- 이미지가 없을 때 -->
           <i v-else class="fa-solid fa-user" style="font-size: 50px"></i><br>
-
         </div>
+
         <div class="col">
           <table>
             <tr>
@@ -63,21 +61,31 @@
             <a class="nav-link hover-pointer" @click="showTab('myReplies')" :class="{ active: activeTab === 'myReplies' }">작성한
               댓글</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link hover-pointer" @click="showTab('myReviews')" :class="{ active: activeTab === 'myReviews' }">받은 후기</a>
+          </li>
         </ul>
       </div>
 
       <div v-if="activeTab === 'guruInfo'">
         <div class="mt-3">
           <div>
-            <div v-if="guruInfoList" class="post-item hover-pointer">
-              <div>한줄소개: {{ guruInfoList.intro }}</div>
-              <div>회사: {{ guruInfoList.companyName }}</div>
-              <div>직급: {{ guruInfoList.position }}</div>
-              <div>경력: {{ guruInfoList.careerAt }}</div>
-              <div>연락가능시간: {{ guruInfoList.contactTime }}</div>
-              <div>활동가능지역: {{ guruInfoList.workArea }}</div>
-              <div>업무 설명: {{ guruInfoList.description }}</div>
+            <div v-if="guruInfoList.length === 0" class="post-item">
+              작성된 도사 정보가 존재하지 않습니다!
             </div>
+
+            <div v-else>
+              <div class="post-item hover-pointer">
+                <div>한줄소개: {{ guruInfoList.intro }}</div>
+                <div>회사: {{ guruInfoList.companyName }}</div>
+                <div>직급: {{ guruInfoList.position }}</div>
+                <div>경력: {{ guruInfoList.careerAt }}</div>
+                <div>연락가능시간: {{ guruInfoList.contactTime }}</div>
+                <div>활동가능지역: {{ guruInfoList.workArea }}</div>
+                <div>업무 설명: {{ guruInfoList.description }}</div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -85,22 +93,30 @@
       <div v-if="activeTab === 'myPosts'">
         <div class="mt-3">
           <div>
-            <div v-for="(item, idx) in postList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
-              <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
-              <div class="post-title">
-                <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
-                <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
-              </div>
-              <div class="post-content">
-                {{ truncateAndStripTags(item.content, 100) }}
+            <div v-if="postList.length === 0" class="post-item">
+              작성한 게시물이 존재하지 않습니다!
+            </div>
+
+            <div v-else>
+
+              <div v-for="(item, idx) in postList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
+                <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
+                <div class="post-title">
+                  <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
+                  <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
+                </div>
+                <div class="post-content">
+                  {{ truncateAndStripTags(item.content, 100) }}
+                </div>
+
+                <div class="post-status">
+                  <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-thumbs-up small-icon">{{ item.likeCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
+                  <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+                </div>
               </div>
 
-              <div class="post-status">
-                <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
-                <i class="fa-solid fa-thumbs-up small-icon">{{ item.likeCnt }}&nbsp;</i>
-                <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
-                <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
-              </div>
             </div>
           </div>
         </div>
@@ -109,24 +125,31 @@
       <div v-if="activeTab === 'likedPosts'">
         <div class="mt-3">
           <div>
-            <div v-for="(item, idx) in likePostList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
-              <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
-              <div class="post-title">
-                <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
-                <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
-              </div>
-              <!--            <div class="post-content" v-html="item.content"></div>-->
-              <div class="post-content">
-                {{ truncateAndStripTags(item.content, 100) }}
-              </div>
+            <div v-if="likePostList.length === 0" class="post-item">
+              좋아요 누른 게시물이 존재하지 않습니다!
+            </div>
 
-              <div class="post-status">
-                <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
-                <i class="fa-solid fa-heart small-icon">{{ item.likeCnt }}&nbsp;</i>
-                <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
-                <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+            <div v-else>
+              <div v-for="(item, idx) in likePostList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
+                <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
+                <div class="post-title">
+                  <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
+                  <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
+                </div>
+                <!--            <div class="post-content" v-html="item.content"></div>-->
+                <div class="post-content">
+                  {{ truncateAndStripTags(item.content, 100) }}
+                </div>
+
+                <div class="post-status">
+                  <i class="fa-solid fa-comment small-icon">{{ item.replyCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-heart small-icon">{{ item.likeCnt }}&nbsp;</i>
+                  <i class="fa-solid fa-eye small-icon">{{ item.viewCnt }}&nbsp;</i>
+                  <p class="post-reg-date">{{ formatDateTime(item.regDate) }}</p>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -134,15 +157,51 @@
       <div class="post-list" v-if="activeTab === 'myReplies'">
         <div class="mt-3">
           <div>
-            <div v-for="(reply, idx) in replyList" :key="idx" @click="fnPostView(reply.postId)" class="reply-container">
-              <div class="reply-detail">
-                <strong class="mouse-cursor">[{{ reply.memberNickname }}]</strong>
-                <br>
-                <span class="small-font">{{reply.memberSkill}}</span>
-                <p class="mt-1">{{ reply.content }}</p>
+            <div v-if="replyList.length === 0" class="post-item">
+              작성한 댓글이 존재하지 않습니다!
+            </div>
+
+            <div v-else>
+              <div v-for="(reply, idx) in replyList" :key="idx" @click="fnPostView(reply.postId)" class="reply-container">
+                <div class="reply-detail">
+                  <strong class="mouse-cursor">[{{ reply.memberNickname }}]</strong>
+                  <br>
+                  <span class="small-font">{{reply.memberSkill}}</span>
+                  <p class="mt-1">{{ reply.content }}</p>
+                </div>
+                <span><small>{{ formatDateTime(reply.regDate) }} - </small></span>
+                <i class="fa-solid fa-thumbs-up Reply-heart-icon"><small>&nbsp;좋아요 {{reply.likeCnt}}</small></i>
               </div>
-              <span><small>{{ formatDateTime(reply.regDate) }} - </small></span>
-              <i class="fa-solid fa-thumbs-up Reply-heart-icon"><small>&nbsp;좋아요 {{reply.likeCnt}}</small></i>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="activeTab === 'myReviews'">
+      <div class="mt-3">
+        <div>
+          <div v-if="reviewList.length === 0" class="post-item">
+            받은 후기가 존재하지 않습니다!
+          </div>
+
+          <div v-else>
+            <div v-for="(review, idx) in reviewList" :key="idx" class="reply-container">
+              <div class="reply-detail">
+                <div>
+                  <strong>{{ review.userNickname }}</strong><br>
+                  <div class="star-rating">
+                    <div class="review-star" v-for="index in 5" :key="index">
+                      <span v-if="index < review.rate"><small>🍎</small></span>
+                      <span v-if="index >= review.rate"><small>🍏</small></span>
+                    </div>
+                  </div>
+                  {{ review.content }}<br>
+                  <span><small>{{ formatDateTime(review.regDate) }}</small></span>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
@@ -164,6 +223,7 @@ export default {
       likePostList: {}, // 내가 좋아요 누른 게시물 리스트
       replyList: {}, // 내가 작성한 댓글 리스트
       guruInfoList: {}, // 도사가 작성한 정보 리스트
+      reviewList: {}, // 도사가 받은 후기 리스트
 
       activeTab: 'guruInfo',
 
@@ -192,6 +252,7 @@ export default {
     this.fnPostList(this.memberNickname);
     this.fnLikePostList(this.memberNickname);
     this.fnReplyList(this.memberNickname);
+    this.fnReviewList(this.memberNickname);
   },
 
   methods: {
@@ -288,9 +349,35 @@ export default {
     },
     fnGuruInfoList(memberNickname) {
       this.$axios.post(`/api/v1/guru/member/${memberNickname}`).then((res) => {
-        this.guruInfoList = res.data.data;
+        console.log("0-----GURUINFO");
         console.log(res.data.data);
+
+        this.guruInfoList = res.data.data;
       }).catch((err) => {
+        console.log(err);
+        this.guruInfoList = '';
+        //   if (err.response.status === 401 || err.response.status === 400) {
+        //     alert("로그인을 먼저 해주세요!");
+        //     this.$router.push({path: '/login'});
+        //   }
+        //   if (err.response.status === 404) {
+        //     alert("잘못된 경로입니다.");
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   } else {
+        //     alert(err.response.data.message);
+        //     location.reload()
+        //   }
+        //   this.$store.state.loadingStatus = false;
+      })
+    },
+    fnReviewList(memberNickname) {
+      this.$axios.post(`/api/v1/review/guru/${memberNickname}`)
+          .then((res) => {
+            console.log(res);
+
+            this.reviewList = res.data.data;
+          }).catch((err) => {
         console.log(err);
 
         //   if (err.response.status === 401 || err.response.status === 400) {
@@ -308,6 +395,7 @@ export default {
         //   this.$store.state.loadingStatus = false;
       })
     },
+
     showTab(tabName) {
       this.activeTab = tabName;
     },
@@ -399,6 +487,12 @@ export default {
 .post-reg-date {
   color: #888;
   text-align: right;
+}
+
+.review-star {
+  display: inline-block; /* or inline-flex */
+  margin-right: 5px; /* Adjust the margin as needed */
+  transition: background-color 0.3s ease-in-out;
 }
 
 </style>
