@@ -11,6 +11,9 @@ import kr.co.imguru.domain.member.entity.Member;
 import kr.co.imguru.domain.member.repository.MemberRepository;
 import kr.co.imguru.domain.pay.entity.Pay;
 import kr.co.imguru.domain.pay.repository.PayRepository;
+import kr.co.imguru.domain.post.dto.PostReadDto;
+import kr.co.imguru.domain.post.entity.Post;
+import kr.co.imguru.domain.post.repository.PostRepository;
 import kr.co.imguru.domain.review.dto.ReviewCreateDto;
 import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
@@ -44,6 +47,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final PayRepository payRepository;
 
+    private final PostRepository postRepository;
+
     private final LikeReviewRepository likeReviewRepository;
 
     private final FileRepository fileRepository;
@@ -52,23 +57,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final LikeReviewSearchRepository likeReviewSearchRepository;
 
-//    @Override
-//    @Transactional
-//    public void createReview(ReviewCreateDto createDto) {
-//        Optional<Member> user = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getUserNickname());
-//        isMember(user);
-//        isUser(user);
-//
-//        Optional<Member> guru = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getGuruNickname());
-//        isMember(guru);
-//        isGuru(guru);
-//
-//        reviewRepository.save(toEntity(createDto));
-//    }
-
     @Override
     @Transactional
-    public void createReview(String email, ReviewCreateDto createDto, List<MultipartFile> files) throws IOException {
+    public void createReview(String email, ReviewCreateDto createDto) {
         Optional<Member> user = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(user);
         isUser(user);
@@ -80,27 +71,44 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Pay> pay = payRepository.findById(createDto.getPayId());
         isPay(pay);
 
-        Review review = toEntity(createDto, user.get(), guru.get(), pay.get());
-
-        reviewRepository.save(review);
-
-        // 파일 저장
-        if (files != null && !files.isEmpty()) {
-            /* 지원하지 않는 확장자 파일 제거 */
-            List<MultipartFile> validatedFiles = filesValidation(files);
-
-            /* 걸러진 파일들 업로드 */
-            filesUpload(validatedFiles, review.getId());
-
-            /* 유효성 검증을 끝낸 파일들을 하나씩 꺼냄. */
-            for (MultipartFile validatedFile : validatedFiles) {
-                /* File Entity 생성 후 저장 */
-                File file = new File(validatedFile, review);
-
-                fileRepository.save(file);
-            }
-        }
+        reviewRepository.save(toEntity(createDto, user.get(), guru.get(), pay.get()));
     }
+
+//    @Override
+//    @Transactional
+//    public void createReview(String email, ReviewCreateDto createDto, List<MultipartFile> files) throws IOException {
+//        Optional<Member> user = memberRepository.findByEmailAndIsDeleteFalse(email);
+//        isMember(user);
+//        isUser(user);
+//
+//        Optional<Member> guru = memberRepository.findByNicknameAndIsDeleteFalse(createDto.getGuruNickname());
+//        isMember(guru);
+//        isGuru(guru);
+//
+//        Optional<Pay> pay = payRepository.findById(createDto.getPayId());
+//        isPay(pay);
+//
+//        Review review = toEntity(createDto, user.get(), guru.get(), pay.get());
+//
+//        reviewRepository.save(review);
+//
+//        // 파일 저장
+//        if (files != null && !files.isEmpty()) {
+//            /* 지원하지 않는 확장자 파일 제거 */
+//            List<MultipartFile> validatedFiles = filesValidation(files);
+//
+//            /* 걸러진 파일들 업로드 */
+//            filesUpload(validatedFiles, review.getId());
+//
+//            /* 유효성 검증을 끝낸 파일들을 하나씩 꺼냄. */
+//            for (MultipartFile validatedFile : validatedFiles) {
+//                /* File Entity 생성 후 저장 */
+//                File file = new File(validatedFile, review);
+//
+//                fileRepository.save(file);
+//            }
+//        }
+//    }
 
     @Override
     @Transactional
@@ -214,6 +222,66 @@ public class ReviewServiceImpl implements ReviewService {
         review.get().changeDeleteAt();
 
         reviewRepository.save(review.get());
+    }
+
+    @Override
+    @Transactional
+    public boolean checkReviewDuplicated(Long payId) {
+        Optional<Review> review = reviewRepository.findByPay_IdAndIsDeleteFalse(payId);
+
+        return review.isEmpty();
+    }
+
+    @Override
+    @Transactional
+    public List<ReviewReadDto> getReviewsByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(loginMember);
+
+        return reviewSearchRepository.findReviewsByUserNickname(loginMember.get().getNickname())
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ReviewReadDto> getReviewsByMemberNickname(String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+
+        isMember(member);
+
+        return reviewSearchRepository.findReviewsByUserNickname(memberNickname)
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ReviewReadDto> getGuruReviewsByMemberNickname(String memberNickname) {
+        Optional<Member> member = memberRepository.findByNicknameAndIsDeleteFalse(memberNickname);
+
+        isMember(member);
+
+        return reviewSearchRepository.findReviewsByGuruNickname(memberNickname)
+                .stream()
+                .map(this::toReadDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ReviewReadDto> getGuruReviewsByLoginMember(String email) {
+        Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
+
+        isMember(loginMember);
+
+        return reviewSearchRepository.findReviewsByGuruNickname(loginMember.get().getNickname())
+                .stream()
+                .map(this::toReadDto)
+                .toList();
     }
 
     /*파일의 유효성 검증*/
@@ -330,6 +398,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(review.getContent())
                 .rate(review.getRate())
                 .likeCnt(review.getLikeCnt())
+                .regDate(review.getRegDate())
                 .build();
     }
 
@@ -343,6 +412,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .fileFormat(fileFormatList)
                 .rate(review.getRate())
                 .likeCnt(review.getLikeCnt())
+                .regDate(review.getRegDate())
                 .build();
     }
 

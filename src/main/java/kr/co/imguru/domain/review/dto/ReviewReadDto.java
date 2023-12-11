@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -31,5 +32,7 @@ public class ReviewReadDto {
     private int rate;
 
     private Long likeCnt;
+
+    private LocalDateTime regDate;
 
 }

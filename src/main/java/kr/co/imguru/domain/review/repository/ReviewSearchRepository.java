@@ -3,6 +3,7 @@ package kr.co.imguru.domain.review.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.imguru.domain.like.entity.QLikeReview;
 import kr.co.imguru.domain.member.entity.QMember;
+import kr.co.imguru.domain.post.entity.Post;
 import kr.co.imguru.domain.review.entity.QReview;
 import kr.co.imguru.domain.review.entity.Review;
 import lombok.RequiredArgsConstructor;
