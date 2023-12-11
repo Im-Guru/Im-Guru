@@ -1,6 +1,141 @@
 <template>
   <div>
     <h1>결제인증</h1>
+
+    <hr>
+
+    <div>
+      <div class="container">
+        <div class="table-responsive">
+          <table class="table">
+            <colgroup>
+              <col style="width: 15%; background-color: lightgray;">
+              <col style="width: 35%;">
+              <col style="width: 15%; background-color: lightgray;">
+              <col style="width: 35%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th>항목</th>
+              <th>값</th>
+              <th>항목</th>
+              <th>값</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>게시글Id</td>
+              <td>
+                <b-form-input type="text" name="postId" id="postId" v-model="payInfo.postId" readonly/>
+              </td>
+              <td>게시글 작성자</td>
+              <td>
+                <b-form-input type="text" name="authorNickname" id="authorNickname" v-model="payInfo.authorNickname" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>게시글 카테고리</td>
+              <td>
+                <b-form-input type="text" name="postCategory" id="postCategory" v-model="payInfo.postCategory" readonly/>
+              </td>
+              <td>게시글 제목</td>
+              <td>
+                <b-form-input type="text" name="title" id="title" v-model="payInfo.title" readonly />
+              </td>
+            </tr>
+            <tr>
+              <td>게시글 내용</td>
+              <td>
+                <b-form-input type="text" name="content" id="content" v-model="payInfo.content" readonly />
+              </td>
+              <td>도사 여부</td>
+              <td>
+                <b-form-input type="text" name="isGuru" id="isGuru" v-model="payInfo.isGuru" readonly />
+              </td>
+            </tr>
+            <tr>
+              <td>도사 기술</td>
+              <td>
+                <b-form-input type="text" name="skillName" id="skillName" v-model="payInfo.skillName" readonly />
+              </td>
+              <td>가격</td>
+              <td>
+                <b-form-input type="text" name="price" id="price" v-model="payInfo.price" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>생성일자</td>
+              <td>
+                <b-form-input type="text" name="regDate" id="regDate" v-model="payInfo.regDate" readonly/>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>mercntId</td>
+              <td>
+                <b-form-input type="text" name="mercntId" id="mercntId" v-model="payInfo.mercntId" readonly/>
+              </td>
+              <td>ordNo</td>
+              <td>
+                <b-form-input type="text" name="ordNo" id="ordNo" v-model="payInfo.ordNo" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>trDay</td>
+              <td>
+                <b-form-input type="text" id="trDay" name="trDay" v-model="payInfo.trDay" readonly/>
+              </td>
+              <td>trTime</td>
+              <td>
+                <b-form-input type="text" name="trTime" id="trTime" v-model="payInfo.trTime" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>trPrice</td>
+              <td>
+                <b-form-input type="text" id="trPrice" name="trPrice" v-model="payInfo.trPrice" readonly/>
+              </td>
+              <td>productNm</td>
+              <td>
+                <b-form-input type="text" name="productNm" id="productNm" v-model="payInfo.productNm" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>email</td>
+              <td>
+                <b-form-input type="text" id="email" name="email" v-model="payInfo.email" readonly/>
+              </td>
+              <td>cphoneNo</td>
+              <td>
+                <b-form-input type="text" name="cphoneNo" id="cphoneNo" v-model="payInfo.cphoneNo" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>mercntParam1</td>
+              <td>
+                <b-form-input type="text" id="mercntParam1" name="mercntParam1" v-model="payInfo.mercntParam1" readonly/>
+              </td>
+              <td>mercntParam2</td>
+              <td>
+                <b-form-input type="text" id="mercntParam2" name="mercntParam2" v-model="payInfo.mercntParam2" readonly/>
+              </td>
+            </tr>
+            <tr>
+              <td>signature</td>
+              <td>
+                <b-form-input type="text" id="signature" name="signature" v-model="payInfo.signature" readonly/>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+
     <b-form name="payForm" id="payForm" ref="payForm" @submit.prevent="goPayAuth">
 
       <div>
@@ -136,6 +271,7 @@
 export default {
   data() {
     return {
+      idx: this.$route.query.idx,
       form: {
         hdInfo: 'IA_AUTHPAGE_1.0_1.0',
         apiVer: '1.0',
@@ -145,8 +281,9 @@ export default {
         trPricePlain: '',
         productNm: '',
         dutyFreeYn: 'N',
-        callbackUrl: window.location.href + 'callback',
-        cancelUrl: window.location.href + 'cancel',
+        // callbackUrl: window.location.href + '/callback',
+        callbackUrl: 'http://localhost:3000/api/v1/pay/callback',
+        cancelUrl: 'http://localhost:3000/api/v1/pay/cancel',
         mercntParam1: '',
         mercntParam2: '',
         viewType: 'self',
@@ -158,21 +295,66 @@ export default {
         trTime: "",
         signature: "",
       },
+
+      payInfo: {
+        postId: '',
+        authorNickname: '',
+        postCategory: '',
+        title: '',
+        content: '',
+        isGuru: '',
+        skillName: '',
+        price: '',
+        regDate: '',
+
+        mercntId: '',
+        ordNo: '',
+        trDay: '',
+        trTime: '',
+        trPrice: '',
+        productNm: '',
+        email: '',
+        cphoneNo: '',
+        mercntParam1: '',
+        mercntParam2: '',
+        signature: '',
+      }
     };
   },
+  mounted() {
+    this.fnGetPayInfo()
+  },
   methods: {
+    fnGetPayInfo() {
+      this.$axios.post('/api/v1/pay/post/' + this.idx, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      }).then((res) => {
+        console.log(res)
+        this.payInfo = res.data.data;
 
-    /*
-       TODO: axios로 로그인 한 유저와 결제를 진행할 게시글로부터
-       trPrice = 금액
-       email = 이메일
-       cphoneNo = 전화번호
-       signature = 암호화? 뭐 그런 시그니처
-       trDay = 거래 일자
-       trTime = 거래 시간
-       이것들 받아와서 먼저 mounted로 넣어주고 결제하는 API로 전송
-       */
+        this.form.ordNo = res.data.data.ordNo;
+        this.form.trPricePlain = res.data.data.trPrice;
+        this.form.productNm = res.data.data.productNm;
+        this.form.mercntParam1 = res.data.data.mercntParam1;
+        this.form.mercntParam2 = res.data.data.mercntParam2;
+        this.form.email = res.data.data.email;
+        this.form.cphoneNo = res.data.data.cphoneNo;
+        this.form.trPrice = res.data.data.trPrice;
+        this.form.trDay = res.data.data.trDay;
+        this.form.trTime = res.data.data.trTime;
+        this.form.signature = res.data.data.signature;
 
+      }).catch((err) => {
+        if (err.response.status === 401 || err.response.status === 404) {
+          this.$router.push({path: '/login'});
+        } else {
+          alert(err.response.data.message);
+        }
+        this.$store.state.loadingStatus = false;
+      })
+    },
 
     goPayAuth() {
       if (!this.form.hdInfo) {
@@ -234,11 +416,7 @@ export default {
       this.$axios.post("/api/v1/payReserv", this.form)
           .then((res) => {
             console.log(res)
-
             const obj = this.$refs.payForm.$el;
-
-            console.log(obj);
-            console.log(obj.viewType.value);
 
             // eslint-disable-next-line
             SettlePay.pay(obj);
