@@ -2,6 +2,7 @@ package kr.co.imguru.domain.review.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import kr.co.imguru.domain.post.dto.PostReadDto;
 import kr.co.imguru.domain.review.dto.ReviewCreateDto;
 import kr.co.imguru.domain.review.dto.ReviewReadDto;
 import kr.co.imguru.domain.review.dto.ReviewUpdateDto;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,21 +33,22 @@ public class ReviewRestController {
 
     private final ReviewService reviewService;
 
-//    @PostMapping("/review")
-//    public ResponseFormat<Void> createReview(@RequestBody @Valid ReviewCreateDto createDto) {
-//        reviewService.createReview(createDto);
-//
-//        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
-//    }
-
-    @PostMapping(value = "/review", consumes = {"multipart/form-data"})
+    @PostMapping("/review")
     public ResponseFormat<Void> createReview(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @RequestPart("createDto") @Valid ReviewCreateDto createDto,
-                                             @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
-        reviewService.createReview(userDetails.getUsername(), createDto, files);
+                                             @RequestBody @Valid ReviewCreateDto createDto) {
+        reviewService.createReview(userDetails.getUsername(), createDto);
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
+
+//    @PostMapping(value = "/review", consumes = {"multipart/form-data"})
+//    public ResponseFormat<Void> createReview(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                                             @RequestPart("createDto") @Valid ReviewCreateDto createDto,
+//                                             @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
+//        reviewService.createReview(userDetails.getUsername(), createDto, files);
+//
+//        return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
+//    }
 
     /*파일 링크 클릭 시 파일 저장*/
     @GetMapping("/review/files/{fileName}")
@@ -113,4 +116,31 @@ public class ReviewRestController {
 
         return ResponseFormat.success(ResponseStatus.SUCCESS_OK);
     }
+
+    @PostMapping("/review/check/{payId}")
+    public ResponseFormat<Boolean> checkReviewDuplicated(@PathVariable Long payId) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.checkReviewDuplicated(payId));
+    }
+
+
+    @PostMapping("/review/myWrite")
+    public ResponseFormat<List<ReviewReadDto>> getReviewsByLoginMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getReviewsByLoginMember(userDetails.getUsername()));
+    }
+
+    @PostMapping("/review/member/{memberNickname}")
+    public ResponseFormat<List<ReviewReadDto>> getReviewsByMemberNickname(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getReviewsByMemberNickname(memberNickname));
+    }
+
+    @PostMapping("/review/guru/{memberNickname}")
+    public ResponseFormat<List<ReviewReadDto>> getGuruReviewsByMemberNickname(@PathVariable String memberNickname) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getGuruReviewsByMemberNickname(memberNickname));
+    }
+
+    @PostMapping("/review/guru/myWrite")
+    public ResponseFormat<List<ReviewReadDto>> getGuruReviewsByLoginMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, reviewService.getGuruReviewsByLoginMember(userDetails.getUsername()));
+    }
+
 }

@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface ReviewService {
 
-//    void createReview(ReviewCreateDto createDto);
+    void createReview(String email, ReviewCreateDto createDto);
 
-    void createReview(String email, ReviewCreateDto createDto, List<MultipartFile> files) throws IOException;
+//    void createReview(String email, ReviewCreateDto createDto, List<MultipartFile> files) throws IOException;
 
     ReviewReadDto getReview(Long reviewId);
 
@@ -29,5 +29,15 @@ public interface ReviewService {
     ReviewReadDto updateReview(Long reviewId, ReviewUpdateDto updateDto);
 
     void deleteReview(Long reviewId);
+
+    boolean checkReviewDuplicated(Long payId);
+
+    List<ReviewReadDto> getReviewsByLoginMember(String email);
+
+    List<ReviewReadDto> getReviewsByMemberNickname(String memberNickname);
+
+    List<ReviewReadDto> getGuruReviewsByMemberNickname(String memberNickname);
+
+    List<ReviewReadDto> getGuruReviewsByLoginMember(String email);
 
 }

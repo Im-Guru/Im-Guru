@@ -82,14 +82,14 @@
         </div>
 
         <!-- 글 목록 -->
-        <div>
-          <div v-for="(item, idx) in list" :key="idx" @click="fnView(item.postId)" class="post-item hover-pointer">
+        <div v-if="totalElements !== 0">
+          <div  v-for="(item, idx) in list" :key="idx" @click="fnView(item.postId)" class="post-item hover-pointer">
             <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
             <div class="post-title">
               <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
               <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
             </div>
-<!--            <div class="post-content" v-html="item.content"></div>-->
+
             <div class="post-content">
               {{ truncateAndStripTags(item.content, 100) }}
             </div>
@@ -103,8 +103,14 @@
           </div>
         </div>
 
+        <div v-else>
+          <div class="my-5 post-item">
+            <strong>검색 결과가 존재하지 않습니다!</strong>
+          </div>
+        </div>
+
         <!-- 페이징 -->
-        <div class="pagination d-flex justify-content-center">
+        <div v-if="totalElements !== 0" class="pagination d-flex justify-content-center">
           <ul class="pagination">
             <li class="page-item">
               <a class="page-link" @click="fnPage(0)" href="javascript:;">&lt;&lt;</a>
@@ -167,6 +173,7 @@ export default {
       searchType: 'title',
       searchText: '',
       totalPage: '',
+      totalElements: '',
       role:'',
       selectedOption: [
         {value: 'title', text: '제목'},
@@ -224,9 +231,11 @@ export default {
       this.$axios.get("/api/v1/posts", {
         params: this.requestBody,
       }).then((res) => {
+        console.log(res);
         this.page = res.data.data.number;
         this.size = res.data.data.size;
         this.totalPage = res.data.data.totalPages;
+        this.totalElements = res.data.data.totalElements;
         this.list = res.data.data.content;
         this.replyCnt = res.data.data.replyCnt;
         this.likeCnt = res.data.data.likeCnt;
@@ -252,6 +261,12 @@ export default {
         window.location.href = "http://localhost:3000/login";
         return;
       }
+
+      // if (localStorage.getItem("user_token") === null) {
+      //   this.$toast.error("로그인 해야 가능한 서비스입니다.");
+      //   window.location.href = "http://localhost:3000/login";
+      //   return;
+      // }
 
       this.$router.push({
         path: './write'

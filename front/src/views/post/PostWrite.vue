@@ -29,6 +29,11 @@
       <div class="col">
         <b-form-input type="text" v-model="price" placeholder="가격을 입력해주세요." ref="priceInput">
         </b-form-input>
+
+        <!-- Display a warning if the input is not a valid number -->
+        <div v-if="isNaN(price)">
+          <p style="color: red;">잘못된 가격입니다. 다시 입력해주세요.</p>
+        </div>
       </div>
     </div>
 

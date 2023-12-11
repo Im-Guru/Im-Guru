@@ -73,13 +73,14 @@ export default {
       guruNickname: '',
       guruSkill: '',
       userNickname: '',
-      payId: '',
+      payId: this.$route.query.pay,
       content: '',
       rate: '',
     }
   },
   mounted() {
     this.fnLoginMember();
+    this.fnGuruInfo(this.payId);
   },
   methods: {
     check(index) {
@@ -116,6 +117,77 @@ export default {
         //   location.reload()
         // }
         // this.$store.state.loadingStatus = false;
+      })
+    },
+    fnGuruInfo(payId) {
+      this.$axios.post(`/api/v1/member/guruInfo/${payId}`, "", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      }).then((res) => {
+        console.log(res);
+        this.guruSkill = res.data.data.skillName;
+        this.guruNickname = res.data.data.nickname;
+
+      }).catch((err) => {
+        console.log(err);
+
+        // if (err.response.status === 401 || err.response.status === 400) {
+        //   alert("로그인을 먼저 해주세요!");
+        //   this.$router.push({path: '/login'});
+        // }
+        // if (err.response.status === 404) {
+        //   alert("잘못된 경로입니다.");
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // } else {
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // }
+        // this.$store.state.loadingStatus = false;
+      })
+    },
+
+    fnSave() {
+      if (!this.content) {
+        alert("내용을 입력해주세요.");
+        // 내용이 비어있을 때 해당 textarea에 포커스 설정
+        this.$nextTick(() => {
+          const textarea = document.getElementById('content');
+          textarea.focus();
+        });
+        return;
+      }
+
+      this.form = {
+        "guruNickname": this.guruNickname,
+        "userNickname": this.userNickname,
+        "payId": this.payId,
+        "content": this.content,
+        "rate": this.rate,
+      }
+
+      this.$axios.post(`/api/v1/review`, this.form, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('user_token')}`
+        }
+      }).then((res) => {
+        console.log(res);
+        alert("리뷰 남기기 성공!")
+        this.fnPostList();
+      }).catch((err) => {
+        if (err.response.status === 401 || err.response.status === 404) {
+          this.$router.push({path: '/login'});
+        } else {
+          alert(err.response.data.message);
+          this.fnView(this.postId)
+        }
+
+      })
+    },
+    fnPostList() {
+      this.$router.push({
+        path: '/post/list',
       })
     },
 

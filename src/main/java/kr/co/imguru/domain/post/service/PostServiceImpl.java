@@ -24,7 +24,6 @@ import kr.co.imguru.global.exception.NotFoundException;
 import kr.co.imguru.global.model.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.RedisConnectionFailureException;
@@ -283,6 +282,7 @@ public class PostServiceImpl implements PostService {
 
         return toReadDto(post.get());
     }
+
 
     @Override
     @Transactional

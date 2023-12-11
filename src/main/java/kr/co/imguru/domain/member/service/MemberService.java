@@ -38,6 +38,8 @@ public interface MemberService {
 
     MemberReadDto getMemberByLoginMember(String email);
 
+    MemberReadDto getGuruByPay(Long payId);
+
     MemberReadDto getMemberDetailByMemberNickname(String memberNickname);
 
     Long uploadMemberImage(String email, List<MultipartFile> files) throws IOException;

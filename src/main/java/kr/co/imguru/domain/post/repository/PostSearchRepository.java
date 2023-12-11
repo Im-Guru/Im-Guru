@@ -124,6 +124,8 @@ public class PostSearchRepository {
 
         QueryResults<Post> results = query.fetchResults();
 
+        System.out.println("----getTotal():------" + results.getTotal());
+
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 

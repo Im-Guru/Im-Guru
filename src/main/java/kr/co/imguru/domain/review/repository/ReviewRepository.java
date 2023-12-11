@@ -13,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByIdAndIsDeleteFalse(Long id);
 
     List<Review> findAllByIsDeleteFalse();
+
+    Optional<Review> findByPay_IdAndIsDeleteFalse(Long payId);
 }
