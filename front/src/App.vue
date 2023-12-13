@@ -3,19 +3,22 @@
   <router-view/>  <!-- 페이지 이동이 표시될 곳 -->
   <PageFooter/> <!-- 푸터 컴포넌트 -->
   <LoadingBar :loading="this.$store.state.loadingStatus"></LoadingBar>
+  <ScrollButton />
 </template>
 
 <script>
 import PageHeader from '@/components/PageHeader'
 import PageFooter from '@/components/PageFooter'
 import LoadingBar from "@/views/common/LoadingBar.vue";
+import ScrollButton from "@/components/ScrollButton.vue";
 
 export default {
   name: 'App',
   components: {
     PageHeader,
     PageFooter,
-    LoadingBar
+    LoadingBar,
+    ScrollButton,
   }
 }
 </script>

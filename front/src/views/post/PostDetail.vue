@@ -14,7 +14,7 @@
       <span class="mouse-cursor d-flex " @click="fnMemberView(author)" style="align-items: center">
         <img v-if="memberImage && memberImage.fileUrl" :src="memberImage.fileUrl" alt="이미지 파일"
              style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid #888888;"/>
-        <i v-else class="fa-solid fa-user" style="font-size: 30px"></i>
+        <i v-else class="fa-solid fa-user" style="font-size: 30px; "></i>
         <strong>&nbsp;{{ author }}</strong>
       </span>
 

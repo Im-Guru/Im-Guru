@@ -12,7 +12,7 @@
               <router-link to="/post/list" class="nav-link">게시판</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/message/list" class="nav-link">메세지</router-link>
+              <router-link to="/message/list" v-if="isLoggedIn" class="nav-link">메세지</router-link>
             </li>
             <li class="nav-item">
               <router-link to="/admin/main" class="nav-link" v-if="role === 'ROLE_ADMIN'"> 관리자 페이지</router-link>
@@ -27,6 +27,7 @@
           <router-link to="/join/guru" v-if="!isLoggedIn" class="nav-link" style="margin-right: 10px;">도사 가입
           </router-link>
           <router-link to="/login" v-if="!isLoggedIn" class="no-underline" style="margin-right: 10px;">로그인</router-link>
+          <strong v-if="isLoggedIn" class="no-underline">[{{this.memberNickname}} 님]&nbsp; &nbsp;</strong>
           <router-link to="/login" v-if="isLoggedIn" @click="fnLogout" class="no-underline">로그아웃</router-link>
           <router-link to="/member/main" v-if="isLoggedIn" class="no-underline">&nbsp; 마이페이지</router-link>
         </div>
@@ -48,6 +49,7 @@ export default {
   data() {
     return {
       role: '',
+      memberNickname: '',
     }
   },
   computed: {
@@ -69,6 +71,10 @@ export default {
     },
 
     fnLoginMember() {
+      if (localStorage.getItem("user_token") === null) {
+        return;
+      }
+
       this.$axios.post(`/api/v1/member/myInfo`, "", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
@@ -76,6 +82,7 @@ export default {
       }).then((res) => {
         console.log(res);
         this.role = res.data.data.role;
+        this.memberNickname = res.data.data.nickname;
       }).catch((err) => {
         console.log(err);
 

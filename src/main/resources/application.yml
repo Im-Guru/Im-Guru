@@ -1,14 +1,14 @@
 
 spring:
   datasource:
-    url: jdbc:mariadb://121.134.218.34:13306/imguru
+    url: ENC(+vix7/vcxgyLJ3iQgL9hM7VumtxjyNAq1A5OJbi33KJBIh4bRMhIRfcfHKFoGTMs)
     driver-class-name: org.mariadb.jdbc.Driver
-    username: imguru
-    password: imguru1!
+    username: ENC(/qJhhyhJn/yLytTuvftGwg==)
+    password: ENC(OOi5zWipqFzEB2zy14X76YQtFr8Mdgr9)
   data:
     redis:
-      port: 6379
-      host: localhost
+      port: 9379
+      host: ENC(V5uPqa//XY0jNugHz/HzE5Uxtl8h+FQu)
 
   jpa:
     open-in-view: false
@@ -30,6 +30,3 @@ jwt:
   secret:
     key: KWEN@OJM%I@JKQJASLJAHWUJNBZHSLKN
 
-jasypt:
-  encryptor:
-    password: yourEncryptionPassword
