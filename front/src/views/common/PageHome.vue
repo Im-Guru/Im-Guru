@@ -1,15 +1,18 @@
 <template>
   <div>
+    <PageBanner />
+
     <div class="container mt-3">
       <div>
-        <span>테스트 유저: user@test.com / 1234</span><br>
-        <span>도사 유저: guru@test.com / 1234</span><br>
-        <span>관리자 유저: admin@test.com / 1234</span><br>
+<!--        <span>테스트 유저: user@test.com / 1234</span><br>-->
+<!--        <span>도사 유저: guru@test.com / 1234</span><br>-->
+<!--        <span>관리자 유저: admin@test.com / 1234</span><br>-->
       </div>
-      <PageBanner />
-      <br><h2>안녕하세요! <strong>IM-GURU</strong> 에 방문하신 것을 환영합니다! 😄</h2><br>
-      <hr>
-      <h4><strong>전</strong>문가의 <strong>도</strong>움이 필요한 <strong>사</strong>람들</h4><br>
+<!--      <br><h2>안녕하세요! <strong>IM-GURU</strong> 에 방문하신 것을 환영합니다! 😄</h2><br>-->
+<!--      <hr>-->
+      <h4 class="mt-5"><strong>전</strong>문가의 <strong>도</strong>움이 필요한 <strong>사</strong>람들</h4><br>
+
+<!--      <b-img :src="require('@/assets/image/home/main_message.png')" alt="main-message" />-->
 
       <ul class="skill-list">
         <li>
@@ -93,6 +96,28 @@
           </router-link>
         </li>
       </ul>
+
+      <hr class="mt-5">
+
+      <b-img
+          :src="require('@/assets/image/home/main_post.png')"
+          alt="main-message"
+          class="img-fluid mx-auto mt-5"
+          style="width: 100%; height: auto;"/>
+
+      <hr class="mt-5">
+
+      <b-img
+          :src="require('@/assets/image/home/main_message.png')"
+          alt="main-message"
+          class="img-fluid mx-auto mt-5"
+          style="width: 100%; height: auto;"/>
+
+
+      <br><br><br>
+
+
+
     </div>
   </div>
 

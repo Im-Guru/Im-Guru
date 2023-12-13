@@ -28,17 +28,15 @@ export default defineComponent({
   data() {
     return {
       images: [
-        'banner1.jpg',
-        'banner3.jpg',
-        'banner4.jpg',
-        'banner5.jpg',
+        'imguru_banner1.png',
+        'imguru_banner2.png',
       ],
       currentIndex: 0, // 현재 슬라이드의 인덱스를 추적
     };
   },
   methods: {
     getImagePath(imageFileName) {
-      return require(`@/assets/image/${imageFileName}`);
+      return require(`@/assets/image/banner/${imageFileName}`);
     },
   },
   created() {

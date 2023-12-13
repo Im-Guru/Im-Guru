@@ -287,7 +287,9 @@ export default {
 
       this.$axios.post("/api/v1/join/member", this.form)
           .then((res) => {
-            alert(res.data.message)
+            // alert(res.data.message)
+            console.log(res);
+            alert("환영합니다, 회원가입이 완료되었습니다!");
             this.$router.push({
               name: 'LoginMember'
             })
