@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class JasyptConfig {
 
-    @Value("${jasypt.encryptor.password}")
-    private String jasyptPassword;
+//    @Value("${jasypt.encryptor.password}")
+//    private String jasyptPassword;
 
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
 
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-        config.setPassword(jasyptPassword);
+        config.setPassword(System.getProperty("jasypt.encryptor.password"));
         config.setAlgorithm("PBEWithMD5AndDES");
         config.setKeyObtentionIterations("1000");
         config.setPoolSize("1");
