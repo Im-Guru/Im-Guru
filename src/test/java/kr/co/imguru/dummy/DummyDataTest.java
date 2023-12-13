@@ -61,27 +61,35 @@ public class DummyDataTest {
                 .build();
 
         SkillCreateDto dto2 = SkillCreateDto.builder()
-                .name("프로그래머")
+                .name("프로그래밍")
                 .build();
 
         SkillCreateDto dto3 = SkillCreateDto.builder()
-                .name("냉장고수리기사")
-                .build();
-
-        SkillCreateDto dto4 = SkillCreateDto.builder()
-                .name("디자이너")
-                .build();
-
-        SkillCreateDto dto5 = SkillCreateDto.builder()
                 .name("인테리어")
                 .build();
 
+        SkillCreateDto dto4 = SkillCreateDto.builder()
+                .name("번역")
+                .build();
+
+        SkillCreateDto dto5 = SkillCreateDto.builder()
+                .name("법률")
+                .build();
+
         SkillCreateDto dto6 = SkillCreateDto.builder()
-                .name("포토샵")
+                .name("청소")
                 .build();
 
         SkillCreateDto dto7 = SkillCreateDto.builder()
-                .name("영상기획자")
+                .name("문서작업")
+                .build();
+
+        SkillCreateDto dto8 = SkillCreateDto.builder()
+                .name("디자인")
+                .build();
+
+        SkillCreateDto dto9 = SkillCreateDto.builder()
+                .name("음악")
                 .build();
 
         skillService.createSkill(dto1);
@@ -91,6 +99,8 @@ public class DummyDataTest {
         skillService.createSkill(dto5);
         skillService.createSkill(dto6);
         skillService.createSkill(dto7);
+        skillService.createSkill(dto8);
+        skillService.createSkill(dto9);
 
     }
 
