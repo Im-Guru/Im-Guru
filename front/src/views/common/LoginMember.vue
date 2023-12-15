@@ -21,11 +21,12 @@
               </b-form-input>
             </div>
 
+            <br>
             <b-button @click="fnLogin" class="button-width form-height">로그인</b-button>
             <br><br>
             <router-link to="/join/member" class="no-underline">아직 회원이 아니신가요?</router-link>
-<!--            &nbsp; &nbsp;-->
-<!--            <router-link to="/find-password" class="no-underline">비밀번호 찾기</router-link>-->
+            &nbsp; &nbsp;
+            <router-link to="/find-password" class="no-underline">비밀번호 찾기</router-link>
 
           </b-form>
         </b-card>

@@ -351,7 +351,7 @@ public class MemberServiceImpl implements MemberService {
 
     private void isTelephone(String telephone) {
         if (memberRepository.existsByTelephoneAndIsDeleteFalse(telephone)) {
-            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_TELEPHONE_DUPLICATED);
+            throw new DuplicatedException(ResponseStatus.FAIL_MEMBER_NOT_FOUND);
         }
     }
 

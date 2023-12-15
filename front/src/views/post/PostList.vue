@@ -67,28 +67,18 @@
           <b-button :class="{ active: postCategory === '' }" class="btn btn-link custom-button" @click="fnSelectCategory('')">
             전체글
           </b-button>
-          <b-button v-if="role === ''" :class="{ active: postCategory === 'NOTICE' }" class="btn btn-link custom-button" @click="fnSelectCategory('NOTICE')">
+          <b-button :class="{ active: postCategory === 'NOTICE' }" class="btn btn-link custom-button" @click="fnSelectCategory('NOTICE')">
             공지사항
           </b-button>
-          <b-button :class="{ active: postCategory === 'FREE' }" class="btn btn-link custom-button" @click="fnSelectCategory('FREE')">
-            자유게시판
-          </b-button>
-          <b-button v-if="role === 'USER'" :class="{ active: postCategory === 'QNA' }" class="btn btn-link custom-button" @click="fnSelectCategory('QNA')">
-            질문있어요
+          <b-button :class="{ active: postCategory === 'QNA' }" class="btn btn-link custom-button" @click="fnSelectCategory('QNA')">
+            질문
           </b-button>
           <b-button :class="{ active: postCategory === 'INFO' }" class="btn btn-link custom-button" @click="fnSelectCategory('INFO')">
-            정보나눠요
+            정보
           </b-button>
-          <b-button v-if="role === 'USER'" :class="{ active: postCategory === 'FINDGURU' }" class="btn btn-link custom-button" @click="fnSelectCategory('FINDGURU')">
-            도사찾아요
+          <b-button :class="{ active: postCategory === 'FREE' }" class="btn btn-link custom-button" @click="fnSelectCategory('FREE')">
+            자유
           </b-button>
-          <b-button v-if="role === 'GURU'" :class="{ active: postCategory === 'FINDUSER' }" class="btn btn-link custom-button" @click="fnSelectCategory('FINDUSER')">
-            도와드려요
-          </b-button>
-          <b-button v-if="role === 'USER'" :class="{ active: postCategory === 'HELP' }" class="btn btn-link custom-button" @click="fnSelectCategory('HELP')">
-            도와주세요
-          </b-button>
-
         </div>
 
         <!-- 글 목록 -->

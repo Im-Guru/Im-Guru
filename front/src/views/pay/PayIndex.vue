@@ -1,147 +1,127 @@
 <template>
-  <div class="pay-container my-5">
-    <h4 class="my-3"><strong>결제</strong></h4>
+  <div>
+    <h1>결제인증</h1>
+
+    <hr>
 
     <div>
-      <div class="reply-container">
+      <div class="container">
         <div class="table-responsive">
           <table class="table">
             <colgroup>
-              <col style="width: 25%;">
-              <col>
+              <col style="width: 15%; background-color: lightgray;">
+              <col style="width: 35%;">
+              <col style="width: 15%; background-color: lightgray;">
+              <col style="width: 35%;">
             </colgroup>
-            <thead></thead>
+            <thead>
+            <tr>
+              <th>항목</th>
+              <th>값</th>
+              <th>항목</th>
+              <th>값</th>
+            </tr>
+            </thead>
             <tbody>
-
             <tr>
-              <td class="fw-bold">주문 번호</td>
-              <td>
-                <b-form-input type="text" name="ordNo" id="ordNo" v-model="payInfo.ordNo" readonly/>
-              </td>
-            </tr>
-            <tr>
-              <td class="fw-bold">구매 서비스 명</td>
-              <td>
-                <b-form-input type="text" name="productNm" id="productNm" v-model="payInfo.productNm" readonly/>
-              </td>
-            </tr>
-            <tr>
-              <td class="fw-bold">가격</td>
-              <td>
-                <b-form-input :value="formattedPrice" readonly/>
-              </td>
-            </tr>
-            <tr>
-              <td class="fw-bold">주문 시간</td>
-              <td>
-                <b-form-input type="text" readonly :value="formattedDateTime"/>
-              </td>
-            </tr>
-
-
-            <tr hidden>
-              <td class="fw-bold">주문 일자</td>
-              <td>
-                <b-form-input type="text" id="trDay" name="trDay" v-model="payInfo.trDay" readonly/>
-              </td>
-            </tr>
-            <tr hidden>
-              <td class="fw-bold">주문 시간</td>
-              <td>
-                <b-form-input type="text" name="trTime" id="trTime" v-model="payInfo.trTime" readonly/>
-              </td>
-            </tr>
-            <tr hidden>
-              <td>가격</td>
-              <td>
-                <b-form-input type="text" name="price" id="price" v-model="payInfo.price" readonly/>
-              </td>
-            </tr>
-            <tr hidden>
-              <td>도사 닉네임</td>
-              <td>
-                <b-form-input type="text" name="authorNickname" id="authorNickname" v-model="payInfo.authorNickname" readonly/>
-              </td>
-            </tr>
-            <tr hidden>
-              <td>도사 서비스 명</td>
-              <td>
-                <b-form-input type="text" name="title" id="title" v-model="payInfo.title" readonly />
-              </td>
-            </tr>
-            <tr hidden>
-              <td>도사 제공 기술</td>
-              <td>
-                <b-form-input type="text" name="skillName" id="skillName" v-model="payInfo.skillName" readonly />
-              </td>
-            </tr>
-            <tr hidden>
               <td>게시글Id</td>
               <td>
                 <b-form-input type="text" name="postId" id="postId" v-model="payInfo.postId" readonly/>
               </td>
+              <td>게시글 작성자</td>
+              <td>
+                <b-form-input type="text" name="authorNickname" id="authorNickname" v-model="payInfo.authorNickname" readonly/>
+              </td>
             </tr>
-            <tr hidden>
+            <tr>
               <td>게시글 카테고리</td>
               <td>
                 <b-form-input type="text" name="postCategory" id="postCategory" v-model="payInfo.postCategory" readonly/>
               </td>
+              <td>게시글 제목</td>
+              <td>
+                <b-form-input type="text" name="title" id="title" v-model="payInfo.title" readonly />
+              </td>
             </tr>
-            <tr hidden>
+            <tr>
               <td>게시글 내용</td>
               <td>
                 <b-form-input type="text" name="content" id="content" v-model="payInfo.content" readonly />
               </td>
-            </tr>
-            <tr hidden>
               <td>도사 여부</td>
               <td>
                 <b-form-input type="text" name="isGuru" id="isGuru" v-model="payInfo.isGuru" readonly />
               </td>
             </tr>
-            <tr hidden>
+            <tr>
+              <td>도사 기술</td>
+              <td>
+                <b-form-input type="text" name="skillName" id="skillName" v-model="payInfo.skillName" readonly />
+              </td>
+              <td>가격</td>
+              <td>
+                <b-form-input type="text" name="price" id="price" v-model="payInfo.price" readonly/>
+              </td>
+            </tr>
+            <tr>
               <td>생성일자</td>
               <td>
                 <b-form-input type="text" name="regDate" id="regDate" v-model="payInfo.regDate" readonly/>
               </td>
+              <td></td>
+              <td></td>
             </tr>
-            <tr hidden>
+            <tr>
               <td>mercntId</td>
               <td>
                 <b-form-input type="text" name="mercntId" id="mercntId" v-model="payInfo.mercntId" readonly/>
               </td>
+              <td>ordNo</td>
+              <td>
+                <b-form-input type="text" name="ordNo" id="ordNo" v-model="payInfo.ordNo" readonly/>
+              </td>
             </tr>
-            <tr hidden>
+            <tr>
+              <td>trDay</td>
+              <td>
+                <b-form-input type="text" id="trDay" name="trDay" v-model="payInfo.trDay" readonly/>
+              </td>
+              <td>trTime</td>
+              <td>
+                <b-form-input type="text" name="trTime" id="trTime" v-model="payInfo.trTime" readonly/>
+              </td>
+            </tr>
+            <tr>
               <td>trPrice</td>
               <td>
                 <b-form-input type="text" id="trPrice" name="trPrice" v-model="payInfo.trPrice" readonly/>
               </td>
+              <td>productNm</td>
+              <td>
+                <b-form-input type="text" name="productNm" id="productNm" v-model="payInfo.productNm" readonly/>
+              </td>
             </tr>
-            <tr hidden>
+            <tr>
               <td>email</td>
               <td>
                 <b-form-input type="text" id="email" name="email" v-model="payInfo.email" readonly/>
               </td>
-            </tr>
-            <tr hidden>
               <td>cphoneNo</td>
               <td>
                 <b-form-input type="text" name="cphoneNo" id="cphoneNo" v-model="payInfo.cphoneNo" readonly/>
               </td>
             </tr>
-            <tr hidden>
+            <tr>
               <td>mercntParam1</td>
               <td>
                 <b-form-input type="text" id="mercntParam1" name="mercntParam1" v-model="payInfo.mercntParam1" readonly/>
               </td>
-            </tr>
-            <tr hidden>
               <td>mercntParam2</td>
               <td>
                 <b-form-input type="text" id="mercntParam2" name="mercntParam2" v-model="payInfo.mercntParam2" readonly/>
               </td>
             </tr>
-            <tr hidden>
+            <tr>
               <td>signature</td>
               <td>
                 <b-form-input type="text" id="signature" name="signature" v-model="payInfo.signature" readonly/>
@@ -154,11 +134,13 @@
 
     </div>
 
+    <hr>
+
     <b-form name="payForm" id="payForm" ref="payForm" @submit.prevent="goPayAuth">
 
       <div>
         <!-- container -->
-        <div class="container" hidden>
+        <div class="container">
           <div class="table-responsive">
             <table class="table">
               <colgroup>
@@ -269,13 +251,16 @@
         <b-form-input v-model="form.signature" name="signature" hidden/>
 
         <!-- fixed bottom button -->
-        <div style="text-align: center !important">
-          <b-button type="button" id="send" @click="goPayAuth">결제 요청</b-button>
+        <div class="fix_btm_btn">
+          <button type="button" id="send" class="btn btn_lg" @click="goPayAuth">결제인증요청</button>
         </div>
         <!-- //fixed bottom button -->
       </div>
 
+
     </b-form>
+    <br/>
+    <br/>
     <br/>
     <br/>
     <br/>
@@ -296,6 +281,7 @@ export default {
         trPricePlain: '',
         productNm: '',
         dutyFreeYn: 'N',
+        // callbackUrl: window.location.href + '/callback',
         callbackUrl: 'http://localhost:3000/api/v1/pay/callback',
         cancelUrl: 'http://localhost:3000/api/v1/pay/cancel',
         mercntParam1: '',
@@ -335,27 +321,6 @@ export default {
       }
     };
   },
-  computed: {
-    // 숫자를 통화 형식으로 포맷팅하는 computed 속성
-    formattedPrice() {
-      // 숫자를 통화 형식으로 변환 (예: 100,000원)
-      return new Intl.NumberFormat('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
-      }).format(this.payInfo.price);
-    },
-    formattedDateTime() {
-      const date = this.payInfo.trDay || '';
-      const time = this.payInfo.trTime || '';
-
-      // 주문 일자와 시간이 모두 존재할 때에만 한국 스타일로 가공
-      if (date && time) {
-        return `${this.formatKoreanDate(date)} ${this.formatKoreanTime(time)}`;
-      } else {
-        return '';
-      }
-    },
-  },
   mounted() {
     this.fnGetPayInfo()
   },
@@ -389,25 +354,6 @@ export default {
         }
         this.$store.state.loadingStatus = false;
       })
-    },
-
-    formatKoreanDate(date) {
-      // 'YYYYMMDD' 형식의 문자열을 'YYYY-MM-DD' 형식으로 변환
-      const formattedDate = date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(formattedDate).toLocaleDateString('ko-KR', options);
-    },
-    formatKoreanTime(time) {
-      // 'hhmmss' 형식의 문자열에서 시, 분, 초 추출
-      const match = time.match(/(\d{2})(\d{2})(\d{2})/);
-
-      // 추출한 정보를 시간 형식으로 조합
-      if (match) {
-        const [, hours, minutes, seconds] = match;
-        return `${hours}:${minutes}:${seconds}`;
-      } else {
-        return time;  // 정규식 매치 실패 시 그대로 반환
-      }
     },
 
     goPayAuth() {
