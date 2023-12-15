@@ -8,7 +8,8 @@
         <label for="postCategory" class="mt-3"><strong>카테고리</strong></label>
       </div>
       <div class="col-sm">
-        <b-form-select v-model="postCategory" :options="options" v-if="this.role !== 'ROLE_ADMIN'" id="postCategory"></b-form-select>
+        <b-form-select v-model="postCategory" :options="userOptions" v-if="this.role === 'ROLE_USER'" id="postCategory"></b-form-select>
+        <b-form-select v-model="postCategory" :options="guruOptions" v-if="this.role === 'ROLE_GURU'" id="postCategory"></b-form-select>
         <b-form-select v-model="postCategory" :options="adminOptions" v-if="this.role === 'ROLE_ADMIN'" id="postCategory"></b-form-select>
       </div>
     </div>
@@ -22,7 +23,7 @@
       </div>
     </div>
 
-    <div class="row mb-3" v-if="this.role === 'ROLE_GURU'">
+    <div class="row mb-3" v-if="this.role === 'ROLE_GURU' && this.postCategory === 'FINDUSER'">
       <div class="col-2 d-flex flex-column align-items-center">
         <label for="postTitle" class="mt-3"><strong>가격</strong></label>
       </div>
@@ -31,9 +32,10 @@
         </b-form-input>
 
         <!-- Display a warning if the input is not a valid number -->
-        <div v-if="isNaN(price)">
-          <p style="color: red;">잘못된 가격입니다. 다시 입력해주세요.</p>
+        <div v-if="!/^[1-9]\d*$/.test(price) && this.price">
+          <strong style="color: red;" class="mt-1">잘못된 가격입니다. 다시 입력해주세요.</strong>
         </div>
+
       </div>
     </div>
 
@@ -57,7 +59,7 @@
     <!-- 업로드된 파일 목록 표시 -->
     <div v-for="(file, index) in existsFiles" :key="index">
       {{ file.fileName }}
-<!--      {{ file.fileUrl }}-->
+      <!--      {{ file.fileUrl }}-->
       <!-- 여기에 다른 파일 정보 표시를 추가할 수 있음 -->
     </div>
 
@@ -107,10 +109,17 @@ export default {
       created_at: '',
       postCategory: 'FREE',
       skillName: null, // 선택된 기술을 저장할 변수
-      options: [
+      userOptions: [
         {value: 'FREE', text: '자유게시판'},
-        {value: 'QNA', text: '질문글'},
-        {value: 'INFO', text: '정보공유'},
+        {value: 'QNA', text: '질문있어요'},
+        {value: 'INFO', text: '정보나눠요'},
+        {value: 'HELP', text: '도와주세요'},
+        {value: 'FINDGURU', text: '도사찾아요'},
+      ],
+      guruOptions: [
+        {value: 'FREE', text: '자유게시판'},
+        {value: 'INFO', text: '정보나눠요'},
+        {value: 'FINDUSER', text: '도와드려요'},
       ],
       adminOptions: [
         {value: 'NOTICE', text: '공지사항'},
@@ -243,7 +252,7 @@ export default {
             Authorization: `Bearer ${localStorage.getItem("user_token")}`,
           },
         }).then((response) => {
-          alert("게시글 업로드 성공");
+          alert("게시글을 작성하였습니다.");
           this.postId = response.data.data;
           this.fnView(response.data.data);
 
@@ -322,8 +331,8 @@ export default {
 
           }
 
-
-          alert(res.data.message);
+          // alert(res.data.message);
+          alert("게시글이 수정되었습니다.");
           console.log(res.data.data);
           this.fnView(res.data.data.postId);
         }).catch((err) => {
