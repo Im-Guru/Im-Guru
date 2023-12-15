@@ -57,7 +57,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Long createPost(String email, PostCreateDto createDto, List<MultipartFile> files) throws IOException {
+    public Long createPost(String email, PostCreateDto createDto) {
 
         Optional<Member> member = memberRepository.findByEmailAndIsDeleteFalse(email);
 
@@ -68,23 +68,6 @@ public class PostServiceImpl implements PostService {
         Post post = toEntity(member.get().getRole(), createDto, member.get());
 
         postRepository.save(post);
-
-        // 파일 저장
-        if (files != null && !files.isEmpty()) {
-            /* 지원하지 않는 확장자 파일 제거 */
-            List<MultipartFile> validatedFiles = filesValidation(files);
-
-            /* 걸러진 파일들 업로드 */
-            filesUpload(validatedFiles, post.getId());
-
-            /* 유효성 검증을 끝낸 파일들을 하나씩 꺼냄. */
-            for (MultipartFile validatedFile : validatedFiles) {
-                /* File Entity 생성 후 저장 */
-                File file = new File(validatedFile, post);
-
-                fileRepository.save(file);
-            }
-        }
 
         return post.getId();
     }
@@ -100,22 +83,13 @@ public class PostServiceImpl implements PostService {
 
         /*Post File*/
         List<File> fileList = fileRepository.findFileByFileKey("post", postId);
-        List<FileFormat> fileFormatList = new ArrayList<>();
-
-        /*파일이 존재한다면*/
-        if (fileList != null) {
-            for (File file : fileList) {
-                FileFormat fileFormat = new FileFormat(file);
-                fileFormatList.add(fileFormat);
-            }
-        }
 
         Optional<File> memberImage = fileRepository.findOneFileByFileKey("member", post.get().getMember().getId());
         if (memberImage.isEmpty()) {
-            return toReadDetailDto(post.get(), fileFormatList, null);
+            return toReadDetailDto(post.get(), fileList, null);
         } else {
             FileFormat memberImageFormat = new FileFormat(memberImage.get());
-            return toReadDetailDto(post.get(), fileFormatList, memberImageFormat);
+            return toReadDetailDto(post.get(), fileList, memberImageFormat);
         }
 
     }
@@ -158,7 +132,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto, List<MultipartFile> files) throws IOException {
+    public PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto) {
         Optional<Member> loginMember = memberRepository.findByEmailAndIsDeleteFalse(email);
         isMember(loginMember);
 
@@ -172,23 +146,6 @@ public class PostServiceImpl implements PostService {
         post.get().changePost(updateDto);
 
         postRepository.save(post.get());
-
-        // 파일 저장
-        if (files != null && !files.isEmpty()) {
-            /* 지원하지 않는 확장자 파일 제거 */
-            List<MultipartFile> validatedFiles = filesValidation(files);
-
-            /* 걸러진 파일들 업로드 */
-            filesUpload(validatedFiles, post.get().getId());
-
-            /* 유효성 검증을 끝낸 파일들을 하나씩 꺼냄. */
-            for (MultipartFile validatedFile : validatedFiles) {
-                /* File Entity 생성 후 저장 */
-                File file = new File(validatedFile, post.get());
-
-                fileRepository.save(file);
-            }
-        }
 
         return toReadDto(post.get());
     }
@@ -215,20 +172,6 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void updateCntToRedis(Long postId, String hashKey) {
-//        HashOperations<String, String, Object> hashOperations = redisTemplate.opsForHash();
-//
-//        String key = "postId::" + postId;
-//
-//        if (hashOperations.get(key, hashKey) == null) {
-//            if (hashKey.equals("views")) {
-//                hashOperations.put(key, hashKey, postRepository.findByIdAndIsDeleteFalse(postId).get().getViewCnt());
-//            }
-//            hashOperations.increment(key, hashKey, 1L);
-//            System.out.println("hashOperations.get is null ---- " + hashOperations.get(key, hashKey));
-//        } else {
-//            hashOperations.increment(key, hashKey, 1L);
-//            System.out.println("hashOperations.get is not null ---- " + hashOperations.get(key, hashKey));
-//        }
 
         HashOperations<String, String, Object> hashOperations = redisTemplate.opsForHash();
 
@@ -347,23 +290,6 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Scheduled(fixedDelay = 1000L * 180L) // 180초
     public void deleteCntToRedis() {
-//        String viewKey = "views";
-//        Set<String> redisKey = redisTemplate.keys("postId*");
-//        Iterator<String> it = redisKey.iterator();
-//
-//        while (it.hasNext()) {
-//            String data = it.next();
-//            Long postId = Long.parseLong(data.split("::")[1]);
-//
-//            if (redisTemplate.opsForHash().get(data, viewKey) == null) {
-//                break;
-//            } else {
-//                Long viewCnt = Long.parseLong(String.valueOf(redisTemplate.opsForHash().get(data, viewKey)));
-//                addViewCntFromRedis(postId, viewCnt);
-//                redisTemplate.opsForHash().delete(data, viewKey);
-//            }
-//        }
-//        System.out.println("Update Complete From Redis");
 
         try {
             String viewKey = "views";
@@ -403,62 +329,6 @@ public class PostServiceImpl implements PostService {
 
             postRepository.save(post.get());
         }
-    }
-
-    /*파일의 유효성 검증*/
-    private List<MultipartFile> filesValidation(List<MultipartFile> files) throws IOException {
-        /*접근 거부 파일 확장자명*/
-        String[] accessDeniedFileExtension = {"exe", "zip"};
-        /*접근 거부 파일 컨텐츠 타입*/
-        String[] accessDeniedFileContentType = {"application/x-msdos-program", "application/zip"};
-
-        ArrayList<MultipartFile> validatedFiles = new ArrayList<>();
-
-        for (MultipartFile file : files) {
-            /*원본 파일 이름*/
-            String originalFileName = file.getOriginalFilename();
-            /*파일의 확장자명*/
-            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
-            /*파일의 컨텐츠타입*/
-            String fileContentType = file.getContentType();
-
-            /*accessDeniedFileExtension, accessDeniedFileContentType -> 업로드 불가*/
-            if (Arrays.asList(accessDeniedFileExtension).contains(fileExtension) ||
-                    Arrays.asList(accessDeniedFileContentType).contains(fileContentType)) {
-                log.warn(fileExtension + "(" + fileContentType + ") 파일은 지원하지 않는 확장자입니다.");
-            } else {/*업로드 가능*/
-                validatedFiles.add(file);
-            }
-        }
-        return validatedFiles;
-    }
-
-    /*파일 업로드 메소드*/
-    private void filesUpload(List<MultipartFile> files, Long postId) throws IOException {
-        /*프로젝트 루트 경로*/
-        String rootDir = System.getProperty("user.dir");
-
-        for (MultipartFile file : files) {
-            /* 파일 이름 생성 및 수정 */
-            String fileName = postId + "_" + file.getOriginalFilename();
-            fileName = fileName.replaceAll("\\s", "_"); // 공백을 언더스코어로 대체
-            fileName = fileName.replaceAll("[^a-zA-Z0-9_.]", ""); // 영문자, 숫자, 언더스코어, 마침표 이외의 문자 제거
-
-            /* 업로드 경로 */
-            java.io.File uploadPath = new java.io.File(rootDir + "/media/post/");
-            uploadPath.mkdirs(); // 디렉토리가 존재하지 않으면 생성
-
-            uploadPath = new java.io.File(uploadPath, fileName); // 파일 이름을 포함한 전체 경로
-
-            /* 업로드 */
-            file.transferTo(uploadPath);
-        }
-//        for (MultipartFile file : files) {
-//            /*업로드 경로*/
-//            java.io.File uploadPath = new java.io.File(rootDir + "/media/" + postId + "_" + file.getOriginalFilename());
-//            /*업로드*/
-//            file.transferTo(uploadPath);
-//        }
     }
 
     private void isMember(Optional<Member> member) {
@@ -521,7 +391,7 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    private PostReadDto toReadDetailDto(Post post, List<FileFormat> fileFormatList, FileFormat memberImage) {
+    private PostReadDto toReadDetailDto(Post post, List<File> fileList, FileFormat memberImage) {
         return PostReadDto.builder()
                 .postId(post.getId())
                 .memberNickname(post.getMember().getNickname())
@@ -529,7 +399,7 @@ public class PostServiceImpl implements PostService {
                 .postCategory(String.valueOf(post.getPostCategory()))
                 .title(post.getTitle())
                 .content(post.getContent())
-                .fileFormat(fileFormatList)
+                .fileList(fileList)
                 .price(post.getPrice())
                 .isGuru(post.isGuru())
                 .skillName(post.getMember().getSkill().getName())

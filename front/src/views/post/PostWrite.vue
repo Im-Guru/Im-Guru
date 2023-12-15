@@ -57,7 +57,7 @@
     <!-- 업로드된 파일 목록 표시 -->
     <div v-for="(file, index) in existsFiles" :key="index">
       {{ file.fileName }}
-      {{ file.fileUrl }}
+<!--      {{ file.fileUrl }}-->
       <!-- 여기에 다른 파일 정보 표시를 추가할 수 있음 -->
     </div>
 
@@ -71,7 +71,7 @@
 <script>
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import UploadAdapter from './UploadAdapter';
+// import UploadAdapter from './UploadAdapter';
 
 export default {
   components: {'ck-editor': CKEditor.component},
@@ -92,11 +92,11 @@ export default {
         table: {
           contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'],
         },
-        extraPlugins: [function (editor) {
-          editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return new UploadAdapter(loader);
-          }
-        }],
+        // extraPlugins: [function (editor) {
+        //   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+        //     return new UploadAdapter(loader);
+        //   }
+        // }],
 
       },
       requestBody: this.$route.query,
@@ -120,6 +120,8 @@ export default {
       ],
       role: '',
       existsFiles: [],
+
+      postId: '',
     }
   },
   created() {
@@ -188,7 +190,7 @@ export default {
           this.price = res.data.data.price
           this.skillName = res.data.data.skillName
           this.created_at = res.data.data.regDate
-          this.existsFiles = res.data.data.fileFormat
+          this.existsFiles = res.data.data.fileList
 
           console.log('Exists Files:', this.existsFiles);
         }).catch((err) => {
@@ -224,6 +226,7 @@ export default {
       this.createDto.content = this.content
       this.createDto.price = this.price || 0
       this.createDto.categoryName = this.postCategory
+
       if (!this.createDto.title) {
         alert("제목을 입력해주세요.");
         return;
@@ -233,61 +236,105 @@ export default {
         return;
       }
 
-      const formData = new FormData();
-
-      // DTO를 JSON 문자열로 변환하여 FormData에 추가
-      const json = JSON.stringify(this.createDto);
-      const blob = new Blob([json], { type: "application/json" });
-      formData.append("createDto", blob);
-
-      // 파일 업로드 처리
-      for (const file of this.createDto.files) {
-        console.log(file)
-        formData.append("files", file); // 각 파일을 FormData에 추가
-      }
-
       if (!this.idx) {
         // 새 게시글 작성
-        this.$axios.post("/api/v1/post", formData, {
+        this.$axios.post("/api/v1/post", this.createDto, {
           headers: {
-            'Content-Type': 'multipart/form-data', // 헤더 설정
             Authorization: `Bearer ${localStorage.getItem("user_token")}`,
           },
-        })
-            .then((response) => {
-              alert("게시글 업로드 성공");
-              console.log(response.data.data)
-              this.fnView(response.data.data)
-            })
-            .catch((err) => {
-              if (err.response.status === 401 || err.response.status === 404) {
-                this.$router.push({ path: '/login' });
-              } else {
-                alert(err.response.data.message);
-                location.reload()
-              }
-            });
+        }).then((response) => {
+          alert("게시글 업로드 성공");
+          this.postId = response.data.data;
+          this.fnView(response.data.data);
+
+          if (this.createDto.files.length !== 0) {
+            for (const file of this.createDto.files) {
+              const fileCategory = "post";
+              const fileKey = this.postId;
+
+              const formData = new FormData();
+              const modifiedFilename = "post_" + this.postId + "_" + file.name;
+              formData.append("file", file, modifiedFilename);
+
+              // 파일 업로드
+              this.$axios.post("/upload", formData, {
+                withCredentials: true,  // CORS 관련 설정
+              }).then((uploadResponse) => {
+                console.log("--upload--");
+                console.log(uploadResponse);
+              }).catch((uploadError) => {
+                console.log(uploadError);
+              });
+
+              // file DB에 저장
+              this.$axios.post(`/api/v1/file/${fileCategory}/${fileKey}/${file.name}`).then((res) => {
+                console.log("--File DB--");
+                console.log(res);
+              }).catch((err) => {
+                console.log(err);
+              });
+            }
+
+          }
+        }).catch((err) => {
+          if (err.response.status === 401 || err.response.status === 404) {
+            this.$router.push({ path: '/login' });
+          } else {
+            alert(err.response.data.message);
+            location.reload();
+          }
+        });
       } else {
         // 게시글 업데이트
-        this.$axios
-            .patch("/api/v1/post/" + this.idx, formData, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-              },
-            })
-            .then((res) => {
-              alert(res.data.message);
-              console.log(res.data.data);
-              this.fnView(res.data.data.postId);
-            })
-            .catch((err) => {
-              if (err.response.status === 401 || err.response.status === 404) {
-                this.$router.push({ path: '/login' });
-              } else {
-                alert(err.response.data.message);
-                location.reload()
-              }
-            });
+        this.$axios.patch("/api/v1/post/" + this.idx, this.createDto, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          },
+        }).then((res) => {
+
+          if (this.createDto.files.length !== 0) {
+            for (const file of this.createDto.files) {
+              const fileCategory = "post";
+              const fileKey = this.idx;
+
+              const formData = new FormData();
+              const modifiedFilename = "post_" + this.idx + "_" + file.name;
+              formData.append("file", file, modifiedFilename);
+
+              // 파일 업로드
+              this.$axios.post("/upload", formData, {
+                withCredentials: true,  // CORS 관련 설정
+              }).then((uploadResponse) => {
+                console.log("--upload--");
+                console.log(uploadResponse);
+              }).catch((uploadError) => {
+                console.log(uploadError);
+              });
+
+              // file DB에 저장
+              this.$axios.post(`/api/v1/file/${fileCategory}/${fileKey}/${file.name}`).then((res) => {
+                console.log("--File DB--");
+                console.log(res);
+              }).catch((err) => {
+                console.log(err);
+              });
+            }
+
+          }
+
+
+          alert(res.data.message);
+          console.log(res.data.data);
+          this.fnView(res.data.data.postId);
+        }).catch((err) => {
+          if (err.response.status === 401 || err.response.status === 404) {
+            this.$router.push({ path: '/login' });
+          } else {
+            alert(err.response.data.message);
+            location.reload()
+          }
+        });
+
       }
     },
   }

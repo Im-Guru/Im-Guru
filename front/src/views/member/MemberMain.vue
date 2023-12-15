@@ -363,7 +363,7 @@ export default {
         this.job = res.data.data.job;
         this.address = res.data.data.roadAddress + " " + res.data.data.detailAddress;
         this.role = res.data.data.role;
-        this.fileFormat = res.data.data.fileFormat;
+        this.fileFormat = res.data.data.file;
 
       }).catch((err) => {
         console.log(err);

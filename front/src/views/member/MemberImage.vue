@@ -22,6 +22,7 @@ export default {
       isGuru: false,
       role: '',
       memberNickname: '',
+      memberId: '',
       file: '',
     };
   },
@@ -39,6 +40,7 @@ export default {
       }).then((res) => {
         console.log(res);
 
+        this.memberId = res.data.data.memberId;
         this.memberNickname = res.data.data.nickname;
         this.role = res.data.data.role;
 
@@ -73,27 +75,54 @@ export default {
       }
 
       const formData = new FormData();
+      const fileCategory = "member";
+      const fileKey = this.memberId;
+      const file = this.file;
+      const modifiedFilename = "member_" + this.memberId + "_" + this.file.name;
 
-      formData.append("files", this.file);
+      formData.append("file", file, modifiedFilename);
 
-      this.$axios.post("/api/v1/member/image", formData, {
-        headers: {
-          // 'Content-Type': 'multipart/form-data', // 헤더 설정
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-        },
-      }).then((response) => {
-        alert("이미지 업로드 성공");
-        console.log(response)
-        this.$router.go(-1);
-      })
-          .catch((err) => {
-            if (err.response.status === 401 || err.response.status === 404) {
-              this.$router.push({path: '/login'});
-            } else {
-              alert(err.response.data.message);
-              location.reload()
-            }
-          });
+      // 파일 업로드
+      this.$axios.post("/upload", formData, {
+        withCredentials: true,  // CORS 관련 설정
+      }).then((uploadResponse) => {
+        console.log("--upload--");
+        console.log(uploadResponse);
+      }).catch((uploadError) => {
+        console.log("--upload error--");
+        console.log(uploadError);
+      });
+
+      // file DB에 저장
+      this.$axios.post(`/api/v1/file/${fileCategory}/${fileKey}/${this.file.name}`).then((res) => {
+        console.log("--File DB--");
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
+      });
+
+      alert("이미지 업로드 성공");
+      this.$router.go(-1);
+
+
+      // this.$axios.post("/api/v1/member/image", formData, {
+      //   headers: {
+      //     // 'Content-Type': 'multipart/form-data', // 헤더 설정
+      //     Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+      //   },
+      // }).then((response) => {
+      //   alert("이미지 업로드 성공");
+      //   console.log(response)
+      //   this.$router.go(-1);
+      // })
+      //     .catch((err) => {
+      //       if (err.response.status === 401 || err.response.status === 404) {
+      //         this.$router.push({path: '/login'});
+      //       } else {
+      //         alert(err.response.data.message);
+      //         location.reload()
+      //       }
+      //     });
 
     },
   }

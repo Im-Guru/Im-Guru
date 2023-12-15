@@ -12,9 +12,7 @@ import java.util.List;
 
 public interface PostService {
 
-//    void createPost(PostCreateDto createDto);
-
-    Long createPost(String email, PostCreateDto createDto, List<MultipartFile> files) throws IOException;
+    Long createPost(String email, PostCreateDto createDto);
 
     PostReadDto getPost(Long postId);
 
@@ -26,7 +24,7 @@ public interface PostService {
 
     List<PostReadDto> getLikePostsByMember(String memberNickname);
 
-    PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto, List<MultipartFile> files) throws IOException;
+    PostReadDto updatePost(String email, Long postId, PostUpdateDto updateDto);
 
     void deletePost(Long postId);
 
