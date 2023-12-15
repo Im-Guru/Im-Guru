@@ -42,8 +42,6 @@ public interface MemberService {
 
     MemberReadDto getMemberDetailByMemberNickname(String memberNickname);
 
-    Long uploadMemberImage(String email, List<MultipartFile> files) throws IOException;
-
 
 
     String checkEmailValid(String email);

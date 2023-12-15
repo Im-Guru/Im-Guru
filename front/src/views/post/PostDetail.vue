@@ -164,7 +164,8 @@ export default {
         // this.isLiked = res.data.data.isLiked;
         this.likeCnt = res.data.data.likeCnt;
         //파일 가져오기
-        this.files = res.data.data.fileFormat
+        this.files = res.data.data.fileList;
+        console.log(this.files);
         this.memberImage = res.data.data.memberImage
       }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 404) {
@@ -207,11 +208,12 @@ export default {
         return;
       }
 
-      this.$axios.delete('/api/v1/post/' + this.idx, {})
-          .then((res) => {
-            alert(res.data.message)
-            this.fnList();
-          }).catch((err) => {
+      this.$axios.delete('/api/v1/post/' + this.idx, {
+
+      }).then((res) => {
+        alert(res.data.message)
+        this.fnList();
+      }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 400) {
           alert("로그인을 먼저 해주세요!");
           this.$router.push({path: '/login'});
@@ -260,7 +262,6 @@ export default {
         //   location.reload()
         // }
         this.$store.state.loadingStatus = false;
-
       })
     },
     async checkReplier(replyId) {
@@ -277,7 +278,6 @@ export default {
         console.log(err.response.data.message);
       })
       this.$store.state.loadingStatus = false;
-
     },
 
     removeReply(replyId, postId) {
@@ -309,7 +309,6 @@ export default {
           location.reload()
         }
         this.$store.state.loadingStatus = false;
-
       })
     },
     replySave() {
@@ -329,16 +328,15 @@ export default {
         "content": this.reply
       }
       console.log(this.form.content)
-      //INSERT
+
       this.$axios.post(`/api/v1/reply/` + this.idx, this.form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
         }
-      })
-          .then((res) => {
-            alert(res.data.message)
-            this.fnPost(this.idx);
-          }).catch((err) => {
+      }).then((res) => {
+        alert(res.data.message)
+        this.fnPost(this.idx);
+      }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 400) {
           alert("로그인을 먼저 해주세요!");
           this.$router.push({path: '/login'});
@@ -357,7 +355,6 @@ export default {
     // ------------------------
 
     toMessageWrite(receiverNickname) {
-
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
         window.location.href = "http://localhost:3000/login";
@@ -370,7 +367,6 @@ export default {
       })
     },
     toReportPost(postId, title) {
-
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
         window.location.href = "http://localhost:3000/login";
@@ -403,28 +399,25 @@ export default {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("user_token")}`,
         },
-      })
-          .then(() => {
-            alert("좋아요!");
-          })
-          .catch((err) => {
-            if (err.response.status === 401) {
-              alert("로그인을 먼저 해주세요!");
-              this.$router.push({path: '/login'});
-            } if (err.response.status === 404) {
-              alert("잘못된 경로입니다.");
-              alert(err.response.data.message);
-              location.reload()
-            } else {
-              alert(err.response.data.message);
-              location.reload()
-            }
-            this.$store.state.loadingStatus = false;
-          });
+      }).then(() => {
+        alert("좋아요!");
+      }).catch((err) => {
+        if (err.response.status === 401) {
+          alert("로그인을 먼저 해주세요!");
+          this.$router.push({path: '/login'});
+        } if (err.response.status === 404) {
+          alert("잘못된 경로입니다.");
+          alert(err.response.data.message);
+          location.reload()
+        } else {
+          alert(err.response.data.message);
+          location.reload()
+        }
+        this.$store.state.loadingStatus = false;
+      });
     },
 
     toPay(postId) {
-
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
         window.location.href = "http://localhost:3000/login";
@@ -453,33 +446,30 @@ export default {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("user_token")}`,
         },
-      })
-          .then(() => {
-            // if (this.isLiked) {
-            //   this.likeCnt++;
-            // } else {
-            //   this.likeCnt--;
-            // }
-            alert("좋아요!");
-            location.reload()
-          })
-          .catch((err) => {
-            if (err.response.status === 401 || err.response.status === 400) {
-              alert("로그인을 먼저 해주세요!");
-              this.$router.push({path: '/login'});
-            } if (err.response.status === 404) {
-              alert("잘못된 경로입니다.");
-              alert(err.response.data.message);
-              location.reload()
-            } else {
-              alert(err.response.data.message);
-              location.reload()
-            }
-            this.$store.state.loadingStatus = false;
-          });
+      }).then(() => {
+        // if (this.isLiked) {
+        //   this.likeCnt++;
+        // } else {
+        //   this.likeCnt--;
+        // }
+        alert("좋아요!");
+        location.reload()
+      }).catch((err) => {
+        if (err.response.status === 401 || err.response.status === 400) {
+          alert("로그인을 먼저 해주세요!");
+          this.$router.push({path: '/login'});
+        } if (err.response.status === 404) {
+          alert("잘못된 경로입니다.");
+          alert(err.response.data.message);
+          location.reload()
+        } else {
+          alert(err.response.data.message);
+          location.reload()
+        }
+        this.$store.state.loadingStatus = false;
+      });
     },
     toReportReply(replyId, replyContent) {
-
       if (localStorage.getItem("user_token") === null) {
         alert("로그인 해야 가능한 서비스입니다.");
         window.location.href = "http://localhost:3000/login";
@@ -494,7 +484,6 @@ export default {
           reportReply: replyId,
           replyContent: replyContent,
         }
-
       })
     },
 

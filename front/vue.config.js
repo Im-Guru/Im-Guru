@@ -23,6 +23,13 @@ module.exports = {
         pathRewrite: {
           '^/api:': ''
         }
+      },
+      '/upload': {
+        target: 'http://211.62.99.58:9082',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/upload': '/api/upload'
+        }
       }
     }
   }

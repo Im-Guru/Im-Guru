@@ -265,7 +265,7 @@ export default {
         this.skillName = res.data.data.skillName;
         this.job = res.data.data.job;
         this.address = res.data.data.roadAddress + " " + res.data.data.detailAddress;
-        this.fileFormat = res.data.data.fileFormat;
+        this.fileFormat = res.data.data.file;
 
       }).catch((err) => {
         console.log(err);

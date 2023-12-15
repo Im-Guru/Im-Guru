@@ -30,4 +30,5 @@ public interface FileRepository extends JpaRepository<File, Long> {
             "AND f.fileKey = :fileKey")
     void deleteFileByFileKey(String fileCategory, Long fileKey);
 
+
 }

@@ -119,39 +119,6 @@ public class MemberRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberService.getMemberDetailByMemberNickname(memberNickname));
     }
 
-    @PostMapping(value = "/member/image", consumes = {"multipart/form-data"})
-    public ResponseFormat<Long> uploadMemberImage(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                  @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
-
-        Long memberId = memberService.uploadMemberImage(userDetails.getUsername(), files);
-
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, memberId);
-    }
-
-    /*파일 링크 클릭 시 파일 저장*/
-    @GetMapping("/member/files/{fileName}")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileName") String fileName,
-                                          HttpServletRequest request) throws IOException {
-        /*프로젝트 루트 경로*/
-        String rootDir = System.getProperty("user.dir");
-
-        /*file의 path를 저장 -> 클릭 시 파일로 이동*/
-        Path filePath = Path.of(rootDir + "/media/member/" + fileName);
-
-        /*파일의 패스를 uri로 변경하고 resource로 저장.*/
-        Resource resource = new UrlResource(filePath.toUri());
-
-        /*컨텐츠 타입을 가지고 온다.*/
-        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-
-    }
-
-
 
     /** 회원가입 시, 중복 확인 버튼 체크 위한 API **/
     @PostMapping("/member/checkEmail/{email}")

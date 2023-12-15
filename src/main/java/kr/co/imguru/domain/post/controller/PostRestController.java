@@ -33,37 +33,13 @@ public class PostRestController {
 
     private final PostService postService;
 
-    @PostMapping(value = "/post", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/post")
     public ResponseFormat<Long> createPost(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                           @RequestPart("createDto") @Valid PostCreateDto createDto,
-                                           @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
+                                           @RequestBody @Valid PostCreateDto createDto) {
 
-        Long postId = postService.createPost(userDetails.getUsername(), createDto, files);
+        Long postId = postService.createPost(userDetails.getUsername(), createDto);
 
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postId);
-    }
-
-    /*파일 링크 클릭 시 파일 저장*/
-    @GetMapping("/post/files/{fileName}")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileName") String fileName,
-                                          HttpServletRequest request) throws IOException {
-        /*프로젝트 루트 경로*/
-        String rootDir = System.getProperty("user.dir");
-
-        /*file의 path를 저장 -> 클릭 시 파일로 이동*/
-        Path filePath = Path.of(rootDir + "/media/post/" + fileName);
-
-        /*파일의 패스를 uri로 변경하고 resource로 저장.*/
-        Resource resource = new UrlResource(filePath.toUri());
-
-        /*컨텐츠 타입을 가지고 온다.*/
-        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-
     }
 
     @GetMapping("/post/{postId}")
@@ -91,19 +67,11 @@ public class PostRestController {
         return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.getLikePostsByMember(memberNickname));
     }
 
-//    @PatchMapping("/post/{postId}")
-//    public ResponseFormat<PostReadDto> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
-//                                                  @PathVariable Long postId,
-//                                                  @RequestBody @Valid PostUpdateDto updateDto) {
-//        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto));
-//    }
-
-    @PatchMapping(value = "/post/{postId}", consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/post/{postId}")
     public ResponseFormat<PostReadDto> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @PathVariable Long postId,
-                                                  @RequestPart("createDto") @Valid PostUpdateDto updateDto,
-                                                  @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
-        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto, files));
+                                                  @RequestBody @Valid PostUpdateDto updateDto) {
+        return ResponseFormat.successWithData(ResponseStatus.SUCCESS_OK, postService.updatePost(userDetails.getUsername(), postId, updateDto));
     }
 
     @DeleteMapping("/post/{postId}")
