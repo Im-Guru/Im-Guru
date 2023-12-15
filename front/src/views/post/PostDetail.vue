@@ -1,10 +1,10 @@
 <template>
-<!--  <div class="post-container">-->
+  <!--  <div class="post-container">-->
   <div class="post-detail mt-5">
     <div class="common-buttons mb-3">
-      <i v-if="isAuthor" @click="fnUpdate" class="fa-2x fa-solid fa-pen-to-square mouse-cursor small-icon"></i>&nbsp;
-      <i v-if="isAuthor" @click="fnDelete" class="fa-2x fa-solid fa-trash mouse-cursor small-icon"></i>&nbsp;
-      <i @click="fnList" class="fa-2x fa-solid fa-list mouse-cursor small-icon"></i>&nbsp;
+      <i v-if="isAuthor" @click="fnUpdate" class="fa-2x fa-solid fa-pen-to-square mouse-cursor small-icon">&nbsp;수정&nbsp;</i>
+      <i v-if="isAuthor" @click="fnDelete" class="fa-2x fa-solid fa-trash mouse-cursor small-icon">&nbsp;삭제&nbsp;</i>
+      <i @click="fnList" class="fa-2x fa-solid fa-list mouse-cursor small-icon">&nbsp;목록&nbsp;</i>
     </div>
     <p>{{ category }} - {{ skill }}</p>
 
@@ -22,8 +22,8 @@
       <span class="small-font">&nbsp; 조회: {{ viewCnt }}</span>
 
       <div class="icon-container">
-        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isAuthor" @click="toMessageWrite(author)">&nbsp;</i>
-        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isAuthor" @click="toReportPost(postId, title)">&nbsp;</i>&nbsp;
+        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isAuthor" @click="toMessageWrite(author)">&nbsp;메세지&nbsp;&nbsp;</i>
+        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isAuthor" @click="toReportPost(postId, title)">&nbsp;신고</i>&nbsp;
       </div>
 
     </div>
@@ -36,12 +36,15 @@
       </div>
       <div v-html="content"></div>
 
-      <div v-if="isGuru">가격: {{ price }}</div>
+      <!--      <div v-if="isGuru && this.price !== '0'">가격: {{ price }}</div>-->
+      <div v-if="isGuru && this.price !== '0'" class="my-3" style="text-align: end">
+        <h4><strong>가격: {{ parseFloat(price).toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' }) }}</strong></h4>
+      </div>
     </div>
 
     <div class="button-container">
-      <i class="fa-3x fa-solid fa-thumbs-up heart-icon" @click="toPostLike(postId)">&nbsp;&nbsp;</i>
-      <i v-if="isGuru" class="fa-3x fa-solid fa-money-check-dollar pay-icon" @click="toPay(postId)">&nbsp;&nbsp;</i>
+      <i class="fa-3x fa-solid fa-thumbs-up heart-icon" @click="toPostLike(postId)">&nbsp;좋아요 {{likeCnt}}&nbsp;&nbsp;&nbsp;</i>
+      <i v-if="isGuru && this.price !== '0'" class="fa-3x fa-solid fa-money-check-dollar pay-icon" @click="toPay(postId)">&nbsp;결제&nbsp;</i>
     </div>
 
     <div>
@@ -54,13 +57,12 @@
 
     <hr>
 
-
     <!-- --------------- -->
     <div v-for="(reply, idx) in replyList" :key="idx" class="reply-container">
       <div class="icon-container">
-        <i class="fa-solid fa-trash mouse-cursor" v-if="isReplierArray[idx]" @click="removeReply(reply.replyId, reply.postId)">&nbsp;</i>
-        <i class="fa-solid fa-envelope mouse-cursor" v-if="!isReplierArray[idx]" @click="toMessageWrite(reply.memberNickname)">&nbsp;</i>
-        <i class="fa-solid fa-triangle-exclamation mouse-cursor" v-if="!isReplierArray[idx]" @click="toReportReply(reply.replyId, reply.content)"></i>&nbsp;
+        <i class="fa-solid fa-trash mouse-cursor small-icon" v-if="isReplierArray[idx]" @click="removeReply(reply.replyId, reply.postId)">&nbsp;삭제&nbsp;</i>
+        <i class="fa-solid fa-envelope mouse-cursor small-icon" v-if="!isReplierArray[idx]" @click="toMessageWrite(reply.memberNickname)">&nbsp;메세지&nbsp;</i>
+        <i class="fa-solid fa-triangle-exclamation mouse-cursor small-icon" v-if="!isReplierArray[idx]" @click="toReportReply(reply.replyId, reply.content)">&nbsp;신고&nbsp;</i>
       </div>
 
       <div class="reply-detail" >
@@ -93,7 +95,7 @@
 
   </div>
 
-<!--  </div>-->
+  <!--  </div>-->
 
 </template>
 
@@ -211,7 +213,9 @@ export default {
       this.$axios.delete('/api/v1/post/' + this.idx, {
 
       }).then((res) => {
-        alert(res.data.message)
+        // alert(res.data.message)
+        console.log(res);
+        alert("게시글 삭제가 완료되었습니다.");
         this.fnList();
       }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 400) {
@@ -250,7 +254,7 @@ export default {
 
         // 각 댓글에 대해 checkReplier 호출
         for (const reply of this.replyList) {
-           await this.checkReplier(reply.replyId);
+          await this.checkReplier(reply.replyId);
         }
 
       }).catch((err) => {
@@ -294,7 +298,9 @@ export default {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
         }
       }).then((res) => {
-        alert(res.data.message)
+        // alert(res.data.message)
+        console.log(res);
+        alert("댓글 삭제가 완료되었습니다.");
         this.fnPost(postId);
       }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 400) {
@@ -334,7 +340,9 @@ export default {
           Authorization: `Bearer ${localStorage.getItem('user_token')}`
         }
       }).then((res) => {
-        alert(res.data.message)
+        // alert(res.data.message)
+        console.log(res);
+        // alert("게시글 삭제가 완료되었습니다.");
         this.fnPost(this.idx);
       }).catch((err) => {
         if (err.response.status === 401 || err.response.status === 400) {
@@ -402,17 +410,18 @@ export default {
       }).then(() => {
         alert("좋아요!");
       }).catch((err) => {
-        if (err.response.status === 401) {
-          alert("로그인을 먼저 해주세요!");
-          this.$router.push({path: '/login'});
-        } if (err.response.status === 404) {
-          alert("잘못된 경로입니다.");
-          alert(err.response.data.message);
-          location.reload()
-        } else {
-          alert(err.response.data.message);
-          location.reload()
-        }
+        // if (err.response.status === 401) {
+        //   alert("로그인을 먼저 해주세요!");
+        //   this.$router.push({path: '/login'});
+        // } if (err.response.status === 404) {
+        //   alert("잘못된 경로입니다.");
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // } else {
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // }
+        alert(err.response.data.message);
         this.$store.state.loadingStatus = false;
       });
     },
@@ -455,17 +464,18 @@ export default {
         alert("좋아요!");
         location.reload()
       }).catch((err) => {
-        if (err.response.status === 401 || err.response.status === 400) {
-          alert("로그인을 먼저 해주세요!");
-          this.$router.push({path: '/login'});
-        } if (err.response.status === 404) {
-          alert("잘못된 경로입니다.");
-          alert(err.response.data.message);
-          location.reload()
-        } else {
-          alert(err.response.data.message);
-          location.reload()
-        }
+        // if (err.response.status === 401 || err.response.status === 400) {
+        //   alert("로그인을 먼저 해주세요!");
+        //   this.$router.push({path: '/login'});
+        // } if (err.response.status === 404) {
+        //   alert("잘못된 경로입니다.");
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // } else {
+        //   alert(err.response.data.message);
+        //   location.reload()
+        // }
+        alert(err.response.data.message);
         this.$store.state.loadingStatus = false;
       });
     },
@@ -558,21 +568,21 @@ export default {
   color: blue; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
   font-size: 3rem; /* 원하는 크기로 설정합니다. */
   cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .Reply-heart-icon {
   color: deepskyblue; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
   cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
   font-size: 15px;
-  //vertical-align: -10px;
+//vertical-align: -10px;
 }
 
 .pay-icon {
   color: forestgreen; /* 원하는 색상(빨간색 또는 다른 원하는 색상)으로 설정합니다. */
   font-size: 3rem; /* 원하는 크기로 설정합니다. */
   cursor: pointer; /* 마우스 포인터가 포인팅 형태로 변경됩니다. */
-  font-size: 30px;
+  font-size: 20px;
 }
 
 /* 하트 아이콘과 버튼 컨테이너 스타일 */
