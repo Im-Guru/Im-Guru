@@ -10,22 +10,9 @@
                 <label for="input-1" class="form-label"><strong>이메일</strong></label>
                 <b-input-group class="form-height">
                   <b-form-input v-model="form.email" type="email" id="input-1" placeholder="이메일을 입력해주세요"
-                                ref="emailInput" required :readonly="emailInputReadonly"></b-form-input>
+                                ref="emailInput" required></b-form-input>
                   <b-button class="btn btn-primary" type="button" @click="emailChkBtn(form.email)">중복확인</b-button>
                 </b-input-group>
-
-                <!-- Display a warning if the email format is invalid -->
-                <div v-if="!isValidEmail(form.email) && form.email" class="mt-1">
-                  <strong style="color: red;"><small>올바른 이메일 형식이 아닙니다. 다시 확인해주세요.</small></strong>
-                </div>
-
-                <div v-if="isValidEmail(form.email) && emailCheckResult !== 'valid'" class="mt-1">
-                  <strong style="color: blue;"><small>올바른 이메일 형식입니다! 중복확인을 해주세요.</small></strong>
-                </div>
-
-                <div v-if="emailCheckResult === 'valid'" class="mt-1">
-                  <strong style="color: green;"><small>중복확인이 완료되었습니다.</small></strong>
-                </div>
               </div>
 
               <div class="mb-4">
@@ -38,10 +25,6 @@
                 <label for="input-2-1" class="form-label text-md-right"><strong>비밀번호 확인</strong></label>
                 <b-form-input class="form-height" v-model="form.confirmPassword" type="password" id="input-3-1"
                               ref="confirmPasswordInput" placeholder="비밀번호 확인을 입력해주세요" required></b-form-input>
-
-                <div v-if="!isValidPwConfirm(form.password, form.confirmPassword) && form.password && form.confirmPassword" class="mt-1">
-                  <strong style="color: red;"><small>비밀번호가 일치하지 않습니다. 다시 한번 확인해주세요.</small></strong>
-                </div>
               </div>
 
               <div class="mb-4">
@@ -54,39 +37,19 @@
                 <label for="input-4" class="form-label text-md-right"><strong>닉네임</strong></label>
                 <b-input-group class="form-height">
                   <b-form-input v-model="form.nickname" type="text" id="input-4" placeholder="닉네임을 입력해주세요"
-                                ref="nicknameInput" required :readonly="nicknameInputReadonly"></b-form-input>
+                                ref="nicknameInput" required></b-form-input>
                   <b-button class="btn btn-primary" type="button" @click="nicknameChkBtn(form.nickname)">중복확인</b-button>
                 </b-input-group>
-
-                <div v-if="nicknameCheckResult !== 'valid' && form.nickname" class="mt-1">
-                  <strong style="color: blue;"><small>닉네임 중복확인을 해주세요.</small></strong>
-                </div>
-
-                <div v-if="nicknameCheckResult === 'valid'" class="mt-1">
-                  <strong style="color: green;"><small>중복확인이 완료되었습니다.</small></strong>
-                </div>
               </div>
 
               <div class="mb-4">
                 <label for="input-5" class="form-label text-md-right"><strong>전화번호</strong></label>
                 <b-input-group class="form-height">
                   <b-form-input v-model="form.telephone" type="tel" id="input-5" ref="telephoneInput"
-                                placeholder="010XXXXXXXX" required :readonly="telephoneInputReadonly"></b-form-input>
+                                placeholder="전화번호를 입력해주세요" required></b-form-input>
                   <b-button class="btn btn-primary" type="button" @click="telephoneChkBtn(form.telephone)">중복확인
                   </b-button>
                 </b-input-group>
-
-                <div v-if="!isValidTelephone(form.telephone) && form.telephone" class="mt-1">
-                  <strong style="color: red;"><small>올바른 전화번호 형식이 아닙니다. 다시 확인해주세요.</small></strong>
-                </div>
-
-                <div v-if="isValidTelephone(form.telephone) && telephoneCheckResult !== 'valid' && form.telephone" class="mt-1">
-                  <strong style="color: blue;"><small>중복확인을 해주세요.</small></strong>
-                </div>
-
-                <div v-if="telephoneCheckResult === 'valid'" class="mt-1">
-                  <strong style="color: green;"><small>중복확인이 완료되었습니다.</small></strong>
-                </div>
               </div>
 
               <div class="mb-4">
@@ -136,7 +99,7 @@
 
               <div class="mb-4">
                 <label for="input-10" class="form-label text-md-right"><strong>전문 기술</strong></label>
-                <b-form-select v-model="form.skillName" :options="form.skillOptions" ref="skillNameInput" required></b-form-select>
+                <b-form-select v-model="form.skillName" :options="form.skillOptions"></b-form-select>
               </div>
 
               <br>
@@ -175,17 +138,7 @@ export default {
 
         skillName: null, // 선택된 기술을 저장할 변수
         skillOptions: [] // 기술 목록을 저장할 배열
-      },
-      emailCheckResult: null,
-      emailInputReadonly: false,
-
-      nicknameCheckResult: null,
-      nicknameInputReadonly: false,
-
-      telephoneCheckResult: null,
-      telephoneInputReadonly: false,
-
-      pwConfirmCheckResult: null,
+      }
     }
   },
   mounted() {
@@ -218,13 +171,6 @@ export default {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
     },
-    isValidTelephone(telephone) {
-      const telephoneRegex = /^\d{10,11}$/; // 10자 또는 11자의 숫자만 허용
-      return telephoneRegex.test(telephone);
-    },
-    isValidPwConfirm(pw, confirmPw) {
-      return pw === confirmPw;
-    },
 
     emailChkBtn(email) {
       if (!this.form.email) {
@@ -240,12 +186,9 @@ export default {
       this.$axios.post(`/api/v1/member/checkEmail/${email}`)
           .then(() => {
             alert("사용 가능한 이메일 입니다.");
-            this.emailCheckResult = 'valid';
-            this.emailInputReadonly = true;
             return;
           }).catch((err) => {
         alert(err.response.data.message);
-        this.emailCheckResult = 'duplicate';
         this.form.email = '';
         this.$refs.emailInput.focus();
         this.$store.state.loadingStatus = false;
@@ -262,12 +205,9 @@ export default {
       this.$axios.post(`/api/v1/member/checkNickname/${nickname}`)
           .then(() => {
             alert("사용 가능한 닉네임 입니다.");
-            this.nicknameCheckResult = 'valid';
-            this.nicknameInputReadonly = true;
             return;
           }).catch((err) => {
         alert(err.response.data.message);
-        this.nicknameCheckResult = 'duplicate';
         this.form.nickname = '';
         this.$refs.nicknameInput.focus();
         this.$store.state.loadingStatus = false;
@@ -281,20 +221,12 @@ export default {
         this.$refs.telephoneInput.focus();
         return;
       }
-      if (!this.isValidTelephone(this.form.telephone)) {
-        alert("올바른 전화번호 형식이 아닙니다. 다시 확인해주세요.");
-        this.$refs.telephoneInput.focus();
-        return;
-      }
       this.$axios.post(`/api/v1/member/checkTelephone/${telephone}`)
           .then(() => {
             alert("사용 가능한 전화번호 입니다.");
-            this.telephoneCheckResult = 'valid';
-            this.telephoneInputReadonly = true;
             return;
           }).catch((err) => {
         alert(err.response.data.message);
-        this.telephoneCheckResult = 'duplicate';
         this.form.telephone = '';
         this.$refs.telephoneInput.focus();
         this.$store.state.loadingStatus = false;
@@ -368,31 +300,20 @@ export default {
         this.$refs.birthInput.focus();
         return;
       }
-      if (!this.form.skillName) {
-        alert("전문 기술을 선택해주세요.");
-        this.$refs.skillNameInput.focus();
-        return;
-      }
 
-      if (this.nicknameCheckResult === 'valid' && this.telephoneCheckResult === 'valid' && this.nicknameCheckResult === 'valid') {
-        this.$axios.post("/api/v1/join/guru", this.form)
-            .then((res) => {
-              // alert(res.data.message)
-              console.log(res);
-              alert("환영합니다 도사님, 회원가입이 완료되었습니다!");
-              this.$router.push({
-                name: 'LoginMember'
-              })
-            }).catch((err) => {
-          alert(err.response.data.message);
-          this.$store.state.loadingStatus = false;
-          return;
-        });
-      } else {
-        alert("중복확인을 해주세요.");
+      this.$axios.post("/api/v1/join/guru", this.form)
+          .then((res) => {
+            // alert(res.data.message)
+            console.log(res);
+            alert("환영합니다 도사님, 회원가입이 완료되었습니다!");
+            this.$router.push({
+              name: 'LoginMember'
+            })
+          }).catch((err) => {
+        alert(err.response.data.message);
+        this.$store.state.loadingStatus = false;
         return;
-      }
-
+      });
     }
   }
 }
