@@ -101,10 +101,12 @@ export default {
             Authorization: `Bearer ${localStorage.getItem('user_token')}`
           }
         }).then((res) => {
-              alert(res.data.message)
-              this.$router.go(-1);
-              // this.fnSendList()
-            }).catch((err) => {
+          // alert(res.data.message);
+          console.log(res);
+          alert("메세지 전송이 완료되었습니다.");
+          this.$router.go(-1);
+          // this.fnSendList()
+        }).catch((err) => {
           if (err.response.status === 401 || err.response.status === 404) {
             this.$router.push({ path: '/login' });
           } else {
