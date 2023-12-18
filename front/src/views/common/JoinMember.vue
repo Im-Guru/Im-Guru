@@ -78,7 +78,7 @@
                 <label for="input-5" class="form-label text-md-right"><strong>전화번호</strong></label>
                 <b-input-group class="form-height">
                   <b-form-input v-model="form.telephone" type="tel" id="input-5" ref="telephoneInput"
-                                placeholder="010-XXXX-XXXX" required :readonly="telephoneInputReadonly"></b-form-input>
+                                placeholder="010XXXXXXXX" required :readonly="telephoneInputReadonly"></b-form-input>
                   <b-button class="btn btn-primary" type="button" @click="telephoneChkBtn(form.telephone)">중복확인
                   </b-button>
                 </b-input-group>
