@@ -1,21 +1,41 @@
+<!--<template>-->
+<!--  <div class="message-list mt-5">-->
+
+<!--    <h4><strong>{{this.userNickname}} 님 쪽지함 목록</strong></h4>-->
+<!--    <hr>-->
+<!--    <div>-->
+<!--      <div v-for="(message, idx) in messageList" :key="idx" class="message-container">-->
+<!--        <div class="message-detail hover-pointer" @click="fnMessageDetail(message.memberNickname)">-->
+<!--          <strong>[{{ message.memberNickname }}]</strong>-->
+<!--          <br>-->
+<!--          <span class="small-font">전문 기술: {{ message.memberSkill }}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--  </div>-->
+
+<!--</template>-->
+
 <template>
   <div class="message-list mt-5">
-
     <h4><strong>{{this.userNickname}} 님 쪽지함 목록</strong></h4>
     <hr>
-    <div>
-      <div v-for="(message, idx) in messageList" :key="idx" class="message-container">
-        <div class="message-detail hover-pointer" @click="fnMessageDetail(message.memberNickname)">
-          <strong>[{{ message.memberNickname }}]</strong>
-          <br>
-          <span class="small-font">전문 기술: {{ message.memberSkill }}</span>
+    <div class="row">
+      <div v-for="(message, idx) in messageList" :key="idx" class="col-md-4">
+        <div class="message-container">
+          <div class="message-detail hover-pointer" @click="fnMessageDetail(message.memberNickname)">
+            <strong>[{{ message.memberNickname }}]</strong>
+            <br>
+            <span class="small-font">전문 기술: {{ message.memberSkill }}</span>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
-
 </template>
+
+
 <script>
 
 export default {

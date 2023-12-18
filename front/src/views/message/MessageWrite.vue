@@ -31,7 +31,7 @@
     </div>
 
     <div class="message-buttons mt-3 d-flex justify-content-end">
-      <button type="button" class="btn btn-primary btn-rounded" @click="fnSave">보내기</button>
+      <button type="button" class="btn btn-primary btn-rounded" @click="fnSave()">보내기</button>
     </div>
   </div>
 
@@ -101,11 +101,12 @@ export default {
             Authorization: `Bearer ${localStorage.getItem('user_token')}`
           }
         }).then((res) => {
-          // alert(res.data.message);
           console.log(res);
           alert("메세지 전송이 완료되었습니다.");
-          this.$router.go(-1);
-          // this.fnSendList()
+          this.$router.push({
+            path: '../message/detail',
+            query: { member: this.form.receiverNickname }  // Use the receiverNickname from the form
+          })
         }).catch((err) => {
           if (err.response.status === 401 || err.response.status === 404) {
             this.$router.push({ path: '/login' });

@@ -21,12 +21,14 @@ public enum PostCategory {
 
     FREE("자유게시판");
 
-    String postCategory;
+    private String postCategory;
 
-//    public static PostCategory of(String postCategory) {
-//        return Arrays.stream(PostCategory.values())
-//                .filter(type -> type.toString().equalsIgnoreCase(postCategory))
-//                .findAny().orElseThrow(() -> new NotFoundException(ResponseStatus.FAIL_POST_CATEGORY_NOT_FOUND));
-//    }
+    private final String displayValue;
+
+    PostCategory(String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+
 
 }
