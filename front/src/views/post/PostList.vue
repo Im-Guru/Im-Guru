@@ -96,8 +96,8 @@
           <div  v-for="(item, idx) in list" :key="idx" @click="fnView(item.postId)" class="post-item hover-pointer">
             <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
             <div class="post-title">
-              <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
-              <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
+              <span v-if="item.title.length < 40">{{ item.title }} &nbsp;&nbsp;</span>
+              <span v-else>{{ item.title.substring(0, 40) + "..." }}</span>
             </div>
 
             <div class="post-content">

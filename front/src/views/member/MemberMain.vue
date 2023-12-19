@@ -8,7 +8,8 @@
           <h4 class="mb-2"><strong>내 정보</strong></h4>
 
           <!-- 이미지가 있을 때 -->
-          <img v-if="fileFormat && fileFormat.fileUrl" :src="fileFormat.fileUrl" alt="이미지 파일" class="img-fluid"/>
+          <img v-if="fileFormat && fileFormat.fileUrl" :src="fileFormat.fileUrl" alt="이미지 파일"
+               style="width: 120px; height: 120px; border-radius: 50%; border: 1px solid #888888;"/>
 
           <!-- 이미지가 없을 때 -->
           <i v-else class="fa-solid fa-user" style="font-size: 50px"></i><br>
@@ -19,28 +20,26 @@
         </div>
 
         <div class="col">
+          <br><br>
           <table>
             <tr>
-              <td>&nbsp;</td>
-            </tr>
-            <tr>
-              <td>이름:</td>
+              <td><strong>이름:&nbsp;</strong></td>
               <td>{{ name }}</td>
             </tr>
             <tr>
-              <td>닉네임:</td>
+              <td><strong>닉네임:&nbsp;</strong></td>
               <td>{{ this.nickname }}</td>
             </tr>
             <tr v-if="role === 'ROLE_GURU'">
-              <td>기술:</td>
+              <td><strong>기술:&nbsp;</strong></td>
               <td>{{ this.skillName }}</td>
             </tr>
             <tr>
-              <td>직업:</td>
+              <td><strong>직업:&nbsp;</strong></td>
               <td>{{ this.job }}</td>
             </tr>
             <tr>
-              <td>주소:</td>
+              <td><strong>주소:&nbsp;</strong></td>
               <td>{{ this.address }}</td>
             </tr>
           </table>
@@ -129,8 +128,8 @@
               <div v-for="(item, idx) in postList" :key="idx" @click="fnPostView(item.postId)" class="post-item hover-pointer">
                 <div class="post-category">{{ item.postCategory }} - {{ item.skillName }}</div>
                 <div class="post-title">
-                  <span v-if="item.title.length < 20">{{ item.title }} &nbsp;&nbsp;</span>
-                  <span v-else>{{ item.title.substring(0, 10) + "..." }}</span>
+                  <span v-if="item.title.length < 40">{{ item.title }} &nbsp;&nbsp;</span>
+                  <span v-else>{{ item.title.substring(0, 40) + "..." }}</span>
                 </div>
                 <div class="post-content">
                   {{ truncateAndStripTags(item.content, 100) }}
@@ -272,17 +271,20 @@
               <div v-for="(pay, idx) in payList" :key="idx" class="pay-item">
                 <div class="reply-detail">
                   <div style="float: left;">
-                    주문번호: {{ pay.ordNo }}<br>
-                    상품명: {{ pay.productNm }}<br>
-                    거래금액: {{ pay.trPrice }}<br>
-                    거래시간: {{ payDateTime(pay.trDay, pay.trTime) }}<br>
+                    <strong>주문번호</strong>: {{ pay.ordNo }}<br>
+                    <strong>상품명:</strong> {{ pay.productNm }}<br>
+                    <strong>거래금액:</strong> {{ pay.trPrice }}<br>
+                    <strong>거래시간:</strong> {{ payDateTime(pay.trDay, pay.trTime) }}<br>
                   </div>
-                  <div style="float: right;">
+                  <div v-if="pay.payStatus !== 'C'" style="float: right;">
                     <button class="btn-sm btn-outline-dark btn-rounded small-button" @click="goReview(pay.id)">후기 남기기
                     </button>&nbsp;
                     <button class="btn-sm btn-outline-dark btn-rounded small-button"
                             @click="goCancel(pay.ordNo, pay.trNo)">결제 취소
                     </button>
+                  </div>
+                  <div v-else style="float: right;">
+                    <span><small>결제 취소 완료</small></span>
                   </div>
                   <div style="clear: both;"></div>
                 </div>
@@ -768,4 +770,20 @@ export default {
   margin-right: 5px; /* Adjust the margin as needed */
   transition: background-color 0.3s ease-in-out;
 }
+
+
+table {
+  width: 50%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 2px solid #ddd; /* 테두리 스타일 및 색상 설정 */
+}
+
+th, td {
+  padding: 3px; /* 셀 내부 여백 설정 */
+  text-align: left; /* 텍스트 정렬 설정 */
+}
+
 </style>

@@ -22,7 +22,7 @@ export default {
 .scroll-button-container {
   position: fixed;
   z-index: 999; /* 다른 요소 위에 표시하기 위한 z-index 설정 */
-  top: 700px; /* 상단 여백 조절 */
+  top: 800px; /* 상단 여백 조절 */
   right: 20px; /* 오른쪽 여백 조절 */
 }
 /* 버튼 스타일 */
